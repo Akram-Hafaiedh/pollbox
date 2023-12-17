@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Option;
+use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,10 +16,17 @@ class QuizSeeder extends Seeder
      */
     public function run(): void
     {
-        Quiz::factory(30)->make()->each(function ($quiz) {
-            // Associate the quiz with a random existing user
-            $quiz->user_id = User::all()->random()->id;
-            $quiz->save();
+        Quiz::factory(30)->create()->each(function ($quiz) {
+            $questionsNumber = rand(1, 5);
+
+            $quiz->questions()->saveMany(
+                Question::factory($questionsNumber)->create(['quiz_id' => $quiz->id])->each(function ($question) use ($quiz) {
+                    // Create 4 options for each question
+                    // $question->quiz_id = $quiz->id;
+                    // $question->save();
+                    $question->options()->saveMany(Option::factory(4)->create(['question_id' => $question->id]));
+                })
+            );
         });
     }
 }

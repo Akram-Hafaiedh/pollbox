@@ -10,8 +10,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Quiz extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'active', 'time_limit', 'score', 'has_correct_answers'];
 
+    protected $fillable = [
+        'title',
+        'description',
+        'active',
+        'time_limit',
+        'score',
+        'has_correct_answers',
+        'category_id',
+        'visibility',
+        'randomize'
+    ];
+
+    protected $attributes = [
+        'visibility' => 'public',  // Default visibility
+        'randomize' => false,      // Default randomize value
+    ];
 
     // model logic
     public function isSurvey(): bool

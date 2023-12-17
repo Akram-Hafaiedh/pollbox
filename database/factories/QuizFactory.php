@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,6 +25,10 @@ class QuizFactory extends Factory
             'time_limit' => rand(15, 60),
             'score' => rand(0, 100),
             'has_correct_answers' => (bool) rand(0, 1),
+            'category_id' => Category::factory(),
+            'user_id' => User::all()->random()->id,
+            // 'visibility' => 'private',  // Override default visibility if needed
+            // 'randomize' => true,        // Override default randomize value if needed
         ];
     }
 }

@@ -14,12 +14,19 @@ return new class extends Migration
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained();
             $table->string('title');
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->boolean('has_correct_answers')->default(true);
-            $table->integer('time_limit')->nullable();
             $table->integer('score')->nullable();
+            $table->integer('time_limit')->nullable();
+
+            $table->enum('visibility', ['public', 'private', 'restricted'])->default('public');
+            $table->boolean('randomize')->default(false);
+
+            // $table->enum('difficulty', ['easy', 'medium', 'hard'])->default('medium');
+            // $table->unsignedInteger('order')->default(0);
             $table->timestamps();
         });
     }

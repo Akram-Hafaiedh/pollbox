@@ -7,6 +7,7 @@ use App\Models\Quiz;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class QuizController extends Controller
@@ -14,20 +15,27 @@ class QuizController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $quizzes = Quiz::where('has_correct_answers', true)
+        $search = $request->get('search');
+        $quizzes = Quiz::query()
+            ->where('has_correct_answers', true)
+            ->where(function ($query) use ($search) {
+                $query->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
-        return view('admin.quizzes.index', compact('quizzes'));
+        return view('admin.quizzes.index', compact('quizzes', 'search'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create() : View
     {
-        //
+        return view('admin.quizzes.create');
+
     }
 
     /**

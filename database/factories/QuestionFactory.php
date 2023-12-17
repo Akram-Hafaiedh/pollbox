@@ -17,7 +17,10 @@ class QuestionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'content' => fake()->sentence(),
+            'type' => fake()->randomElement(['multiple_choice', 'single_choice', 'open_ended']),
+            'difficulty' => fake()->randomElement(['easy', 'medium', 'hard']),
+            'required' => fake()->boolean(),
         ];
     }
 }

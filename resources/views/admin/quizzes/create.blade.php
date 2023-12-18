@@ -153,15 +153,24 @@
                                         <input x-model="question.order" :name="'questions[' + index + '][order]'"
                                             :id="'order_' +  index "
                                             class="w-full mt-1 border-gray-300 rounded-md shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600"
-                                            type="number" required />
+                                            type="number" min="0" required />
                                     </div>
                                     <!-- Required -->
-                                    <div class="mt-2">
+                                    <div class="w-1/4 mt-2 md:mt-0">
                                         <label :for="'required_' + index"
                                             class="block text-sm font-medium text-gray-600 dark:text-gray-100">
                                             {{ __('Required') }}
                                         </label>
-                                        <x-switch x-model="question.required" :name="`questions[${index}][required]`" />
+                                        <select x-model="question.required" :name="'questions[' + index + '][required]'"
+                                            :id="'required' +  index "
+                                            class="w-full mt-1 border-gray-300 rounded-md shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600">
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                            <!-- Add other options as needed -->
+                                        </select>
+                                        {{--
+                                        <x-switch x-model="question.required"
+                                            name="'questions[' + index + '][required]'" /> --}}
                                     </div>
 
                                 </div>

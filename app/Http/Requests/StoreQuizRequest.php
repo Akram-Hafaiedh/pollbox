@@ -10,7 +10,7 @@ class StoreQuizRequest extends FormRequest
     protected function getValidatorInstance()
     {
         // Dump and die the request before validation
-        dd($this->all());
+        // dd($this->all());
 
         return parent::getValidatorInstance();
     }
@@ -34,15 +34,23 @@ class StoreQuizRequest extends FormRequest
             'title' => 'required|string|max:255',
             'time_limit' => 'required|numeric',
             'score' => 'required|numeric',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'visibility' => 'required|in:public,private,restricted', // added
-            'randomize' => 'required|boolean', // added
-            'has_correct_answers' => 'required|boolean', // added
-            'active' => 'required|boolean', // addded
+            'randomize' => 'nullable|boolean', // added
+            'has_correct_answers' => 'nullable|boolean', // added
+            'active' => 'nullable|boolean', // addded
+
+            // Validation rules for questions array
             'questions' => 'required|array|min:1',
             'questions.*' => 'required|array|min:1',
-            'questions.*.options' => 'required|array|min:1',
             'questions.*.content' => 'required|string', // added
+            'questions.*.type' => 'required|in:multiple_choice,single_choice,open_ended',
+            'questions.*.difficulty' => 'required|in:easy,medium,hard',
+            'questions.*.order' => 'required|integer|min:1',
+            'questions.*.required' => 'required|boolean',
+
+            // Validation rules for options array within each question
+            'questions.*.options' => 'required|array|min:1',
             'questions.*.options.*' => 'required|string|max:255',
         ];
     }

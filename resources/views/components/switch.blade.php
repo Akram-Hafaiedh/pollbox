@@ -1,5 +1,6 @@
 @props(['initialValue' => false, 'name'])
 
+{{-- @dd($name) --}}
 <div x-data="{ on:  {{ $initialValue ? 'true' : 'false' }} }">
     <div :class="{ 'bg-blue-500': on, 'bg-gray-500': !on }"
         class="relative w-12 h-6 rounded-full shadow-inner cursor-pointer" @click="on = !on">

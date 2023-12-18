@@ -11,7 +11,15 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['text', 'quiz_id'];
+    protected $fillable = [
+        // 'text',
+        'quiz_id',
+        'content',
+        'type',
+        'difficulty',
+        'order',
+        'required'
+    ];
 
     public function quiz(): BelongsTo
     {

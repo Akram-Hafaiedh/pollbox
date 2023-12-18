@@ -1,7 +1,9 @@
 @props(['route'])
 
 @php
-$isActive = request()->routeIs($route);
+$isActive = request()->routeIs($route . '*');
+// $isActive = request()->currentRouteNamed($route . '*');
+// $isActive = Str::startsWith(Route::currentRouteName(), $route);
 $classes = $isActive
 ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100 px-3'
 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100

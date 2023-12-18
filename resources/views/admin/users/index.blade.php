@@ -15,16 +15,16 @@
         </div>
         <x-dashboard-main-content :page-title="  __('Admin Clients')">
             <h3 class="mb-4 text-2xl font-semibold">Clients</h3>
-            <div class="flex justify-between items-center ">
+            <div class="flex items-center justify-between ">
                 <div>
 
                     <a href="{{ route('admin.users.create') }}"
-                        class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">{{
+                        class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md dark:bg-gray-200 dark:text-gray-800 hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">{{
                         __('Create User')
                         }}</a>
                     {{-- TODO DELETE ALL --}}
                     <a href="#"
-                        class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">{{
+                        class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md dark:bg-gray-200 dark:text-gray-800 hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">{{
                         __('Delete all')
                         }}</a>
 
@@ -41,7 +41,7 @@
             {{-- <p>Your role: {{ auth()->user()->role }}</p> --}}
             @if(isset($users))
             <table class="table w-full mt-5 divide-y divide-gray-200 overflow-x">
-                <thead class="font-medium text-left text-gray-200">
+                <thead class="font-medium text-left dark:text-gray-200">
                     <tr>
                         <th>#</th>
                         <th>Name</th>
@@ -51,13 +51,13 @@
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="text-sm text-gray-600">
+                <tbody class="text-sm dark:text-gray-400">
                     @foreach ($users as $user)
-                    <tr class="hover:bg-gray-50 bg-gray-800">
+                    <tr class="dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-50 dark:hover:text-black">
                         <td>{{ $user->id }}</td>
                         <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->email }}</td>
-                        <td>active</td>
+                        <td class="text-green-500">Active</td>
                         {{-- TODO ADD ACTIVE OR INACTIVE TO USERS --}}
                         {{-- <td>@if ($quiz->active) <span class="text-green-500">Active</span> @else <span
                                 class="text-red-500">Inactive</span> @endif</td> --}}

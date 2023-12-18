@@ -1,6 +1,8 @@
 <div>
     <div class='flex justify-center my-5'>
-        <x-application-logo class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" />
+        <a href='{{ route('admin.dashboard') }}'>
+            <x-application-logo class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" />
+        </a>
     </div>
 
     <x-side-link route="admin.dashboard">

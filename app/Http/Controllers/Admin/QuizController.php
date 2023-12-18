@@ -7,7 +7,9 @@ use App\Models\Quiz;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class QuizController extends Controller
@@ -32,18 +34,42 @@ class QuizController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create() : View
+    public function create(): View
     {
         return view('admin.quizzes.create');
-
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreQuizRequest $request)
+    public function store(StoreQuizRequest $request): RedirectResponse
     {
-        //
+        $validatedData = $request->validated();
+        // dd($validatedData);
+        $questions = $validatedData['questions'];
+        dd($questions);
+        // foreach($questions as $questions)
+
+        if (auth()->check()) {
+            $quiz = Quiz::create([
+                'user_id' => auth()->id(),
+                'title' => $validatedData['title'],
+                'time_limit' => $validatedData['time_limit'],
+                'score' => $validatedData['score'],
+                'description' => $validatedData['description'],
+                'active' => $validatedData['active'],
+                'visibility' => $validatedData['visibility'],
+                'has_correct_answers' => $validatedData['has_correct_answers'],
+            ]);
+
+
+            return redirect()->route('admin.quizzes.index')
+                ->with('success', 'Quiz created successfully!');
+        } else {
+            return redirect()->route('login')
+                ->with('error', __('You must be logged in to create a quizz'));
+        }
+        dd($validatedData->questions);
     }
 
     /**

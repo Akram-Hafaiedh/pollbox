@@ -408,10 +408,10 @@
                             <span class="block text-gray-500">Hours spent on lections</span>
                         </div>
                     </div>
-                    <div class="row-span-3 bg-white shadow rounded-lg">
+                    <div class="row-span-3 col-span-3 bg-white shadow rounded-lg">
                         <div class="flex items-center justify-between px-6 py-5 font-semibold border-b border-gray-100">
-                            <span>Students by average mark</span>
-                            <button type="button"
+                            <span>Clients Invitation</span>
+                            {{-- <button type="button"
                                 class="inline-flex justify-center rounded-md px-1 -mr-1 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-600"
                                 id="options-menu" aria-haspopup="true" aria-expanded="true">
                                 Descending
@@ -420,9 +420,8 @@
                                     <path fill-rule="evenodd"
                                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                         clip-rule="evenodd" />
-                                </svg>
+                                </svg> --}}
                             </button>
-                            <!-- Refer here for full dropdown menu code: https://tailwindui.com/components/application-ui/elements/dropdowns -->
                         </div>
                         <div class="overflow-y-auto" style="max-height: 24rem;">
                             <ul class="p-6 space-y-6">
@@ -447,14 +446,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="flex flex-col row-span-3 bg-white shadow rounded-lg">
-                        <div class="px-6 py-5 font-semibold border-b border-gray-100">Students by type of studying</div>
-                        <div class="p-4 flex-grow">
-                            <div
-                                class="flex items-center justify-center h-full px-4 py-24 text-gray-400 text-3xl font-semibold bg-gray-100 border-2 border-gray-200 border-dashed rounded-md">
-                                Chart</div>
-                        </div>
-                    </div>
+
                 </section>
             </div>
         </x-dashboard-main-content>

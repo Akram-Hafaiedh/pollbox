@@ -58,4 +58,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Quiz::class);
     }
+
+    public function receivedInvitation(): hasMany
+    {
+        return $this->hasMany(Invitation::class, 'sender_id');
+    }
+
+    public function sentInvitation() : HasMany
+    {
+        return $this->hasMany(Invitation::class, 'recipient_id');
+    }
+
 }

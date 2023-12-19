@@ -33,7 +33,7 @@
                         <th class="py-2">#</th>
                         <th class="py-2">Title</th>
                         <th class="py-2 ">Description</th>
-                        <th class="py-2 text-center">Num of questions</th>
+                        <th class="py-2 text-center">Questions</th>
                         <th cols="1" class="py-2 ">Members</th>
                         <th class="py-2 ">Active</th>
                         <th class="py-2 text-center">Time Limit</th>
@@ -47,24 +47,9 @@
                         <td>{{ $quiz->id }}</td>
                         <td>{{ Str::limit($quiz->title,20) }}</td>
                         <td>{{ Str::limit($quiz->description, 50) }}</td>
-                        <td class="text-center"> 1</td>
+                        <td class="text-center"> {{ count($quiz->questions) }}</td>
                         <td>
-                            <div class="flex -space-x-2 overflow-hidden">
-                                <div
-                                    class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center z-30 ring-2 ring-white">
-                                    <span class="text-white">KN</span>
-                                </div>
-                                <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white z-20"
-                                    src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                    alt="">
-                                <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white z-10"
-                                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
-                                    alt="">
-                                <div
-                                    class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center ring-2 ring-white">
-                                    <span class="text-white">AH</span>
-                                </div>
-                            </div>
+                            {{ rand(1,100) }}
                         </td>
                         <td>@if ($quiz->active) <span class="text-green-500">Active</span> @else <span
                                 class="text-red-500">Inactive</span> @endif</td>
@@ -72,7 +57,7 @@
                         <td class="text-center">{{ $quiz->created_at->format('Y-m-d') }}</td>
                         <td class="flex justify-center space-x-2">
                             <a href="{{ route('admin.quizzes.show', $quiz->id) }}"
-                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-500 rounded-md shadow-sm fill-white hover:text-blue-700 hover:underline dark:hover:bg-blue-100">
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-500 fill-white hover:text-blue-700 hover:underline ">
                                 view
                             </a>
                             {{-- <form action="{{ route('admin.quizzes.destroy', $quiz->id) }}" method="POST"
@@ -92,8 +77,8 @@
                     </tr>
                     @endforeach
                 </tbody>
+                {{ $quizzes->links() }}
             </table>
-            {{ $quizzes->links() }}
             @endif
         </x-dashboard-main-content>
         @endauth

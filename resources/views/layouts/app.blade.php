@@ -17,7 +17,7 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <div class="h-screen flex bg-gray-200">
+    <div class="h-screen flex ">
         <!--Sidebar -->
         <div
             class='w-64 h-screen bg-gray-800 text-gray-100 fixed left-0 top-0 overflow-y-auto transition-all duration-300'>

@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Quiz;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
+use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\CodeHelper;
+use App\Models\Question;
 use Illuminate\View\View;
+
 
 class QuizController extends Controller
 {
@@ -36,7 +40,8 @@ class QuizController extends Controller
      */
     public function create(): View
     {
-        return view('admin.quizzes.create');
+        $users = User::where('role','user')->get();
+        return view('admin.quizzes.create', compact('users'));
     }
 
     /**
@@ -44,6 +49,7 @@ class QuizController extends Controller
      */
     public function store(StoreQuizRequest $request): RedirectResponse
     {
+
         $validatedData = $request->validated();
         // dd($validatedData);
         $questions = $validatedData['questions'];
@@ -62,6 +68,30 @@ class QuizController extends Controller
                 'has_correct_answers' => $validatedData['has_correct_answers'],
             ]);
 
+            foreach( $questions as $question){
+                Question::create([
+
+                ]);
+            }
+
+            // Generate a 4-digit access code
+            $accessCode = generateAccessCode();
+
+            // dd($accessCode);
+
+
+            foreach ($request->input('users', []) as $userId) {
+                Invitation::create([
+                    'quiz_id' => $quiz->id,
+                    'sender_id' => auth()->id(),
+                    'recipient_id' => $userId,
+                    'code' => $accessCode,
+                    'pending' => true,
+                ]);
+            }
+
+
+
 
             return redirect()->route('admin.quizzes.index')
                 ->with('success', 'Quiz created successfully!');
@@ -75,9 +105,13 @@ class QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quiz $quiz)
+    public function show(Quiz $quiz) : View
     {
-        //
+
+        // dd($quiz->questions);
+        $users = User::all();
+
+        return view('admin.quizzes.show', compact('quiz', 'users'));
     }
 
     /**

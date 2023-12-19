@@ -1,11 +1,8 @@
 <x-app-layout>
-    {{-- <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-            {{ __('Admin Dashboard') }}
-        </h2>
-    </x-slot> --}}
+
 
     <div class="flex flex-col md:flex-row">
+
 
         @auth
         <x-dashboard-main-content :page-title="__('Top Quizzes')">

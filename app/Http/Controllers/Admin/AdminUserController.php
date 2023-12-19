@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class AdminUserController extends Controller
@@ -42,13 +44,16 @@ class AdminUserController extends Controller
         $validatedUser = $request->validated();
         // dd($user);
 
-        User::create([
+        $user = User::create([
             'name' => $validatedUser['name'],
             'email' => $validatedUser['email'],
             'password' => bcrypt($validatedUser['password']),
             'mobile_number' => $validatedUser['mobile_number'],
             'role' => 'user'
         ]);
+
+        $password  = $validatedUser['password'];
+        Mail::to($user->email)->send(new WelcomeMail($user, $password));
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }

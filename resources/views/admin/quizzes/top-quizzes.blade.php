@@ -8,11 +8,6 @@
     <div class="flex flex-col md:flex-row">
 
         @auth
-        <div class="w-64 h-screen py-8 text-gray-600 bg-gray-100 shadow-md dark:bg-gray-800 dark:text-gray-200">
-            @if (auth()->user()->hasRole('admin'))
-            <x-sidebar />
-            @endif
-        </div>
         <x-dashboard-main-content :page-title="__('Top Quizzes')">
             <h3 class="mb-4 text-2xl font-semibold">Top 3 Quizzes</h3>
             <ul>

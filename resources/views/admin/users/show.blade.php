@@ -1,40 +1,31 @@
 <x-app-layout>
 
     <div class="flex flex-col md:flex-row">
-
         @auth
-        <div class="w-64 h-screen py-8 text-gray-600 bg-gray-100 shadow-md dark:bg-gray-800 dark:text-gray-200">
-            @if (auth()->user()->hasRole('admin'))
-            <x-sidebar />
-            @endif
-        </div>
-        <x-dashboard-main-content :page-title="  __('Admin Show User')">
-            <h3 class="text-2xl font-semibold">Clients show page!</h3>
-            <p class="max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-200">Client details.</p>
+        <x-dashboard-main-content :page-title="  __('Clien details')">
+            <h3 class="text-2xl font-semibold">{{ $user->name }} profile</h3>
+            {{-- <p class="max-w-2xl text-sm leading-6 text-gray-500 ">Client details.</p> --}}
             <div class="flex justify-between items-center">
                 <div class="w-full">
                     <div class="mt-6 border-t border-gray-100">
                         <dl class="divide-y divide-gray-100">
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 dark:text-white text-gray-900">
+                                <dt class="text-sm font-medium leading-6  text-gray-900">
                                     Full name</dt>
-                                <dd
-                                    class="mt-1 text-sm leading-6 dark:text-gray-100 text-gray-700 sm:col-span-2 sm:mt-0">
+                                <dd class="mt-1 text-sm leading-6  text-gray-700 sm:col-span-2 sm:mt-0">
                                     {{ $user->name }}
                                 </dd>
                             </div>
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 dark:text-white text-gray-900">Email address
+                                <dt class="text-sm font-medium leading-6  text-gray-900">Email address
                                 </dt>
-                                <dd
-                                    class="dark:text-gray-100 mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                <dd class=" mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                                     {{ $user->email }}</dd>
                             </div>
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 text-gray-900 dark:text-white">Phone number
+                                <dt class="text-sm font-medium leading-6 text-gray-900 ">Phone number
                                 </dt>
-                                <dd
-                                    class="mt-1 dark:text-gray-100 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                <dd class="mt-1  text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                                     {{
                                     $user->mobile_number }}</dd>
                             </div>
@@ -47,8 +38,8 @@
                                     deserunt qui eu.</dd>
                             </div> --}}
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt class="text-sm font-medium leading-6 text-gray-900 dark:text-white">Attachments</dt>
-                                <dd class="mt-2 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0">
+                                <dt class="text-sm font-medium leading-6 text-gray-900 ">Avatar</dt>
+                                <dd class="mt-2 text-sm text-gray-900  sm:col-span-2 sm:mt-0">
                                     <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
                                         <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
                                             <div class="flex w-0 flex-1 items-center">

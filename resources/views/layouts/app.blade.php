@@ -16,23 +16,52 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-        @include('layouts.navigation')
-
-        <!-- Page Heading -->
-        @if (isset($header))
-        <header class="bg-white shadow dark:bg-gray-800">
-            <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                {{ $header }}
+<body class="font-sans antialiased bg-gray-100">
+    <div class="h-screen flex bg-gray-200">
+        <!--Sidebar -->
+        <div
+            class='w-64 h-screen bg-gray-800 text-gray-100 fixed left-0 top-0 overflow-y-auto transition-all duration-300'>
+            <div class='flex flex-col items-center my-5'>
+                <a href='{{ route("admin.dashboard") }}'>
+                    <x-application-logo class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" />
+                </a>
+                <div class='p-5'>
+                    <a href="{{ route('admin.dashboard') }}" class="text-2xl font-semibold text-white">
+                        {{ config('app.name') }}
+                    </a>
+                </div>
             </div>
-        </header>
-        @endif
+            <div class='flex flex-col mt-10'>
+                <x-side-link route="admin.dashboard" icon="home">Dashboard</x-side-link>
+                <x-side-link route="admin.users.index" icon="user">Clients</x-side-link>
+                <x-side-link route="admin.quizzes.index" icon="user">Quizzes</x-side-link>
+                <x-side-link route="admin.topQuizzes" icon="user">Top 3 Clients Reports</x-side-link>
+                <x-side-link route="dashboard" icon="user">Settings</x-side-link>
+                <x-side-link route="dashboard" icon="user">More Settings</x-side-link>
+            </div>
+        </div>
 
-        <!-- Page Content -->
-        <main class="relative">
-            {{ $slot }}
-        </main>
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 p-10">
+            <div class="bg-white p-4 shadow-md rounded-md">
+                <!-- Header section -->
+                @if (isset($header))
+                <header class="bg-white shadow dark:bg-gray-800">
+                    <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+                @endif
+
+                <!-- Page Content -->
+                <main class="relative">
+                    {{-- @if (!isset($header) && !empty(config('app.name')))
+                    <h1 class="text-2xl font-semibold mb-4">{{ config('app.name') }}</h1>
+                    @endif --}}
+                    {{ $slot }}
+                </main>
+            </div>
+        </div>
     </div>
 </body>
 

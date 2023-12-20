@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CodeHelper;
+use App\Models\Option;
 use App\Models\Question;
 use Illuminate\View\View;
 
@@ -51,6 +52,7 @@ class QuizController extends Controller
     {
 
         $validatedData = $request->validated();
+
         // dd($validatedData);
         $questions = $validatedData['questions'];
         dd($questions);
@@ -68,26 +70,42 @@ class QuizController extends Controller
                 'has_correct_answers' => $validatedData['has_correct_answers'],
             ]);
 
-            foreach( $questions as $question){
-                Question::create([
-
+            foreach($validatedData['questions']  as $questionData){
+                // $quiz->users()->attach($validatedData['users']);
+                $question = Question::create([
+                    'quiz_id'=>$quiz->id,
+                    'content'=>$questionData['content'],
+                    'type'=>$questionData['type'],
+                    'difficulty'=>$questionData['difficulty'],
+                    'order'=>$questionData['order'],
+                    'required'=> $questionData['required'],
                 ]);
+                foreach ($questionData['options'] as $optionData) {
+                    // Create the option
+                    Option::create([
+                        'content' => $optionData['content'],
+                        'is_correct' => isset($optionData['is_correct']) ? $optionData['is_correct'] : false,
+                        // 'explanation'=>$optionData['explanation'],
+                        'question_id' => $question->id,
+                    ]);
+                }
             }
 
             // Generate a 4-digit access code
             $accessCode = generateAccessCode();
-
             // dd($accessCode);
 
+            if($validatedData['visibility'] !== 'public'){
 
-            foreach ($request->input('users', []) as $userId) {
-                Invitation::create([
-                    'quiz_id' => $quiz->id,
-                    'sender_id' => auth()->id(),
-                    'recipient_id' => $userId,
-                    'code' => $accessCode,
-                    'pending' => true,
-                ]);
+                foreach ($request->input('users', []) as $userId) {
+                    Invitation::create([
+                        'quiz_id' => $quiz->id,
+                        'sender_id' => auth()->id(),
+                        'recipient_id' => $userId,
+                        'code' => $accessCode,
+                        'pending' => true,
+                    ]);
+                }
             }
 
 

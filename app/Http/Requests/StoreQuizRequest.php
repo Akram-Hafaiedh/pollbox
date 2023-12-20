@@ -10,7 +10,7 @@ class StoreQuizRequest extends FormRequest
     protected function getValidatorInstance()
     {
         // Dump and die the request before validation
-        // dd($this->all());
+        dd($this->all());
 
         return parent::getValidatorInstance();
     }
@@ -40,6 +40,8 @@ class StoreQuizRequest extends FormRequest
             'has_correct_answers' => 'nullable|boolean', // added
             'active' => 'nullable|boolean', // addded
 
+
+            'users' => 'nullable|array', //added
             'users.*' => 'exists:users,id', // added
 
             // Validation rules for questions array
@@ -53,7 +55,8 @@ class StoreQuizRequest extends FormRequest
 
             // Validation rules for options array within each question
             'questions.*.options' => 'required|array|min:1',
-            'questions.*.options.*' => 'required|string|max:255',
+            'questions.*.options.*.content' => 'required|string|max:255',
+            'questions.*.options.*.is_correct'=>'required', //added
 
         ];
     }

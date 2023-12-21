@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\QuizController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\SurveyController;
+use App\Models\Question;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('login');
 });
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -60,5 +63,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'destroy' => 'admin.quizzes.destroy',
     ]);
 
+
     Route::get('/admin/surveys', [SurveyController::class, 'index'])->name('admin.surveys.index');
 });
+
+
+Route::get('/quiz', [QuizController::class, 'showQuiz']);

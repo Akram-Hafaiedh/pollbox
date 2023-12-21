@@ -77,57 +77,11 @@
                     </tr>
                     @endforeach
                 </tbody>
-                {{ $quizzes->links() }}
             </table>
+            {{ $quizzes->links() }}
             @endif
         </x-dashboard-main-content>
         @endauth
 
     </div>
 </x-app-layout>
-
-{{-- @extends('layouts.admin')
-
-@section('content')
-<div class="flex flex-col">
-    <h1 class="mb-4 text-2xl font-bold">Quizzes</h1>
-    <a href="{{ route('admin.quizzes.create') }}"
-        class="inline-block px-4 py-2 mb-4 text-white bg-blue-500 rounded shadow-md">Create New Quiz</a>
-    <div class="overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th class="px-4 py-3">Title</th>
-                    <th class="px-4 py-3">Description</th>
-                    <th class="px-4 py-3">Active</th>
-                    <th class="px-4 py-3">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($quizzes as $quiz)
-                <tr class="border-b">
-                    <td class="px-4 py-3">{{ $quiz->title }}</td>
-                    <td class="px-4 py-3 truncate">{{ $quiz->description }}</td>
-                    <td class="px-4 py-3">
-                        @if ($quiz->active)
-                        <span class="text-green-500">Yes</span>
-                        @else
-                        <span class="text-red-500">No</span>
-                        @endif
-                    </td>
-                    <td class="px-4 py-3">
-                        <a href="{{ route('admin.quizzes.edit', $quiz) }}"
-                            class="px-2 py-1 text-blue-500 hover:text-blue-700">Edit</a>
-                        <form action="{{ route('admin.quizzes.destroy', $quiz) }}" method="POST" class="inline-block">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="px-2 py-1 text-red-500 hover:text-red-700">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-@endsection --}}

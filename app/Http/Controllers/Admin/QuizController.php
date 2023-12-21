@@ -41,7 +41,7 @@ class QuizController extends Controller
      */
     public function create(): View
     {
-        $users = User::where('role','user')->get();
+        $users = User::where('role', 'user')->get();
         return view('admin.quizzes.create', compact('users'));
     }
 
@@ -70,15 +70,15 @@ class QuizController extends Controller
                 'has_correct_answers' => $validatedData['has_correct_answers'],
             ]);
 
-            foreach($validatedData['questions']  as $questionData){
+            foreach ($validatedData['questions']  as $questionData) {
                 // $quiz->users()->attach($validatedData['users']);
                 $question = Question::create([
-                    'quiz_id'=>$quiz->id,
-                    'content'=>$questionData['content'],
-                    'type'=>$questionData['type'],
-                    'difficulty'=>$questionData['difficulty'],
-                    'order'=>$questionData['order'],
-                    'required'=> $questionData['required'],
+                    'quiz_id' => $quiz->id,
+                    'content' => $questionData['content'],
+                    'type' => $questionData['type'],
+                    'difficulty' => $questionData['difficulty'],
+                    'order' => $questionData['order'],
+                    'required' => $questionData['required'],
                 ]);
                 foreach ($questionData['options'] as $optionData) {
                     // Create the option
@@ -95,7 +95,7 @@ class QuizController extends Controller
             $accessCode = generateAccessCode();
             // dd($accessCode);
 
-            if($validatedData['visibility'] !== 'public'){
+            if ($validatedData['visibility'] !== 'public') {
 
                 foreach ($request->input('users', []) as $userId) {
                     Invitation::create([
@@ -120,10 +120,19 @@ class QuizController extends Controller
         dd($validatedData->questions);
     }
 
+
+
+    public function showQuiz(): View
+    {
+        $questions = Question::all();
+        // dd($questions);
+        return view('quiz', compact('questions'));
+    }
+
     /**
      * Display the specified resource.
      */
-    public function show(Quiz $quiz) : View
+    public function show(Quiz $quiz): View
     {
 
         // dd($quiz->questions);

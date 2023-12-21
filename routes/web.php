@@ -69,3 +69,4 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 
 Route::get('/quiz', [QuizController::class, 'showQuiz']);
+Route::get('/access', [QuizController::class, 'access']);

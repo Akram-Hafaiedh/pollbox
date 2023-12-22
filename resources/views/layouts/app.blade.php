@@ -17,11 +17,11 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <div class="h-screen flex ">
+    <div class="flex h-screen ">
         <!--Sidebar -->
         @if (Auth::check() && Auth::user()->role === 'admin')
         <div
-            class='w-64 h-screen bg-gray-800 text-gray-100 fixed left-0 top-0 overflow-y-auto transition-all duration-300'>
+            class='fixed top-0 left-0 w-64 h-screen overflow-y-auto text-gray-100 transition-all duration-300 bg-gray-800'>
             <div class="flex flex-col justify-between h-full">
                 <div>
                     <div class='flex flex-col items-center my-5'>
@@ -45,7 +45,7 @@
                         <!-- User Information and Logout Link -->
                     </div>
                 </div>
-                <div class="mt-auto p-4 text-white bg-gray-700 divide-y space-y-2">
+                <div class="p-4 mt-auto space-y-2 text-white bg-gray-700 divide-y">
                     @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -54,9 +54,9 @@
                         </button>
                     </form>
                     {{-- <span class="block ">{{ Auth::user()->role }}</span> --}}
-                    <div class="flex items-center mb-2 pt-2">
+                    <div class="flex items-center pt-2 mb-2">
                         <div
-                            class="h-10 w-10 mr-3 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm">
+                            class="flex items-center justify-center w-10 h-10 mr-3 text-sm font-bold text-gray-500 bg-gray-100 rounded-full">
                             {{ substr(Auth::user()->name, 0, 2) }}
                         </div>
                         <div>
@@ -72,9 +72,9 @@
         <!-- Main Content -->
         <div class="flex-1  {{ Auth::check() && Auth::user()->role == 'admin' ? 'ml-64' : '' }}">
             @unless(Auth::check() && Auth::user()->role == 'admin')
-                @include('layouts.navigation')
+            @include('layouts.navigation')
             @endunless
-            <div class="bg-white p-4 shadow-md rounded-md m-10">
+            <div class="p-4 m-10 bg-white rounded-md shadow-md">
                 <!-- Header section -->
                 @if (isset($header))
                 <header class="bg-white shadow dark:bg-gray-800">
@@ -87,7 +87,7 @@
                 <!-- Page Content -->
                 <main class="relative">
                     {{-- @if (!isset($header) && !empty(config('app.name')))
-                    <h1 class="text-2xl font-semibold mb-4">{{ config('app.name') }}</h1>
+                    <h1 class="mb-4 text-2xl font-semibold">{{ config('app.name') }}</h1>
                     @endif --}}
                     {{ $slot }}
                 </main>

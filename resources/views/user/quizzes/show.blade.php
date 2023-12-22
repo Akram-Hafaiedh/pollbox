@@ -1,7 +1,13 @@
 <x-app-layout>
-    <div class="">
-        <div x-data="{ currentSlide: 0, totalSlides: {{ count($questions) }} }">
-            <div class="flex flex-col items-center justify-center bg-gray-100 min-h-">
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+            {{ __($quiz->title) }}
+        </h2>
+    </x-slot>
+    <div class="flex items-center justify-center bg-gray-100">
+        <div class="w-full" x-data="{ currentSlide: 0, totalSlides: {{ count($quiz->questions) }} }">
+            @if ($quiz->questions->count() > 0)
+            <div class="flex flex-col items-center justify-center w-full p-6 bg-gray-200 rounded-lg shadow">
                 <!-- Slider -->
                 <div class="flex items-center justify-around w-full my-4">
                     <template x-for="index in totalSlides">
@@ -14,26 +20,26 @@
                 </div>
 
                 <!-- Question Container -->
-                <div class="flex-grow w-full max-w-md p-6 bg-gray-200 rounded-lg shadow">
-                    @foreach ($questions as $key => $options)
-                    <div x-show="currentSlide === {{ $loop->index }}" class="transition-opacity duration-500" x-cloak>
-                        <h2 class="mb-4 text-2xl font-semibold">{{ $key }}</h2>
+                <div class="flex-grow px-8">
+                    @foreach ($quiz->questions as $key => $question)
+                        <div x-show="currentSlide === {{ $loop->index }}" class="transition-opacity duration-500" x-cloak>
+                            <h2 class="mb-4 text-2xl font-semibold">{{ $key + 1 }} - {{ $question->content }}</h2>
 
-                        {{-- Options --}}
-                        <div class="space-y-2">
-                            @foreach ($options as $option)
-                            <label class="flex items-center space-x-2">
-                                <input type="radio" name="option_{{ $loop->parent->index }}" value="{{ $option }}">
-                                <span>{{ $option }}</span>
-                            </label>
-                            @endforeach
+                            {{-- Options --}}
+                            <div class="space-y-2">
+                                @foreach ($question->options as $option)
+                                    <label class="flex items-center space-x-2">
+                                        <input type="radio" name="option_group_{{ $loop->parent->index }}" value="{{ $option }}">
+                                        <span>{{ $option->content }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
                     @endforeach
                 </div>
 
                 <!-- Navigation Buttons -->
-                <div class="flex justify-between w-full max-w-md mt-4">
+                <div class="flex justify-between px-8 mt-4 space-x-4">
                     <button @click="currentSlide = (currentSlide - 1 + totalSlides) % totalSlides"
                         :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === 0 }"
                         class="px-4 py-2 text-white bg-indigo-500 rounded focus:outline-none disabled:opacity-50"
@@ -44,6 +50,9 @@
                         :disabled="currentSlide === totalSlides - 1">Next</button>
                 </div>
             </div>
+            @else
+            <p class="text-gray-500">No questions found for this quiz.</p>
+            @endif
         </div>
     </div>
 </x-app-layout>

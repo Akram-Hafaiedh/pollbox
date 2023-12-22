@@ -17,7 +17,7 @@ use App\Models\Question;
 use Illuminate\View\View;
 
 
-class QuizController extends Controller
+class AdminQuizController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -119,40 +119,54 @@ class QuizController extends Controller
         }
         dd($validatedData->questions);
     }
+    // public function userQuizzes(User $user)
+    // {
+    //     $quizzes = $user->quizzes;
+    //     // dd($user, $quizzes);
+
+    //     return view('quizzes.user_quizzes', compact('quizzes', 'user'));
+    // }
 
 
+    // public function showQuiz(User $user, Quiz $quiz): View
+    // {
+    //     // $questions = [
+    //     //     "What is your favorite color?",
+    //     //     "What is your favorite movie?",
+    //     //     "If you could travel anywhere, where would you go?",
+    //     //     "What is your favorite hobby?",
+    //     //     "What is your dream job?",
+    //     //     "What is your favorite book?",
+    //     //     "What is your go-to music genre?",
+    //     //     "If you could have any superpower, what would it be?",
+    //     //     "What is your favorite season?",
+    //     //     "If you could have dinner with any historical figure, who would it be?",
+    //     // ];
 
-    public function showQuiz(): View
-    {
+
+    //     dd($quiz, $user);
+
+
         // $questions = [
-        //     "What is your favorite color?",
-        //     "What is your favorite movie?",
-        //     "If you could travel anywhere, where would you go?",
-        //     "What is your favorite hobby?",
-        //     "What is your dream job?",
-        //     "What is your favorite book?",
-        //     "What is your go-to music genre?",
-        //     "If you could have any superpower, what would it be?",
-        //     "What is your favorite season?",
-        //     "If you could have dinner with any historical figure, who would it be?",
+        //     "What is your favorite color?" => ["Red", "Blue", "Green", "Yellow","Black"],
+        //     "What is your favorite movie?" => ["Action", "Comedy", "Drama", "Sci-Fi"],
+        //     "If you could travel anywhere, where would you go?" => ["Paris", "Tokyo", "New York", "Barcelona"],
+        //     "What is your favorite hobby?" => ["Reading", "Cooking", "Gaming", "Sports"],
+        //     "What is your dream job?" => ["Doctor", "Artist", "Engineer", "Writer"],
+        //     "What is your favorite book?" => ["Fiction", "Non-Fiction", "Mystery", "Fantasy"],
+        //     "What is your go-to music genre?" => ["Pop", "Rock", "Hip Hop", "Country"],
+        //     "If you could have any superpower, what would it be?" => ["Flight", "Invisibility", "Super Strength", "Teleportation"],
+        //     "What is your favorite season?" => ["Spring", "Summer", "Fall", "Winter"],
+        //     "If you could have dinner with any historical figure, who would it be?" => ["Albert Einstein", "Leonardo da Vinci", "Marie Curie", "Nelson Mandela"],
         // ];
 
+    //     $quiz->load('questions.options');
 
-        $questions = [
-            "What is your favorite color?" => ["Red", "Blue", "Green", "Yellow","Black"],
-            "What is your favorite movie?" => ["Action", "Comedy", "Drama", "Sci-Fi"],
-            "If you could travel anywhere, where would you go?" => ["Paris", "Tokyo", "New York", "Barcelona"],
-            "What is your favorite hobby?" => ["Reading", "Cooking", "Gaming", "Sports"],
-            "What is your dream job?" => ["Doctor", "Artist", "Engineer", "Writer"],
-            "What is your favorite book?" => ["Fiction", "Non-Fiction", "Mystery", "Fantasy"],
-            "What is your go-to music genre?" => ["Pop", "Rock", "Hip Hop", "Country"],
-            "If you could have any superpower, what would it be?" => ["Flight", "Invisibility", "Super Strength", "Teleportation"],
-            "What is your favorite season?" => ["Spring", "Summer", "Fall", "Winter"],
-            "If you could have dinner with any historical figure, who would it be?" => ["Albert Einstein", "Leonardo da Vinci", "Marie Curie", "Nelson Mandela"],
-        ];
-        // dd($questions);
-        return view('quiz', compact('questions'));
-    }
+    //     dd($user,$quiz);
+
+    //     // dd($questions);
+    //     return view('quiz', compact('questions'));
+    // }
 
     public function access():View
     {

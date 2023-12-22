@@ -68,5 +68,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invitation::class, 'recipient_id');
     }
-
+    
 }

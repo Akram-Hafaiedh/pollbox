@@ -27,7 +27,7 @@ class QuizFactory extends Factory
             'has_correct_answers' => (bool) rand(0, 1),
             'category_id' => Category::factory(),
             'user_id' => User::all()->random()->id,
-            // 'visibility' => 'private',  // Override default visibility if needed
+            'visibility' => fake()->randomElement(['public', 'private', 'restricted']),  // Override default visibility if needed
             // 'randomize' => true,        // Override default randomize value if needed
         ];
     }

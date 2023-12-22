@@ -45,4 +45,8 @@ class Quiz extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function invitations() : HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
 }

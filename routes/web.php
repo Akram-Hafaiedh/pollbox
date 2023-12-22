@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\QuizController;
+use App\Http\Controllers\Admin\AdminQuizController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\UserQuizController;
 use App\Models\Question;
 use Illuminate\Support\Facades\Route;
 
@@ -52,8 +53,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 
     // Quiz related routes
-    Route::get('/admin/top-quizzes', [QuizController::class, 'topQuizzes'])->name('admin.topQuizzes');
-    Route::resource('/quizzes', QuizController::class)->names([
+    Route::get('/admin/top-quizzes', [AdminQuizController::class, 'topQuizzes'])->name('admin.topQuizzes');
+    Route::resource('/quizzes', AdminQuizController::class)->names([
         'index' => 'admin.quizzes.index',
         'create' => 'admin.quizzes.create',
         'store' => 'admin.quizzes.store',
@@ -68,5 +69,19 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 });
 
 
-Route::get('/quiz', [QuizController::class, 'showQuiz']);
-Route::get('/access', [QuizController::class, 'access']);
+Route::get('/quiz', [UserQuizController::class, 'showQuiz']);
+Route::get('/access', [UserQuizController::class, 'access']);
+
+// Route::get('/user/{user}/quizzes', [QuizController::class,'userQuizzes'])->name('user.quizzes.index');
+// Route::get('/users/{user}/quizzes/{quiz}', [QuizController::class, 'show'])->name('show.quiz');
+
+Route::prefix('user')->group(function () {
+    Route::resource('quizzes', UserQuizController::class)
+    ->names([
+        'index' => 'user.quizzes.index',
+        'show' => 'user.quizzes.show',
+    ])
+    ->only(['index', 'show']);
+    Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitResponse'])->name('user.quizzes.submit');
+    Route::get('/quizzes/acceess/{quiz}', [UserQuizController::class,'access'])->name('user.quizzes.acceess');
+});

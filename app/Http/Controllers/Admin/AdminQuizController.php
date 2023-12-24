@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CodeHelper;
+use App\Models\Category;
 use App\Models\Option;
 use App\Models\Question;
 use Illuminate\View\View;
@@ -42,7 +43,8 @@ class AdminQuizController extends Controller
     public function create(): View
     {
         $users = User::where('role', 'user')->get();
-        return view('admin.quizzes.create', compact('users'));
+        $categories = Category::all();
+        return view('admin.quizzes.create', compact('users', 'categories'));
     }
 
     /**
@@ -54,21 +56,25 @@ class AdminQuizController extends Controller
         $validatedData = $request->validated();
 
         // dd($validatedData);
-        $questions = $validatedData['questions'];
-        dd($questions);
+        // $questions = $validatedData['questions'];
+        // $users = $validatedData['selected_users'];
+        // dd($questions, $users);
         // foreach($questions as $questions)
 
         if (auth()->check()) {
+            // Store the quiz
             $quiz = Quiz::create([
                 'user_id' => auth()->id(),
                 'title' => $validatedData['title'],
                 'time_limit' => $validatedData['time_limit'],
                 'score' => $validatedData['score'],
                 'description' => $validatedData['description'],
-                'active' => $validatedData['active'],
-                'visibility' => $validatedData['visibility'],
-                'has_correct_answers' => $validatedData['has_correct_answers'],
+                'active' => isset($validatedData['active']) ? $validatedData['active'] : false,
+                'visibility' => isset($validatedData['visibility']) ? $validatedData['visibility'] : false,
+                'has_correct_answers' => isset($validatedData['has_correct_answers']) ? $validatedData['has_correct_answers'] : false,
             ]);
+
+            // Store questions
 
             foreach ($validatedData['questions']  as $questionData) {
                 // $quiz->users()->attach($validatedData['users']);
@@ -80,6 +86,8 @@ class AdminQuizController extends Controller
                     'order' => $questionData['order'],
                     'required' => $questionData['required'],
                 ]);
+
+                // Store options
                 foreach ($questionData['options'] as $optionData) {
                     // Create the option
                     Option::create([
@@ -91,13 +99,14 @@ class AdminQuizController extends Controller
                 }
             }
 
-            // Generate a 4-digit access code
-            $accessCode = generateAccessCode();
-            // dd($accessCode);
 
-            if ($validatedData['visibility'] !== 'public') {
+            // Create an invitation for the restricted uesrs
+            if ($validatedData['visibility'] === 'restricted') {
 
-                foreach ($request->input('users', []) as $userId) {
+                $accessCode = CodeHelper::generateAccessCode();
+                // $accessCode = generateAccessCode();
+
+                foreach ($request->input('selected_users', []) as $userId) {
                     Invitation::create([
                         'quiz_id' => $quiz->id,
                         'sender_id' => auth()->id(),
@@ -117,7 +126,6 @@ class AdminQuizController extends Controller
             return redirect()->route('login')
                 ->with('error', __('You must be logged in to create a quizz'));
         }
-        dd($validatedData->questions);
     }
     // public function userQuizzes(User $user)
     // {
@@ -130,35 +138,35 @@ class AdminQuizController extends Controller
 
     // public function showQuiz(User $user, Quiz $quiz): View
     // {
-    //     // $questions = [
-    //     //     "What is your favorite color?",
-    //     //     "What is your favorite movie?",
-    //     //     "If you could travel anywhere, where would you go?",
-    //     //     "What is your favorite hobby?",
-    //     //     "What is your dream job?",
-    //     //     "What is your favorite book?",
-    //     //     "What is your go-to music genre?",
-    //     //     "If you could have any superpower, what would it be?",
-    //     //     "What is your favorite season?",
-    //     //     "If you could have dinner with any historical figure, who would it be?",
-    //     // ];
+    // $questions = [
+    //     "What is your favorite color?",
+    //     "What is your favorite movie?",
+    //     "If you could travel anywhere, where would you go?",
+    //     "What is your favorite hobby?",
+    //     "What is your dream job?",
+    //     "What is your favorite book?",
+    //     "What is your go-to music genre?",
+    //     "If you could have any superpower, what would it be?",
+    //     "What is your favorite season?",
+    //     "If you could have dinner with any historical figure, who would it be?",
+    // ];
 
 
     //     dd($quiz, $user);
 
 
-        // $questions = [
-        //     "What is your favorite color?" => ["Red", "Blue", "Green", "Yellow","Black"],
-        //     "What is your favorite movie?" => ["Action", "Comedy", "Drama", "Sci-Fi"],
-        //     "If you could travel anywhere, where would you go?" => ["Paris", "Tokyo", "New York", "Barcelona"],
-        //     "What is your favorite hobby?" => ["Reading", "Cooking", "Gaming", "Sports"],
-        //     "What is your dream job?" => ["Doctor", "Artist", "Engineer", "Writer"],
-        //     "What is your favorite book?" => ["Fiction", "Non-Fiction", "Mystery", "Fantasy"],
-        //     "What is your go-to music genre?" => ["Pop", "Rock", "Hip Hop", "Country"],
-        //     "If you could have any superpower, what would it be?" => ["Flight", "Invisibility", "Super Strength", "Teleportation"],
-        //     "What is your favorite season?" => ["Spring", "Summer", "Fall", "Winter"],
-        //     "If you could have dinner with any historical figure, who would it be?" => ["Albert Einstein", "Leonardo da Vinci", "Marie Curie", "Nelson Mandela"],
-        // ];
+    // $questions = [
+    //     "What is your favorite color?" => ["Red", "Blue", "Green", "Yellow","Black"],
+    //     "What is your favorite movie?" => ["Action", "Comedy", "Drama", "Sci-Fi"],
+    //     "If you could travel anywhere, where would you go?" => ["Paris", "Tokyo", "New York", "Barcelona"],
+    //     "What is your favorite hobby?" => ["Reading", "Cooking", "Gaming", "Sports"],
+    //     "What is your dream job?" => ["Doctor", "Artist", "Engineer", "Writer"],
+    //     "What is your favorite book?" => ["Fiction", "Non-Fiction", "Mystery", "Fantasy"],
+    //     "What is your go-to music genre?" => ["Pop", "Rock", "Hip Hop", "Country"],
+    //     "If you could have any superpower, what would it be?" => ["Flight", "Invisibility", "Super Strength", "Teleportation"],
+    //     "What is your favorite season?" => ["Spring", "Summer", "Fall", "Winter"],
+    //     "If you could have dinner with any historical figure, who would it be?" => ["Albert Einstein", "Leonardo da Vinci", "Marie Curie", "Nelson Mandela"],
+    // ];
 
     //     $quiz->load('questions.options');
 
@@ -168,7 +176,7 @@ class AdminQuizController extends Controller
     //     return view('quiz', compact('questions'));
     // }
 
-    public function access():View
+    public function access(): View
     {
         return view('access');
     }
@@ -179,8 +187,12 @@ class AdminQuizController extends Controller
     public function show(Quiz $quiz): View
     {
 
-        // dd($quiz->questions);
-        $users = User::all();
+        $quiz->load('selectedUsers');
+        $users = $quiz->selectedUsers;
+
+
+        // dd($quiz->selectedUsers->first()->pivot->code);
+
 
         return view('admin.quizzes.show', compact('quiz', 'users'));
     }
@@ -204,9 +216,13 @@ class AdminQuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quiz $quiz)
+    public function destroy(Quiz $quiz): RedirectResponse
     {
-        //
+
+        $quiz->delete();
+
+        return redirect()->route('admin.quizzes.index')
+            ->with('success', 'Quiz deleted successfully!');
     }
 
     public function topQuizzes(): View

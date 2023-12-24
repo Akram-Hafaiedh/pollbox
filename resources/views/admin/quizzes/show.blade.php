@@ -34,6 +34,10 @@
                         <p class="text-sm text-gray-500">Created at: {{ $quiz->created_at->format('Y-m-d H:i:s') }}</p>
                         <p class="text-sm text-gray-700">Time Limit: {{ $quiz->time_limit }} minutes</p>
                         <p class="text-sm text-gray-700">Score: {{ $quiz->score }}</p>
+
+                        @isset( $quiz->selectedUsers->first()->pivot->code)
+                        <p class="text-sm text-gray-700">Code : {{ $quiz->selectedUsers->first()->pivot->code }}</p>
+                        @endisset
                         <p class="{{ $quiz->active ? 'text-green-500 font-bold' : 'text-red-500' }}">
                             {{ $quiz->active ? 'Active' : 'Inactive' }}
                         </p>
@@ -69,7 +73,7 @@
                     </div>
 
                     <!--Users related to the quiz-->
-                    <div class="w-64">
+                    <div class="w-96">
                         <div
                             class="flex items-center justify-between px-6 py-5 pb-1 font-semibold border-b border-gray-100">
                             <span>Clients</span>

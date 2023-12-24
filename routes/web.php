@@ -69,7 +69,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 });
 
 
-Route::get('/quiz', [UserQuizController::class, 'showQuiz']);
+Route::get('/test', function () {
+    return view('quizzes.login');
+});
 Route::get('/access', [UserQuizController::class, 'access']);
 
 // Route::get('/user/{user}/quizzes', [QuizController::class,'userQuizzes'])->name('user.quizzes.index');
@@ -77,11 +79,11 @@ Route::get('/access', [UserQuizController::class, 'access']);
 
 Route::prefix('user')->group(function () {
     Route::resource('quizzes', UserQuizController::class)
-    ->names([
-        'index' => 'user.quizzes.index',
-        'show' => 'user.quizzes.show',
-    ])
-    ->only(['index', 'show']);
+        ->names([
+            'index' => 'user.quizzes.index',
+            'show' => 'user.quizzes.show',
+        ])
+        ->only(['index', 'show']);
     Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitResponse'])->name('user.quizzes.submit');
-    Route::get('/quizzes/acceess/{quiz}', [UserQuizController::class,'access'])->name('user.quizzes.acceess');
+    Route::get('/quizzes/acceess/{quiz}', [UserQuizController::class, 'access'])->name('user.quizzes.acceess');
 });

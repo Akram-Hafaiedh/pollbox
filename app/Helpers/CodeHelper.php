@@ -1,7 +1,13 @@
 <?php
 
+namespace App\Helpers;
 
-function generateAccessCode()
+
+class CodeHelper
 {
-    return str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+
+    public static function generateAccessCode()
+    {
+        return str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+    }
 }

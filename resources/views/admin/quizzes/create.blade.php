@@ -5,8 +5,8 @@
         @auth
         {{-- TODO make the page title admin > users > create --}}
         <x-dashboard-main-content :page-title="__('Admin Quizz Creation')">
-            <div class="flex items-center justify-between bg-gray-200" x-data="{
-                    questions: [{ content: '', options: [''] }],
+            <div class="flex flex-col items-center justify-between bg-gray-200" x-data="{
+                    questions: [{ content: '', options: ['',''] }],
                     hasCorrectAnswers: true,
                     removeOption: function(question, optionIndex) {
                         console.log('Removing option', optionIndex);
@@ -14,8 +14,22 @@
                     }
                 }" x-init="console.log($refs)">
 
-                {{-- x-data="{questions:[{content:'', options:['']}] , hasCorrectAnswers: true }"
+                {{-- x-data="{questions:[{content:'', options:['','']}] , hasCorrectAnswers: true }"
                 x-init="console.log($refs)"> --}}
+
+
+
+                @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Validation errors:</strong>
+                    <ul class="mt-2 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
                 <form method="post" action="{{ route('admin.quizzes.store') }}" class="w-full p-6">
                     @csrf
                     <!-- Title-->
@@ -55,7 +69,7 @@
                                 class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="public">Public</option>
                                 <option value="private">Private</option>
-                                <option value="private">Restricted</option>
+                                <option value="restricted">Restricted</option>
                             </select>
 
                             <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
@@ -68,7 +82,7 @@
                         <!-- Active -->
                         <div class="w-full ml-4 md:w-1/4">
                             <div class="mt-2">
-                                <input type="checkbox" id="active" name="active"
+                                <input type="checkbox" id="active" name="active" value="1"
                                     class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500">
                                 <label for="active" class="ml-2 text-gray-700">Active</label>
                             </div>
@@ -81,7 +95,7 @@
                         <div class="w-full ml-4 md:w-1/4">
 
                             <div class="mt-2">
-                                <input x-model="hasCorrectAnswers" type="checkbox" id="has_correct_answers"
+                                <input x-model="hasCorrectAnswers" type="checkbox" id="has_correct_answers" value="1"
                                     name="has_correct_answers"
                                     class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500">
                                 <!-- You can style the checkbox according to your design preferences -->
@@ -94,7 +108,7 @@
                         <!-- Randomize -->
                         <div class="w-full ml-4 md:w-1/4">
                             <div class="mt-2">
-                                <input type="checkbox" id="randomize" name="randomize"
+                                <input type="checkbox" id="randomize" name="randomize" value="1"
                                     class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500">
                                 <!-- You can style the checkbox according to your design preferences -->
                                 <label for="randomize" class="ml-2 text-gray-700">Random Order</label>
@@ -107,18 +121,29 @@
                         <!--Members-->
                         <div class="w-full ml-4 md:w-1/4">
 
-                            <label :for="'users'" class="block text-sm font-medium text-gray-600">
-                                {{ __('Select Users') }}
-                            </label>
-                            <select name="users[]" id="users" multiple>
-                                @foreach ($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach
-                            </select>
+                            <div x-data="{ open: false }" class="mb-4">
+                                <label :for="'users'" class="block text-sm font-medium text-gray-600 mb-2">
+                                    {{ __('Select Users to Invite:') }}
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="selected_users" name="selected_users" x-model="selectedUsers"
+                                        x-on:click="open = true"
+                                        class="appearance-none block w-full bg-white border border-gray-300 rounded-md px-3 py-2 leading-5 focus:outline-none focus:ring focus:border-blue-300 sm:text-sm"
+                                        placeholder="Select users..." multiple readonly>
+                                    <div x-show="open" x-on:click.away="open = false"
+                                        class="absolute z-50 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md overflow-x-scroll h-60">
+                                        @foreach($users as $user)
+                                        <label class="block px-4 py-2">
+                                            <input type="checkbox" name="selected_users[]" value="{{ $user->id }}"
+                                                x-model="selectedUsers"> {{ $user->name }}
+                                        </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <x-input-error :messages="$errors->get('users')" class="mt-2" />
+                            </div>
 
-                            <x-input-error :messages="$errors->get('users')" class="mt-2" />
                         </div>
-
 
                     </div>
                     <!-- Description -->
@@ -175,7 +200,7 @@
                                     <input x-model="question.order" :name="'questions[' + index + '][order]'"
                                         :id="'order_' + index"
                                         class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 "
-                                        type="number" min="0" required />
+                                        type="number" min="0" />
                                 </div>
                                 <!-- Required -->
                                 <div class="w-1/4 mt-2 md:mt-0">
@@ -264,14 +289,14 @@
                                         <!-- Checkbox for correct answer -->
                                         <template x-if="hasCorrectAnswers">
                                             <div class="" x-data="{ isCorrect: false }">
-                                                <input type="checkbox"
+                                                <input type="checkbox" value="1"
                                                     :id="'option_' + index + '_' + optionIndex + '_correct'" :name="'questions[' + index + '][options][' + optionIndex +
                                                             '][is_correct]'" x-model="isCorrect"
                                                     class="mx-3 text-indigo-600 border-gray-300 rounded w-7 h-7 form-checkbox focus:ring-indigo-500">
                                                 <!-- Add a hidden input to store the actual value in the form submission -->
-                                                <input type="hidden" :name="'questions[' + index + '][options][' + optionIndex +
+                                                {{-- <input type="hidden" :name="'questions[' + index + '][options][' + optionIndex +
                                                             '][is_correct]'"
-                                                    x-bind:value="isCorrect ? 'true' : 'false'">
+                                                    x-bind:value="isCorrect ? 'true' : 'false'"> --}}
                                             </div>
                                         </template>
                                         <template x-else>
@@ -289,7 +314,7 @@
                         </div>
                     </template>
                     <!-- Button for adding question -->
-                    <button type="button" @click="questions.push({content: '', options: ['']})"
+                    <button type="button" @click="questions.push({content: '', options: ['','']})"
                         class="px-4 py-2 mt-2 text-white bg-blue-500 rounded-md">
                         {{ __('Add Question') }}
                     </button>

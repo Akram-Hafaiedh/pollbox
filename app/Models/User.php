@@ -59,14 +59,20 @@ class User extends Authenticatable
         return $this->hasMany(Quiz::class);
     }
 
+
+    // public function invitations(): HasMany
+    // {
+    //     return $this->hasMany(Invitation::class, 'recipient_id')
+    //         ->orWhere('sender_id', $this->id);
+    // }
+
     public function receivedInvitation(): hasMany
     {
         return $this->hasMany(Invitation::class, 'sender_id');
     }
 
-    public function sentInvitation() : HasMany
+    public function sentInvitation(): HasMany
     {
         return $this->hasMany(Invitation::class, 'recipient_id');
     }
-    
 }

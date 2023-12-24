@@ -13,19 +13,21 @@ class UserQuizController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : View
+    public function index(): View
     {
         // Logic for listing available quizzes for the user
 
         $user = auth()->user();
         $quizzes = $user->quizzes;
+        $invitations = $user->invitations;
+        dd($invitations);
         return view('user.quizzes.index', compact('quizzes', 'user'));
     }
 
-    public function access(Quiz $quiz) : View
+    public function access(Quiz $quiz): View
     {
 
-        if($quiz->visibility === 'private'){
+        if ($quiz->visibility === 'private') {
 
             $invitation = $quiz->invitation;
             dd($invitation);
@@ -39,14 +41,14 @@ class UserQuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quiz $quiz) : View
+    public function show(Quiz $quiz): View
     {
         // Logic for showing details of a specific quiz for the user
         $quiz->load('questions.options');
         return view('user.quizzes.show', compact('quiz'));
     }
 
-    public function submitResponse($quizId) : RedirectResponse
+    public function submitResponse($quizId): RedirectResponse
     {
         // Logic for submitting quiz responses
 
@@ -60,6 +62,4 @@ class UserQuizController extends Controller
 
         return redirect()->route('user.quizzes.index')->with('success', 'Quiz responses submitted successfully!');
     }
-
-
 }

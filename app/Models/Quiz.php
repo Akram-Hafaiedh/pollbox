@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quiz extends Model
@@ -41,12 +42,19 @@ class Quiz extends Model
         return $this->hasMany(Question::class);
     }
 
-    public function user(): BelongsTo
+    public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    public function invitations() : HasMany
+
+    public function selectedUsers(): BelongsToMany
     {
-        return $this->hasMany(Invitation::class);
+        return $this->belongsToMany(User::class, 'invitations', 'quiz_id', 'recipient_id')
+            ->withPivot('code');
+        // ->wherePivot('pending', false); // Filter out pending invitations
     }
+    // public function invitations() : HasMany
+    // {
+    //     return $this->hasMany(Invitation::class);
+    // }
 }

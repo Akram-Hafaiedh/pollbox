@@ -17,7 +17,7 @@ class QuizSeeder extends Seeder
     public function run(): void
     {
         Quiz::factory(30)->create()->each(function ($quiz) {
-            $questionsNumber = rand(1, 5);
+            $questionsNumber = rand(5, 8);
 
             $quiz->questions()->saveMany(
                 Question::factory($questionsNumber)->create(['quiz_id' => $quiz->id])->each(function ($question) use ($quiz) {

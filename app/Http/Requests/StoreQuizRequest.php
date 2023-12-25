@@ -34,7 +34,7 @@ class StoreQuizRequest extends FormRequest
             'title' => 'required|string|max:255',
             'time_limit' => 'required|numeric',
             'score' => 'required|numeric',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'visibility' => 'required|in:public,private,restricted', // added
             'randomize' => 'sometimes|boolean', // added
             'has_correct_answers' => 'sometimes|boolean', // added

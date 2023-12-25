@@ -50,7 +50,7 @@ class Quiz extends Model
     public function selectedUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'invitations', 'quiz_id', 'recipient_id')
-            ->withPivot('code');
+            ->withPivot('code', 'pending');
         // ->wherePivot('pending', false); // Filter out pending invitations
     }
     // public function invitations() : HasMany

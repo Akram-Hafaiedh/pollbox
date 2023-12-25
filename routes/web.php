@@ -53,7 +53,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 
     // Quiz related routes
-    Route::get('/admin/top-quizzes', [AdminQuizController::class, 'topQuizzes'])->name('admin.topQuizzes');
+    Route::get('/top-quizzes', [AdminQuizController::class, 'topQuizzes'])->name('admin.topQuizzes');
+    Route::delete('/quizzes/destroyAll', [AdminQuizController::class, 'destroyAll'])->name('admin.quizzes.destroyAll');
     Route::resource('/quizzes', AdminQuizController::class)->names([
         'index' => 'admin.quizzes.index',
         'create' => 'admin.quizzes.create',
@@ -63,7 +64,6 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'update' => 'admin.quizzes.update',
         'destroy' => 'admin.quizzes.destroy',
     ]);
-
 
     Route::get('/admin/surveys', [SurveyController::class, 'index'])->name('admin.surveys.index');
 });

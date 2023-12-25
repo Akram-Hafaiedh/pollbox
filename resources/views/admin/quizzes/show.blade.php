@@ -43,7 +43,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="flex flex-row space-x-2 mt-8 my-2 w-full">
+                <div class="flex flex-col lg:flex-row space-x-2 mt-8 my-2 w-full">
                     <!-- Quiz questions -->
                     <div class="w-full">
                         <div
@@ -73,22 +73,35 @@
                     </div>
 
                     <!--Users related to the quiz-->
-                    <div class="w-96">
+                    <div class="w-full lg:w-1/3 min-w-64">
                         <div
                             class="flex items-center justify-between px-6 py-5 pb-1 font-semibold border-b border-gray-100">
                             <span>Clients</span>
                         </div>
 
-                        <div class="overflow-y-auto max-h-[24rem]  bg-white rounded shadow-md my-2">
+                        <div class="overflow-y-auto max-h-[24rem] lg:h-full bg-white rounded shadow-md my-2">
                             <ul class="p-6 space-y-2">
 
                                 @foreach ( $users as $user)
                                 <li class="flex items-center hover:bg-blue-200 rounded p-1">
-                                    <div
-                                        class="h-10 w-10 mr-3 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm">
-                                        {{ substr($user->name, 0, 2) }}
+                                    <div class="">
+                                        <div
+                                            class="h-10 w-10 mr-3 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold text-sm">
+                                            {{ substr($user->name, 0, 2) }}
+                                        </div>
                                     </div>
                                     <span class="text-gray-600">{{ $user->name }}</span>
+                                    @isset($user->pivot->pending)
+                                    <div class="ml-auto ">
+                                        @if($user->pivot->pending)
+                                        <span class="bg-red-500 text-white py-1 px-2 rounded-full"> {{ __('Pending') }}
+                                        </span>
+                                        @else
+                                        <span class="bg-green-700 text-white py-1 px-2 rounded-full"> {{ __('Accepted')
+                                            }} </span>
+                                        @endif
+                                    </div>
+                                    @endisset
                                 </li>
                                 @endforeach
                             </ul>

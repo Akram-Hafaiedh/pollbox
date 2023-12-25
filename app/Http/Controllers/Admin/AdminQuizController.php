@@ -25,8 +25,10 @@ class AdminQuizController extends Controller
      */
     public function index(Request $request): View
     {
+
         $search = $request->get('search');
         $quizzes = Quiz::query()
+            ->where('user_id', Auth::id()) // Filter by the ID of the currently logged in admin
             ->where('has_correct_answers', true)
             ->where(function ($query) use ($search) {
                 $query->where('title', 'LIKE', "%{$search}%")
@@ -121,7 +123,7 @@ class AdminQuizController extends Controller
 
 
             return redirect()->route('admin.quizzes.index')
-                ->with('success', 'Quiz created successfully!');
+                ->with('success', __('Quiz created successfully!'));
         } else {
             return redirect()->route('login')
                 ->with('error', __('You must be logged in to create a quizz'));
@@ -172,7 +174,7 @@ class AdminQuizController extends Controller
 
     //     dd($user,$quiz);
 
-    //     // dd($questions);
+    //     dd($questions);
     //     return view('quiz', compact('questions'));
     // }
 
@@ -218,11 +220,23 @@ class AdminQuizController extends Controller
      */
     public function destroy(Quiz $quiz): RedirectResponse
     {
+        dd('deleteOne');
+        if (auth()->id() == $quiz->user_id) {
+            $quiz->delete();
 
-        $quiz->delete();
+            return redirect()->route('admin.quizzes.index')
+                ->with('success', __('Quiz deleted successfully!'));
+        }
+        abort(403, 'Unauthorized action.');
+    }
+
+    public function destroyAll(): RedirectResponse
+
+    {
+        dd('deleteAll');
 
         return redirect()->route('admin.quizzes.index')
-            ->with('success', 'Quiz deleted successfully!');
+            ->with('success', __('All quizzes deleted successfully'));
     }
 
     public function topQuizzes(): View

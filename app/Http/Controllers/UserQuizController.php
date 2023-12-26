@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\QuizResource;
+use App\Models\Option;
 use App\Models\Quiz;
-use Illuminate\Http\JsonResponse;
+use App\Models\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Http\Resources\Json\ResourceResponse;
 use Illuminate\View\View;
 
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\ResourceResponse;
 class UserQuizController extends Controller
 {
     /**
@@ -58,45 +60,69 @@ class UserQuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Quiz $quiz): View | JsonResource
+    public function show(Request $request, Quiz $quiz): View | JsonResource | RedirectResponse
     {
         $quiz->load('questions.options');
         if ($request->is('api/*')) {
 
             return new QuizResource($quiz);
-        } else {
+        } else {    // Check if the user has already submitted responses for this quiz
+            $hasSubmittedResponses = auth()->user()->quizResponses()->where('quiz_id', $quiz->id)->exists();
+
+            // If the user has submitted responses, redirect them away
+            if ($hasSubmittedResponses) {
+                return redirect()->route('user.quizzes.index')->with('error', 'You have already responded to this quiz.');
+            }
+
 
             return view('user.quizzes.show', compact('quiz'));
         }
     }
 
-    public function submitQuiz($quizId): RedirectResponse
+    public function submitQuiz(Quiz $quiz, Request $request): RedirectResponse
     {
-        // Logic for submitting quiz responses
 
-        // Validate and store user responses
-        $validatedData = request()->validate([
-            'responses.*.question_id' => 'required|exists:questions,id',
-            'responses.*.option_id' => 'required|exists:options,id',
-        ]);
-        dd($validatedData);
+        $existingResponses = auth()->user()->quizResponses()->where('quiz_id', $quiz->id)->exists();
+        if ($existingResponses) {
+            return redirect()->back()->with('error', 'You have already submitted responses for this quiz.');
+        }
 
+        // validation rules
+        $rules = [];
+        foreach ($quiz->questions as $question) {
+            $rules["responses.{$question->id}"] = 'required|exists:options,id';
+        }
+        $request->validate($rules);
+        // validation Ok
+        // Store response
+        $userResponses = $request->input('responses');
+        // dd($userResponses);
 
-        // Calculate the score
+        foreach ($userResponses as $questionId => $optionId) {
+            // $selectedOption = Option::findOrFail($optionId);
+            Response::create([
+                'user_id' => auth()->id(),
+                'quiz_id' => $quiz->id,
+                'question_id' => $questionId,
+                'user_response' => $optionId,
+                // 'user_response' => $selectedOption->content,
+            ]);
+        }
 
+        // TODO: Calculate the score
 
-        // auth()->user()->quizResponses()->createMany($validatedData['responses']);
-        // return redirect()->route('user.quizzes.insdex')->with('success', 'Quiz responses submitted successfully!');
 
         // Redirect to the results page
-        return redirect()->route('quiz.results')
+        return redirect()->route('user.quizzes.results',$quiz)
         ->with('success', 'Quiz responses submitted successfully!');;
     }
     public function showResults(): View
     {
 
+        dd('Results');
+
         // Fetch user's responses and correct answers
         // Display results
-        return view('quiz.results', compact('userResponses', 'score'));
+        return view('user.quizzes.results', compact('userResponses', 'score'));
     }
 }

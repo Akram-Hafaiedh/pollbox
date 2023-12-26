@@ -4,6 +4,13 @@
             {{ __($quiz->title) }}
         </h2>
     </x-slot>
+    @if(session('error'))
+        <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
     <div class="flex items-center justify-center bg-gray-100">
         <div class="w-full" x-data="{ currentSlide: 0, totalSlides: {{ count($quiz->questions) }} }">
             @if ($quiz->questions->count() > 0)
@@ -15,7 +22,7 @@
                     <!-- Slider -->
                     <div class="flex items-center justify-around w-full my-4">
                         <template x-for="index in totalSlides">
-                            <button @click="currentSlide = index - 1"
+                            <button @click.prevent="currentSlide = index - 1"
                                 :class="{ 'bg-blue-500 text-white': currentSlide === index - 1, 'bg-gray-300': currentSlide !== index - 1 }"
                                 class="flex items-center justify-center w-10 h-10 mx-1 rounded-full focus:outline-none">
                                 <span class="" x-text="index"></span>
@@ -33,7 +40,10 @@
                                 <div class="space-y-2">
                                     @foreach ($question->options as $option)
                                         <label class="flex items-center space-x-2">
-                                            <input type="radio" name="option_group_{{ $loop->parent->index }}" value="{{ $option }}">
+                                            <input type="radio"
+                                                name="responses[{{ $question->id }}]" value="{{ $option->id }}"
+                                                {{-- name="option_group_{{ $loop->parent->index }}" value="{{ $option }}" --}}
+                                            >
                                             <span>{{ $option->content }}</span>
                                         </label>
                                     @endforeach
@@ -44,11 +54,11 @@
 
                     <!-- Navigation Buttons -->
                     <div class="flex justify-end w-full px-8 mt-4 space-x-4">
-                        <button type="button" x-on:click.prevent="currentSlide = (currentSlide - 1 + totalSlides) % totalSlides"
+                        <button type="button" @click.prevent="currentSlide = (currentSlide - 1 + totalSlides) % totalSlides"
                             :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === 0 }"
                             class="px-4 py-2 text-white bg-indigo-700 rounded focus:outline-none disabled:opacity-50"
                             :disabled="currentSlide === 0">Previous</button>
-                        <button type="button" x-on:click.prevent="currentSlide = (currentSlide + 1) % totalSlides"
+                        <button type="button" @click.prevent="currentSlide = (currentSlide + 1) % totalSlides"
                             :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === totalSlides - 1 }"
                             class="px-4 py-2 text-white bg-indigo-700 rounded focus:outline-none disabled:opacity-50"
                             :disabled="currentSlide === totalSlides - 1">Next</button>

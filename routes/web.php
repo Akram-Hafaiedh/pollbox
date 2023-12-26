@@ -81,5 +81,6 @@ Route::prefix('user')->group(function () {
         ])
         ->only(['index', 'show']);
     Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
+    Route::get('/quizzes/{quiz}/result', [UserQuizController::class,'showResults'])->name('user.quizzes.results');
     // Route::get('/quizzes/acceess/{quiz}', [UserQuizController::class, 'access'])->name('user.quizzes.acceess');
 });

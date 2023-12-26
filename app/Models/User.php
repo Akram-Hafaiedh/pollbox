@@ -68,6 +68,11 @@ class User extends Authenticatable
     //         ->orWhere('sender_id', $this->id);
     // }
 
+    public function quizResponses(): HasMany
+    {
+        return $this->hasMany(Response::class);
+    }
+
     public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');

@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\QuizResource;
 use App\Models\Quiz;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\ResourceResponse;
 use Illuminate\View\View;
 
 class UserQuizController extends Controller
@@ -47,11 +52,16 @@ class UserQuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quiz $quiz): View
+    public function show(Request $request, Quiz $quiz): View | JsonResource
     {
-        // Logic for showing details of a specific quiz for the user
         $quiz->load('questions.options');
-        return view('user.quizzes.show', compact('quiz'));
+        if ($request->is('api/*')) {
+
+            return new QuizResource($quiz);
+        } else {
+
+            return view('user.quizzes.show', compact('quiz'));
+        }
     }
 
     public function submitResponse($quizId): RedirectResponse

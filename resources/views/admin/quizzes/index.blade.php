@@ -1,7 +1,7 @@
 <x-app-layout>
 
     <div class="flex flex-col md:flex-row"
-        x-data="{ isOpenDestroyAll: false, isOpenDeleteSingle: false , quizToDelete:null}">
+        x-data="{ isOpenDestroyAll: false, isOpenDeleteSingle: false , quizIdToDelete:null}">
 
         @auth
         <x-dashboard-main-content :page-title="__('Admin Quizzes')">

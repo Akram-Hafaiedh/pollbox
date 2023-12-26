@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(Request $request) : JsonResponse
+    public function login(Request $request): JsonResponse
     {
         $user = User::where('email', $request->email)->first();
 
@@ -19,8 +19,8 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        $token = $user->createToken($request->device_name)->plainTextToken;
+        $token = $user->createToken('user_access')->plainTextToken;
 
-        return response()->json(['token' => $token, 'user'=>$user], 200);
+        return response()->json(['token' => $token, 'user' => $user], 200);
     }
 }

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -29,7 +30,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'mobile_number'
+        'mobile_number',
+        'admin_id',
     ];
 
     /**
@@ -66,13 +68,18 @@ class User extends Authenticatable
     //         ->orWhere('sender_id', $this->id);
     // }
 
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
     public function receivedInvitation(): hasMany
     {
-        return $this->hasMany(Invitation::class, 'sender_id');
+        return $this->hasMany(Invitation::class, 'recipient_id');
     }
 
     public function sentInvitation(): HasMany
     {
-        return $this->hasMany(Invitation::class, 'recipient_id');
+        return $this->hasMany(Invitation::class, 'sender_id');
     }
 }

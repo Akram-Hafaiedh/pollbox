@@ -29,7 +29,7 @@ class AdminQuizController extends Controller
         $search = $request->get('search');
         $quizzes = Quiz::query()
             ->where('user_id', Auth::id()) // Filter by the ID of the currently logged in admin
-            ->where('has_correct_answers', true)
+            // ->where('has_correct_answers', true)
             ->where(function ($query) use ($search) {
                 $query->where('title', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%");
@@ -85,7 +85,7 @@ class AdminQuizController extends Controller
                     'content' => $questionData['content'],
                     'type' => $questionData['type'],
                     'difficulty' => $questionData['difficulty'],
-                    'order' => $questionData['order'],
+                    'order' => isset($questionData['order']) ? $questionData['order'] : 0,
                     'required' => $questionData['required'],
                 ]);
 
@@ -218,8 +218,9 @@ class AdminQuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quiz $quiz): RedirectResponse
+    public function destroy($id): RedirectResponse
     {
+        $quiz = Quiz::findOrFail($id);
         dd('deleteOne');
         if (auth()->id() == $quiz->user_id) {
             $quiz->delete();

@@ -1,13 +1,29 @@
 <x-app-layout>
 
-    <div class="container mx-auto my-8" x-data="{ showModal: false}">
-        <h1 class="mb-4 text-3xl font-semibold">{{ $user->name }}'s Quizzes</h1>
+    <div class="container mx-auto my-8" x-data="{ visibilityFilter: 'all', quizzes: @json($quizzes) }">
+        <div class="flex justify-between">
+            <h1 class="mb-4 text-3xl font-semibold">{{ $user->name }}'s Quizzes</h1>
+
+        </div>
+
+
 
         @if ($quizzes->count() > 0)
         <div class="grid grid-cols-2 gap-4 pt-4 bg-white border-t border-gray-200 shadow-sm">
+            <template x-for="quiz in quizzes" :key="quiz.id">
+
+                <!-- Quiz Card -->
+                <a :href="'{{ route('user.quizzes.acceess', '') }}/' + quiz.id" class="relative z-10 p-6 transition-transform transform bg-gray-200 border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105">
+                    <h2 class="mb-2 text-xl font-bold" x-text="quiz.title"></h2>
+                    <p class="mb-4" x-text="quiz.description"></p>
+                </a>
+
+            </template>
+
+
             @foreach ($quizzes as $quiz)
-            <!--Quiz Card-->
-            {{-- <div @click.stop="showModal = true" class="relative p-6 bg-gray-200 border-2 border-transparent rounded-lg cursor-pointer hover:border-gray-800"> --}}
+
+            <!-- <div @click.stop="showModal = true" class="relative p-6 bg-gray-200 border-2 border-transparent rounded-lg cursor-pointer hover:border-gray-800"> -->
             <a href="{{ route('user.quizzes.acceess', $quiz) }}" class="relative z-10 p-6 transition-transform transform bg-gray-200 border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105">
                 <h2 class="mb-2 text-xl font-bold">{{ $quiz->title }}
                     @if( $quiz->visibility !== 'public')
@@ -18,8 +34,11 @@
                 <div class="w-full h-2 mb-4 bg-gray-700 rounded">
                     <div class="h-2 bg-green-500 rounded" style="width:80%;"></div>
                 </div>
-                <p class="mb-4">80% complete</p>
+
+                <!-- <p class="mb-4">80% complete</p> -->
+                @if($quiz->visibility ==="private")
                 <div class="flex items-center">
+
                     <div class="w-10 h-10 mr-3 overflow-hidden bg-gray-100 rounded-full">
                         <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Norman Walters profile picture">
                     </div>
@@ -35,6 +54,7 @@
 
                     <button class="w-10 h-10 bg-white rounded-full">+</button>
                 </div>
+                @endif
                 <div class="absolute top-0 right-0 p-2">
                     <button class="text-gray-500 hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">

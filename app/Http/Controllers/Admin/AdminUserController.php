@@ -9,6 +9,7 @@ use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -19,6 +20,8 @@ class AdminUserController extends Controller
      */
     public function index(Request $request): View
     {
+
+
         $search = $request->get('search');
         $users = User::query()
             ->where('name', 'LIKE', "%{$search}%")
@@ -44,12 +47,16 @@ class AdminUserController extends Controller
         $validatedUser = $request->validated();
         // dd($user);
 
+        $authUser = Auth::user();
+
+
         $user = User::create([
             'name' => $validatedUser['name'],
             'email' => $validatedUser['email'],
             'password' => bcrypt($validatedUser['password']),
             'mobile_number' => $validatedUser['mobile_number'],
-            'role' => 'user'
+            'role' => 'user',
+            'admin_id'=> $authUser->id,
         ]);
 
         $password  = $validatedUser['password'];

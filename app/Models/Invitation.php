@@ -40,8 +40,8 @@ class Invitation extends Model
         return $this->belongsTo(User::class,'recipient_id');
     }
 
-    public function invitations(): HasMany
-    {
-        return $this->hasMany(Invitation::class);
-    }
+    // public function invitations(): HasMany
+    // {
+    //     return $this->hasMany(Invitation::class);
+    // }
 }

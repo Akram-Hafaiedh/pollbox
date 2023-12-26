@@ -69,13 +69,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 });
 
 
-Route::get('/test', function () {
-    return view('quizzes.login');
-});
 Route::get('/access', [UserQuizController::class, 'access']);
 
-// Route::get('/user/{user}/quizzes', [QuizController::class,'userQuizzes'])->name('user.quizzes.index');
-// Route::get('/users/{user}/quizzes/{quiz}', [QuizController::class, 'show'])->name('show.quiz');
+
 
 Route::prefix('user')->group(function () {
     Route::resource('quizzes', UserQuizController::class)

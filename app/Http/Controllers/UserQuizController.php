@@ -13,15 +13,21 @@ class UserQuizController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
         // Logic for listing available quizzes for the user
-
         $user = auth()->user();
-        $quizzes = $user->quizzes;
-        $invitations = $user->invitations;
-        dd($invitations);
-        return view('user.quizzes.index', compact('quizzes', 'user'));
+        $visibilityFilter = $request->query('visibility', 'all');
+        $publicQuizzes = Quiz::where('visibility', 'public')->get();
+        $receivedQuizzes = $user->receivedInvitation->map(function ($invitation) {
+            return $invitation->quiz;
+        });
+        $userAdminPrivateQuizzes = $user->admin->quizzes()->where('visibility', 'private')->get();
+        $quizzes = $publicQuizzes->merge($receivedQuizzes)->merge($userAdminPrivateQuizzes)->unique();
+
+        // dd($publicQuizzes, $receivedQuizzes, $userAdminPrivateQuizzes, $quizzes);
+
+        return view('user.quizzes.index', compact('quizzes', 'user','visibilityFilter'));
     }
 
     public function access(Quiz $quiz): View
@@ -30,7 +36,7 @@ class UserQuizController extends Controller
         if ($quiz->visibility === 'private') {
 
             $invitation = $quiz->invitation;
-            dd($invitation);
+            // dd($invitation);
 
             return view('user.quizzes.access', compact('quiz'));
         };

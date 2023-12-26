@@ -51,7 +51,7 @@ class StoreQuizRequest extends FormRequest
             'questions.*.content' => 'required|string', // added
             'questions.*.type' => 'required|in:multiple_choice,single_choice,open_ended',
             'questions.*.difficulty' => 'required|in:easy,medium,hard',
-            'questions.*.order' => 'nullable|integer|min:1',
+            'questions.*.order' => 'nullable|integer',
             'questions.*.required' => 'required|boolean',
 
             // Validation rules for options array within each question

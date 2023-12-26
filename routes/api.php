@@ -30,5 +30,4 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/login', [AuthController::class, 'login']);
 
 
-Route::apiResource('/quizzes', UserQuizController::class);
 

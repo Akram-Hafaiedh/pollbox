@@ -80,6 +80,6 @@ Route::prefix('user')->group(function () {
             'show' => 'user.quizzes.show',
         ])
         ->only(['index', 'show']);
-    Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitResponse'])->name('user.quizzes.submit');
-    Route::get('/quizzes/acceess/{quiz}', [UserQuizController::class, 'access'])->name('user.quizzes.acceess');
+    Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
+    // Route::get('/quizzes/acceess/{quiz}', [UserQuizController::class, 'access'])->name('user.quizzes.acceess');
 });

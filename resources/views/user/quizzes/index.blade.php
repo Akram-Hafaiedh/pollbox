@@ -1,34 +1,55 @@
 <x-app-layout>
 
-    <div class="container mx-auto my-8" x-data="{ visibilityFilter: 'all', quizzes: @json($quizzes) }">
+    <div class="container mx-auto my-8" x-data="{ searchTerm:'', filterVisibility: '' }">
         <div class="flex justify-between">
             <h1 class="mb-4 text-3xl font-semibold">{{ $user->name }}'s Quizzes</h1>
+
 
         </div>
 
 
+        <div class="flex justify-between my-4">
+                <div>
+                    <button
+                    @click="filterVisibility = ''"
+                    :class="{ 'bg-blue-500 text-white': filterVisibility === '' }"
+                    class="px-4 py-2 rounded focus:outline-none focus:shadow-outline-blue"
+                >All</button>
+                <button
+                    @click="filterVisibility = 'public'"
+                    :class="{ 'bg-blue-500 text-white': filterVisibility === 'public' }"
+                    class="px-4 py-2 rounded focus:outline-none focus:shadow-outline-blue"
+                    >Public</button>
+                <button
+                    @click="filterVisibility = 'private'"
+                    :class="{ 'bg-blue-500 text-white': filterVisibility === 'private' }"
+                    class="px-4 py-2 rounded focus:outline-none focus:shadow-outline-blue"
+                >Private</button>
+                <button
+                    @click="filterVisibility = 'restricted'"
+                    :class="{ 'bg-blue-500 text-white': filterVisibility === 'restricted' }"
+                    class="px-4 py-2 rounded focus:outline-none focus:shadow-outline-blue"
+                    >Restricted</button>
+                </div>
 
+                <input type="text" x-model="searchTerm" placeholder="Search...">
+        </div>
         @if ($quizzes->count() > 0)
         <div class="grid grid-cols-2 gap-4 pt-4 bg-white border-t border-gray-200 shadow-sm">
-            <template x-for="quiz in quizzes" :key="quiz.id">
-
-                <!-- Quiz Card -->
-                <a :href="'{{ route('user.quizzes.acceess', '') }}/' + quiz.id" class="relative z-10 p-6 transition-transform transform bg-gray-200 border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105">
-                    <h2 class="mb-2 text-xl font-bold" x-text="quiz.title"></h2>
-                    <p class="mb-4" x-text="quiz.description"></p>
-                </a>
-
-            </template>
-
-
             @foreach ($quizzes as $quiz)
 
             <!-- <div @click.stop="showModal = true" class="relative p-6 bg-gray-200 border-2 border-transparent rounded-lg cursor-pointer hover:border-gray-800"> -->
-            <a href="{{ route('user.quizzes.acceess', $quiz) }}" class="relative z-10 p-6 transition-transform transform bg-gray-200 border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105">
+            <a x-show="
+                (searchTerm==='' || '{{ strtolower($quiz->title) }}'.includes(searchTerm.toLowerCase())) &&
+                (filterVisibility === '' || '{{ strtolower($quiz->visibility) }}' === filterVisibility.toLowerCase())
+            "
+                href="{{ route('user.quizzes.show', $quiz) }}" class="relative z-10 p-6 transition-transform transform bg-gray-200 border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105">
                 <h2 class="mb-2 text-xl font-bold">{{ $quiz->title }}
                     @if( $quiz->visibility !== 'public')
                     🔒
                     @endif
+
+                    <span class="bold">({{ Str::ucfirst($quiz->visibility) }})</span>
                 </h2>
                 <p class="mb-4">{{ $quiz->description}}</p>
                 <div class="w-full h-2 mb-4 bg-gray-700 rounded">

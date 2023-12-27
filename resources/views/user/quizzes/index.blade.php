@@ -10,6 +10,12 @@
             <span class="block sm:inline">{{ session('error') }}</span>
         </div>
         @endif
+        @if(session('success'))
+        <div class="relative px-4 py-3 text-green-700 bg-red-100 border border-green-400 rounded" role="success">
+            <strong class="font-bold">Success</strong>
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+        @endif
 
         <div class="flex justify-between my-4">
             <div>
@@ -52,10 +58,10 @@
                         100 }}%;"></div>
                 </div>
 
-                <p class="mb-4"> {{ auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
+                <p class="mb-4"> {{ round(auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
                     $quiz->questions->count() *
-                    100}} % complete</p>
-                @if($quiz->visibility ==="private")
+                    100 )}} % complete</p>
+                @if($quiz->visibility ==="restricted")
                 <div class="flex items-center">
 
                     <div class="w-10 h-10 mr-3 overflow-hidden bg-gray-100 rounded-full">

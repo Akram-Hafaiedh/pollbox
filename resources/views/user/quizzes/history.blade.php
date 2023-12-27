@@ -13,7 +13,7 @@
                 <p class="mb-4 text-gray-600">{{ $quiz->description }}</p>
                 {{-- Add more details as needed --}}
                 <a href="{{ route('user.quizzes.results', $quiz) }}"
-                    class="p-2 mt-auto ml-auto text-white bg-blue-500 rounded-lg hover:underline w-fit">View
+                    class="p-2 mt-auto ml-auto text-white bg-blue-500 rounded-lg w-fit hover:bg-blue-700">View
                     Results</a>
             </div>
             @endforeach

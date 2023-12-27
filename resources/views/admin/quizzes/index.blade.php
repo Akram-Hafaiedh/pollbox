@@ -1,13 +1,10 @@
 <x-app-layout>
     <div x-data="{ isOpenDestroyAll: false, isOpenDeleteSingle: false , quizToDelete:null}">
-
-
         <div class="flex flex-col md:flex-row" >
-
             @auth
             <x-dashboard-main-content :page-title="__('Admin Quizzes')">
-                <div class="flex items-center justify-between">
-                    <div>
+                <div class="flex items-center justify-between ">
+                    <div class="flex items-center space-x-2">
                         <a href="{{ route('admin.quizzes.create') }}" class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-indigo-500 border border-transparent rounded-md hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2">{{
                         __('Add Quiz')
                         }}</a>
@@ -19,7 +16,7 @@
                             __('Delete All')
                             }}</button>
                         </form>
-                        <!-- Confirmation Modals -->
+                        <!-- Confirmation Modals for deleteAll() -->
                         <div x-cloak x-show="isOpenDestroyAll" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-y-auto">
                             <div class="flex items-end justify-center p-4 pb-20 text-center sm:block sm:p-0">
                                 <div x-show="isOpenDestroyAll" class="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -69,7 +66,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <!-- Confirmation Modals for deleteOne() -->
                         <div x-cloak x-show="isOpenDeleteSingle" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-y-auto">
                             <div class="flex items-end justify-center p-4 pb-20 text-center sm:block sm:p-0">
                                 <div x-show="isOpenDeleteSingle" class="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -126,12 +123,11 @@
                             </div>
                         </div>
                     </div>
-
+                    <form action="{{ route('admin.quizzes.index') }}" method="GET">
+                        <x-text-input id="search" name="search" type="text" class="mt-1" :value="old('search',$search)" placeholder="Search quizzes" />
+                        <button type="submit">Search</button>
+                    </form>
                 </div>
-                <form action="{{ route('admin.quizzes.index') }}" method="GET">
-                    <x-text-input id="search" name="search" type="text" class="mt-1" :value="old('search',$search)" placeholder="Search quizzes" />
-                    <button type="submit">Search</button>
-                </form>
         </div>
 
         @if(isset($quizzes))
@@ -185,7 +181,7 @@
                             </svg>
                         </a>
                         <!-- Delete Action-->
-                        <button x-data @click.prevent="isOpenDeleteSingle = true; console.log({{ $quiz->id }})" quizToDelete={{ $quiz->id }} type="submit" class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-red-100 hover:fill-indigo-700">
+                        <button x-data @click.prevent="isOpenDeleteSingle = true; quizToDelete={{ $quiz->id }}" type="submit" class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-red-100 hover:fill-indigo-700">
                             <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
                                 <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
                             </svg>

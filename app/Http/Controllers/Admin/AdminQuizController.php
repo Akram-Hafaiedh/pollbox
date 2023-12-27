@@ -44,7 +44,8 @@ class AdminQuizController extends Controller
      */
     public function create(): View
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::where('admin_id', auth()->id())->get();
+
         $categories = Category::all();
         return view('admin.quizzes.create', compact('users', 'categories'));
     }
@@ -202,9 +203,10 @@ class AdminQuizController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Quiz $quiz)
+    public function edit(Quiz $quiz) : View
     {
-        //
+        $users = User::where('admin_id', auth()->id())->get();
+        return view('admin.quizzes.edit',compact('quiz', 'users'));
     }
 
     /**

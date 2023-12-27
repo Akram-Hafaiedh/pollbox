@@ -8,12 +8,12 @@
             <div class="flex items-center justify-between ">
                 <div>
                     <a href="{{ route('admin.users.create') }}"
-                        class="text-white inline-flex items-center px-4 py-2 tracking-widest  transition duration-150 ease-in-out bg-indigo-500 border border-transparent rounded-md  hover:bg-indigo-700  focus:bg-indigo-700  active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2">{{
-                        __('Create User')
+                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-indigo-500 border border-transparent rounded-md hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2">{{
+                        __('Add user')
                         }}</a>
                     {{-- TODO DELETE ALL --}}
                     <a href="#"
-                        class="text-white inline-flex items-center px-4 py-2 tracking-widest  transition duration-150 ease-in-out bg-blue-500 border border-transparent rounded-md  hover:bg-blue-700  focus:bg-blue-500 active:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2">{{
+                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-blue-500 border border-transparent rounded-md hover:bg-blue-700 focus:bg-blue-500 active:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2">{{
                         __('Delete all')
                         }}</a>
 

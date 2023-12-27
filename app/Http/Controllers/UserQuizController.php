@@ -58,16 +58,22 @@ class UserQuizController extends Controller
      */
     public function show(Request $request, Quiz $quiz): View | JsonResource | RedirectResponse
     {
+        $user = auth()->user();
         $quiz->load('questions.options');
         if ($request->is('api/*')) {
 
             return new QuizResource($quiz);
         } else {    // Check if the user has already submitted responses for this quiz
-            $hasSubmittedResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
+            // $hasSubmittedResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
+            // Check if the user has submitted responses for all the questions
+            $hasSubmittedResponses = $user->responses()
+                ->where('quiz_id', $quiz->id)
+                ->count() === $quiz->questions->count();
 
             // If the user has submitted responses, redirect them away
             if ($hasSubmittedResponses) {
-                return redirect()->route('user.quizzes.index')->with('error', 'You have already responded to this quiz.');
+                return redirect()->route('user.quizzes.index')
+                    ->with('error', 'You have already responded to this quiz.');
             }
 
             return view('user.quizzes.show', compact('quiz'));
@@ -76,16 +82,21 @@ class UserQuizController extends Controller
 
     public function submitQuiz(Quiz $quiz, Request $request): RedirectResponse
     {
+        $user = auth()->user();
 
-        $existingResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
-        if ($existingResponses) {
-            return redirect()->back()->with('error', 'You have already submitted responses for this quiz.');
+        // $existingResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
+        $hasSubmittedResponses = $user->responses()
+        ->where('quiz_id', $quiz->id)
+        ->count() === $quiz->questions->count();
+        if ($hasSubmittedResponses) {
+            return redirect()->back()
+                ->with('error', 'You have already submitted all responses for this quiz.');
         }
 
         // validation rules
         $rules = [];
         foreach ($quiz->questions as $question) {
-            $rules["responses.{$question->id}"] = 'required|exists:options,id';
+            $rules["responses.{$question->id}"] = 'nullable|exists:options,id';
         }
         $request->validate($rules);
         // validation Ok
@@ -95,13 +106,21 @@ class UserQuizController extends Controller
 
         foreach ($userResponses as $questionId => $optionId) {
             // $selectedOption = Option::findOrFail($optionId);
-            Response::create([
-                'user_id' => auth()->id(),
-                'quiz_id' => $quiz->id,
-                'question_id' => $questionId,
-                'user_response' => $optionId,
-                // 'user_response' => $selectedOption->content,
-            ]);
+            $existingResponse = $user->responses()
+                ->where('quiz_id', $quiz->id)
+                ->where('question_id', $questionId)
+                ->first();
+                if ($existingResponse) {
+                    // Update the existing response
+                    $existingResponse->update(['user_response' => $optionId]);
+                } else {
+                    // Create a new response
+                    $user->responses()->create([
+                        'quiz_id' => $quiz->id,
+                        'question_id' => $questionId,
+                        'user_response' => $optionId,
+                    ]);
+                }
         }
 
         // TODO: Calculate the score
@@ -109,16 +128,22 @@ class UserQuizController extends Controller
 
         // Redirect to the results page
         return redirect()->route('user.quizzes.results', $quiz)
-            ->with('success', 'Quiz responses submitted successfully!');;
+            ->with('success', 'Quiz responses submitted successfully!');
     }
-    public function showResults(): View
+    public function showResults(Quiz $quiz): View
     {
 
-        dd('Results');
+        $user = auth()->user();
+        $quiz->load('questions.options');
+        // dd($quiz,$quiz->questions);
+        $userResponses = $user->responses()->where('quiz_id', $quiz->id)->get();
+        // dd( $userResponses);
 
         // Fetch user's responses and correct answers
         // Display results
-        return view('user.quizzes.results', compact('userResponses', 'score'));
+
+        // return score if we want to
+        return view('user.quizzes.summary', compact( 'quiz','userResponses'));
     }
 
     public function history(): View

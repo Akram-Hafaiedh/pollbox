@@ -42,6 +42,11 @@ class Quiz extends Model
         return $this->hasMany(Question::class);
     }
 
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
+
     public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class);

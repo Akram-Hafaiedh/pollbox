@@ -12,9 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\View\View;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\ResourceResponse;
 class UserQuizController extends Controller
 {
     /**
@@ -33,14 +30,13 @@ class UserQuizController extends Controller
         $quizzes = $publicQuizzes->merge($receivedQuizzes)->merge($userAdminPrivateQuizzes)->unique();
 
         // dd($publicQuizzes, $receivedQuizzes, $userAdminPrivateQuizzes, $quizzes);
-        if($request->is('api/*')){
+        if ($request->is('api/*')) {
 
             return QuizResource::collection($quizzes);
-        }else{
+        } else {
 
-            return view('user.quizzes.index', compact('quizzes', 'user','visibilityFilter'));
+            return view('user.quizzes.index', compact('quizzes', 'user', 'visibilityFilter'));
         }
-
     }
 
     public function access(Quiz $quiz): View
@@ -67,13 +63,12 @@ class UserQuizController extends Controller
 
             return new QuizResource($quiz);
         } else {    // Check if the user has already submitted responses for this quiz
-            $hasSubmittedResponses = auth()->user()->quizResponses()->where('quiz_id', $quiz->id)->exists();
+            $hasSubmittedResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
 
             // If the user has submitted responses, redirect them away
             if ($hasSubmittedResponses) {
                 return redirect()->route('user.quizzes.index')->with('error', 'You have already responded to this quiz.');
             }
-
 
             return view('user.quizzes.show', compact('quiz'));
         }
@@ -82,7 +77,7 @@ class UserQuizController extends Controller
     public function submitQuiz(Quiz $quiz, Request $request): RedirectResponse
     {
 
-        $existingResponses = auth()->user()->quizResponses()->where('quiz_id', $quiz->id)->exists();
+        $existingResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
         if ($existingResponses) {
             return redirect()->back()->with('error', 'You have already submitted responses for this quiz.');
         }
@@ -113,8 +108,8 @@ class UserQuizController extends Controller
 
 
         // Redirect to the results page
-        return redirect()->route('user.quizzes.results',$quiz)
-        ->with('success', 'Quiz responses submitted successfully!');;
+        return redirect()->route('user.quizzes.results', $quiz)
+            ->with('success', 'Quiz responses submitted successfully!');;
     }
     public function showResults(): View
     {
@@ -124,5 +119,16 @@ class UserQuizController extends Controller
         // Fetch user's responses and correct answers
         // Display results
         return view('user.quizzes.results', compact('userResponses', 'score'));
+    }
+
+    public function history(): View
+    {
+        // dd('history');
+        $user = auth()->user();
+
+        $quizzes = $user->responses->map(function ($response) {
+            return $response->quiz;
+        })->unique();
+        return view('user.quizzes.history', compact('user', 'quizzes'));
     }
 }

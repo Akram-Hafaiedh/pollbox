@@ -68,7 +68,9 @@ class User extends Authenticatable
     //         ->orWhere('sender_id', $this->id);
     // }
 
-    public function quizResponses(): HasMany
+
+
+    public function responses(): HasMany
     {
         return $this->hasMany(Response::class);
     }

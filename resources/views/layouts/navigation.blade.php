@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('user.quizzes.index')" :active="request()->routeIs('user.quizzes.index')">
                         {{ __('My Quizzes') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('user.quizzes.history')" :active="request()->routeIs('user.quizzes.history')">
+                        {{ __('My History') }}
+                    </x-nav-link>
                 </div>
             </div>
 

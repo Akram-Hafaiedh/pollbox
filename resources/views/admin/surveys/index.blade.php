@@ -9,9 +9,9 @@
 
         @auth
         <div class="w-64 h-screen py-8 text-gray-600 bg-gray-100 shadow-md dark:bg-gray-800 dark:text-gray-200">
-            @if (auth()->user()->hasRole('admin'))
+            {{-- @if (auth()->user()->hasRole('admin'))
             <x-sidebar />
-            @endif
+            @endif --}}
         </div>
         <x-dashboard-main-content :page-title="  __('Admin Surveys') ">
             <h3 class="mb-4 text-2xl font-semibold">Welcome to the admin Survey index page!</h3>

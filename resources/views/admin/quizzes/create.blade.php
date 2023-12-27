@@ -151,8 +151,7 @@
                                             <input type="checkbox" name="selected_users[]" value="{{ $user->id }}"
                                                 x-model="selectedUsers" {{ is_array(old('selected_users')) &&
                                                 in_array($user->id, old('selected_users')) ? 'checked' : '' }}
-                                            class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox
-                                            focus:ring-indigo-500"
+                                            class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500"
                                             >
 
                                             <p>{{ $user->name }}</p>

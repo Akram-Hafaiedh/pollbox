@@ -221,7 +221,7 @@ class AdminQuizController extends Controller
     public function destroy($id): RedirectResponse
     {
         $quiz = Quiz::findOrFail($id);
-        dd('deleteOne');
+        dd('deleteOne', $id);
         if (auth()->id() == $quiz->user_id) {
             $quiz->delete();
 

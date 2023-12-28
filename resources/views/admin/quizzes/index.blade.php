@@ -5,16 +5,37 @@
             <x-dashboard-main-content :page-title="__('Admin Quizzes')">
                 <div class="flex items-center justify-between ">
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('admin.quizzes.create') }}" class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-indigo-500 border border-transparent rounded-md hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2">{{
-                        __('Add Quiz')
-                        }}</a>
+                        <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
+                            <label for="pdf-file" class="mr-2" @click="pdfFile = true">
+                                <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
+                                <button type="button" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" x-on:click="$refs.pdfInput.click()">
+                                    <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 6h16M4 12h8m-8 6h16" />
+                                    </svg>
+                                    Import PDF
+                                </button>
+                            </label>
+                            <label for="csv-file">
+                                <input id="csv-file" type="file" accept=".csv" class="hidden" x-ref="csvInput">
+                                <button type="button" class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700" x-on:click="$refs.csvInput.click()">
+                                    <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                    </svg>
+                                    Import CSV
+                                </button>
+                            </label>
+                        </div>
+                        <a href="{{ route('admin.quizzes.create') }}"
+                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
+                            {{ __('Add quiz') }}
+                        </a>
 
-                        <form @submit.prevent="isOpenDestroyAll= true" method='POST' action="{{ route('admin.quizzes.destroyAll') }}">
+                        <form @submit.prevent="isOpenDestroyAll = true" method='POST' action="{{ route('admin.quizzes.destroyAll') }}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" x-on:click="isOpenDestroyAll = true" class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-blue-500 border border-transparent rounded-md hover:bg-blue-700 focus:bg-blue-500 active:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2">{{
-                            __('Delete All')
-                            }}</button>
+                            <button type="submit" x-on:click="isOpenDestroyAll = true" class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                                {{ __('Delete all') }}
+                            </button>
                         </form>
                         <!-- Confirmation Modals for deleteAll() -->
                         <div x-cloak x-show="isOpenDestroyAll" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-y-auto">
@@ -132,17 +153,18 @@
 
         @if(isset($quizzes))
         <table class="table w-full my-4 divide-y">
-            <thead class="py-2 font-medium text-left bg-indigo-300">
+            <thead class="py-2 font-medium text-left text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
                 <tr>
                     <th class="py-2">#</th>
                     <th class="py-2">Title</th>
                     <th class="py-2 ">Description</th>
+                    <th class="py-2 text-center">Start Date</th>
+                    <th class="py-2 text-center">End Date</th>
+                    <th class="py-2 text-center">Active</th>
                     <th class="py-2 text-center">Questions</th>
                     <th cols="1" class="py-2 ">Members</th>
                     <th class="py-2 ">Visibility</th>
-                    <th class="py-2 ">Active</th>
-                    <th class="py-2 text-center">Time Limit</th>
-                    <th class="py-2 text-center">Created At</th>
+                    <th class="py-2 text-center text-nowrap">Created At</th>
                     <th class="py-2 text-center">Actions</th>
                 </tr>
             </thead>
@@ -152,6 +174,13 @@
                     <td>{{ $quiz->id }}</td>
                     <td>{{ Str::limit($quiz->title,20) }}</td>
                     <td>{{ Str::limit($quiz->description, 50) }}</td>
+                    <td class="text-center text-nowrap">{{ $quiz->start_date }}</td>
+                    <td class="text-center text-nowrap">{{ $quiz->end_date }}</td>
+                    <td class="px-2 text-center">
+                        @if ($quiz->active) <span class="text-green-500">Active</span>
+                        @else <span class="text-red-500">Inactive</span>
+                        @endif
+                    </td>
                     <td class="text-center"> {{ count($quiz->questions) }}</td>
                     <td class="text-center">
                         {{ ($quiz->visibility === 'restricted') ? count($quiz->selectedUsers) :''}}
@@ -160,12 +189,7 @@
                     <td class="text-center">
                         {{ Str::ucfirst($quiz->visibility)}}
                     </td>
-                    <td>
-                        @if ($quiz->active) <span class="text-green-500">Active</span>
-                        @else <span class="text-red-500">Inactive</span>
-                        @endif
-                    </td>
-                    <td class="text-center">{{ $quiz->time_limit ? $quiz->time_limit . ' mins' : '-' }}</td>
+                    {{-- <td class="text-center">{{ $quiz->time_limit ? $quiz->time_limit . ' mins' : '-' }}</td> --}}
                     <td class="text-center">{{ $quiz->created_at->format('Y-m-d') }}</td>
                     <td class="flex justify-center space-x-1">
                         <!-- Show action -->

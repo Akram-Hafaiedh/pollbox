@@ -20,7 +20,10 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('has_correct_answers')->default(true);
             $table->integer('score')->nullable();
-            $table->integer('time_limit')->nullable();
+            // $table->integer('time_limit')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            
 
             $table->enum('visibility', ['public', 'private', 'restricted'])->default('public');
             $table->boolean('randomize')->default(false);

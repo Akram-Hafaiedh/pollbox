@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('question_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('question_id')->constrained();
             $table->text('content');
             $table->text('explanation')->nullable();
             $table->boolean('is_correct')->default(false);

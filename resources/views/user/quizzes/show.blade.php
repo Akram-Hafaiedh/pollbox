@@ -62,10 +62,14 @@
                             :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === totalSlides - 1 }"
                             class="px-4 py-2 text-white bg-indigo-700 rounded focus:outline-none disabled:opacity-50"
                             :disabled="currentSlide === totalSlides - 1">Next</button>
-                    </div>
-                    <!-- Submit Button -->
-                    <div class="mt-4">
-                        <button type="submit" class="px-4 py-2 text-white bg-green-500 rounded focus:outline-none">Submit Quiz</button>
+                            <!-- Submit Button -->
+                            <button type="submit"
+                                class="px-4 py-2 text-white rounded focus:outline-none"
+                                :class="{ 'bg-red-500': currentSlide !== totalSlides - 1,
+                                'bg-green-500': currentSlide === totalSlides - 1 }"
+                                >
+                                <span x-text="currentSlide !== totalSlides - 1 ? 'Leave' : 'Submit Quiz'"></span>
+                            </button>
                     </div>
                 </div>
             </form>

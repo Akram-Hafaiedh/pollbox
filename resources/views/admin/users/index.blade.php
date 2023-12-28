@@ -5,17 +5,36 @@
         @auth
         <x-dashboard-main-content :page-title="  __('Admin Clients')">
             <!-- Buttons -->
-            <div class="flex items-center justify-between ">
-                <div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex space-x-2">
+                    <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
+                        <label for="pdf-file" class="mr-2" @click="pdfFile = true">
+                            <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
+                            <button type="button" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" x-on:click="$refs.pdfInput.click()">
+                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 6h16M4 12h8m-8 6h16" />
+                                </svg>
+                                Import PDF
+                            </button>
+                        </label>
+                        <label for="csv-file">
+                            <input id="csv-file" type="file" accept=".csv" class="hidden" x-ref="csvInput">
+                            <button type="button" class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700" x-on:click="$refs.csvInput.click()">
+                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                </svg>
+                                Import CSV
+                            </button>
+                        </label>
+                    </div>
                     <a href="{{ route('admin.users.create') }}"
-                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-indigo-500 border border-transparent rounded-md hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2">{{
-                        __('Add user')
-                        }}</a>
+                    class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
+                    {{ __('Add user')}}</a>
                     {{-- TODO DELETE ALL --}}
                     <a href="#"
-                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-blue-500 border border-transparent rounded-md hover:bg-blue-700 focus:bg-blue-500 active:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2">{{
-                        __('Delete all')
-                        }}</a>
+                    class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                    {{ __('Delete all')}}</a>
 
                 </div>
                 <form action="{{ route('admin.users.index') }}" method="GET">
@@ -30,7 +49,7 @@
             {{-- <p>Your role: {{ auth()->user()->role }}</p> --}}
             @if(isset($users))
             <table class="table w-full mt-5 divide-y overflow-x">
-                <thead class="font-medium text-left bg-indigo-300">
+                <thead class="font-medium text-left text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
                     <tr>
                         <th class="py-2">#</th>
                         <th class="py-2">Name</th>

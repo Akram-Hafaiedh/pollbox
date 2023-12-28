@@ -43,14 +43,43 @@
                 <form method="post" action="{{ route('admin.quizzes.store') }}" class="w-full p-6">
                     @csrf
                     <!-- Title-->
-                    <div>
+                    <div class="my-4">
                         <x-input-label for="title" :value="__('Title')" />
                         <x-text-input id="title" class="block w-full mt-1" type="text" name="title"
                             :value="old('title')" autofocus autocomplete="title" required />
                         <x-input-error :messages="$errors->get('title')" class="mt-2" />
                     </div>
 
-                    <div
+                    <!-- Dates-->
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div class="my-4">
+                            <x-input-label for="start_date" :value="__('Start Date')" />
+                            <x-text-input id="start_date" class="block w-full mt-1" type="date" name="start_date"
+                                :value="old('start_date')" autofocus autocomplete="title" required />
+                            <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
+                        </div>
+                        <div class="my-4">
+                            <x-input-label for="end_date" :value="__('End Date')" />
+                            <x-text-input id="end_date" class="block w-full mt-1" type="date" name="end_date"
+                                :value="old('start_date')" autofocus autocomplete="title" required />
+                            <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
+                        </div>
+                        <div class="my-4">
+                            <x-input-label for="visibility" :value="__('Visibility')" />
+                            <select id="visibility" name="visibility"
+                                class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                                <option value="restricted">Restricted</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
+                        </div>
+
+
+                    </div>
+
+
+                    {{-- <div
                         class="flex flex-col mt-4 space-x-0 space-y-3 lg:space-x-2 lg:space-y-0 lg:flex-row md:items-center">
                         <!-- Time Limit -->
                         <div class="w-full lg:w-1/3">
@@ -86,7 +115,7 @@
                             <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
 
                         </div>
-                    </div>
+                    </div> --}}
                     <!---Radio-Buttons  + selected users -->
                     <div class="flex flex-col mt-4 space-y-3 md:space-y-0 lg:flex-row md:items-center">
 
@@ -194,10 +223,13 @@
                                     </label>
                                     <select x-model="question.type" :name="'questions[' + index + '][type]'"
                                         :id="'type_' + index"
-                                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ">
-                                        <option value="multiple_choice">Multiple Choice</option>
+                                        class="flex w-full mt-1 space-y-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <option value="feedback">Feedback</option>
                                         <option value="single_choice">Single Choice</option>
+                                        <option value="multiple_choice">Multiple Choice</option>
                                         <option value="open_ended">Open Ended</option>
+                                        <option value="numeric">Numeric</option>
+                                        <option value="ranking">Ranking</option>
                                         <!-- Add other options as needed -->
                                     </select>
                                 </div>

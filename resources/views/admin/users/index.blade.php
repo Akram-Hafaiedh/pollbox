@@ -11,8 +11,12 @@
                     <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
                         <label for="pdf-file" class="mr-2" @click="pdfFile = true">
                             <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
-                            <button type="button" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" x-on:click="$refs.pdfInput.click()">
-                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <button type="button"
+                                class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                                x-on:click="$refs.pdfInput.click()">
+                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M4 6h16M4 12h8m-8 6h16" />
                                 </svg>
                                 Import PDF
@@ -20,8 +24,12 @@
                         </label>
                         <label for="csv-file">
                             <input id="csv-file" type="file" accept=".csv" class="hidden" x-ref="csvInput">
-                            <button type="button" class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700" x-on:click="$refs.csvInput.click()">
-                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <button type="button"
+                                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700"
+                                x-on:click="$refs.csvInput.click()">
+                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                                 </svg>
                                 Import CSV
@@ -29,12 +37,12 @@
                         </label>
                     </div>
                     <a href="{{ route('admin.users.create') }}"
-                    class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
-                    {{ __('Add user')}}</a>
+                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
+                        {{ __('Add user')}}</a>
                     {{-- TODO DELETE ALL --}}
                     <a href="#"
-                    class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
-                    {{ __('Delete all')}}</a>
+                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                        {{ __('Delete all')}}</a>
 
                 </div>
                 <form action="{{ route('admin.users.index') }}" method="GET">
@@ -46,15 +54,16 @@
 
 
 
-            {{-- <p>Your role: {{ auth()->user()->role }}</p> --}}
             @if(isset($users))
             <table class="table w-full mt-5 divide-y overflow-x">
-                <thead class="font-medium text-left text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+                <thead
+                    class="font-medium text-left text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
                     <tr>
                         <th class="py-2">#</th>
                         <th class="py-2">Name</th>
                         <th class="py-2">Email</th>
                         <th class="py-2">Status</th>
+                        <th class="py-2">Lastest Response</th>
                         <th class="py-2 text-center">Created At</th>
                         <th class="py-2 text-center">Actions</th>
                     </tr>
@@ -63,9 +72,27 @@
                     @foreach ($users as $user)
                     <tr class=" hover:bg-gray-300 odd:bg-gray-100 even:bg-white">
                         <td>{{ $user->id }}</td>
-                        <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}">{{ $user->name }}</a></td>
+                        <td><a href="{{ route('admin.users.show', $user) }}">{{ $user->name }}</a></td>
                         <td>{{ $user->email }}</td>
-                        <td class="text-green-500">Active</td>
+                        {{-- <td class="text-green-500">Active</td> --}}
+                        <td>
+                            @if($user->responses->isNotEmpty() && optional($user->responses->first())->created_at)
+                            @if(optional($user->responses->first())->created_at->addDays(30)->isPast())
+                            <span class="text-red-500">Inactive</span>
+                            @else
+                            <span class="text-green-500">Active</span>
+                            @endif
+                            @else
+                            <span class="text-red-500">Inactive</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($user->responses->isNotEmpty())
+                            {{ $user->responses->first()->created_at ?? 'No responses' }}
+                            @else
+                            No responses
+                            @endif
+                        </td>
                         {{-- TODO ADD ACTIVE OR INACTIVE TO USERS --}}
                         {{-- <td>@if ($quiz->active) <span class="text-green-500">Active</span> @else <span
                                 class="text-red-500">Inactive</span> @endif</td> --}}

@@ -37,7 +37,7 @@
                     </div>
                     <div class='flex flex-col mt-10'>
                         <x-side-link route="admin.dashboard" icon="home">Dashboard</x-side-link>
-                        <x-side-link route="admin.users.index" icon="user">Clients</x-side-link>
+                        <x-side-link route="admin.users.index" icon="user">Users</x-side-link>
                         <x-side-link route="admin.quizzes.index" icon="user">Quizzes</x-side-link>
                         <x-side-link route="admin.topQuizzes" icon="user">Top 3 Clients Reports</x-side-link>
                         <x-side-link route="dashboard" icon="user">Settings</x-side-link>

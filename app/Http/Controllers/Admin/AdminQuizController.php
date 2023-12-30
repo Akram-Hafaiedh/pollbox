@@ -56,21 +56,20 @@ class AdminQuizController extends Controller
     public function store(StoreQuizRequest $request): RedirectResponse
     {
 
+
         $validatedData = $request->validated();
 
         // dd($validatedData);
-        // $questions = $validatedData['questions'];
-        // $users = $validatedData['selected_users'];
-        // dd($questions, $users);
-        // foreach($questions as $questions)
 
         if (auth()->check()) {
             // Store the quiz
             $quiz = Quiz::create([
                 'user_id' => auth()->id(),
                 'title' => $validatedData['title'],
-                'time_limit' => $validatedData['time_limit'],
-                'score' => $validatedData['score'],
+                // 'time_limit' => $validatedData['time_limit'],
+                'start_date' => $validatedData['start_date'],
+                'end_date' => $validatedData['end_date'],
+                'score' => isset($validatedData['score']) ? $validatedData['score'] : '0',
                 'description' => $validatedData['description'],
                 'active' => isset($validatedData['active']) ? $validatedData['active'] : false,
                 'visibility' => isset($validatedData['visibility']) ? $validatedData['visibility'] : false,
@@ -78,6 +77,7 @@ class AdminQuizController extends Controller
             ]);
 
             // Store questions
+
 
             foreach ($validatedData['questions']  as $questionData) {
                 // $quiz->users()->attach($validatedData['users']);
@@ -88,7 +88,16 @@ class AdminQuizController extends Controller
                     'difficulty' => $questionData['difficulty'],
                     'order' => isset($questionData['order']) ? $questionData['order'] : 0,
                     'required' => $questionData['required'],
+                    'video_url' => $questionData['video_url'],
                 ]);
+
+                // Upload and store the question image
+                if (isset($questionData['image_path']) && $questionData['image_path']->isValid()) {
+                    // dd('upload image');
+                    $imagePath = $questionData['image_path']->store('question_images', 'public');
+                    // dd($imagePath);
+                    $question->update(['image_path' => $imagePath]);
+                }
 
                 // Store options
                 foreach ($questionData['options'] as $optionData) {
@@ -139,46 +148,6 @@ class AdminQuizController extends Controller
     // }
 
 
-    // public function showQuiz(User $user, Quiz $quiz): View
-    // {
-    // $questions = [
-    //     "What is your favorite color?",
-    //     "What is your favorite movie?",
-    //     "If you could travel anywhere, where would you go?",
-    //     "What is your favorite hobby?",
-    //     "What is your dream job?",
-    //     "What is your favorite book?",
-    //     "What is your go-to music genre?",
-    //     "If you could have any superpower, what would it be?",
-    //     "What is your favorite season?",
-    //     "If you could have dinner with any historical figure, who would it be?",
-    // ];
-
-
-    //     dd($quiz, $user);
-
-
-    // $questions = [
-    //     "What is your favorite color?" => ["Red", "Blue", "Green", "Yellow","Black"],
-    //     "What is your favorite movie?" => ["Action", "Comedy", "Drama", "Sci-Fi"],
-    //     "If you could travel anywhere, where would you go?" => ["Paris", "Tokyo", "New York", "Barcelona"],
-    //     "What is your favorite hobby?" => ["Reading", "Cooking", "Gaming", "Sports"],
-    //     "What is your dream job?" => ["Doctor", "Artist", "Engineer", "Writer"],
-    //     "What is your favorite book?" => ["Fiction", "Non-Fiction", "Mystery", "Fantasy"],
-    //     "What is your go-to music genre?" => ["Pop", "Rock", "Hip Hop", "Country"],
-    //     "If you could have any superpower, what would it be?" => ["Flight", "Invisibility", "Super Strength", "Teleportation"],
-    //     "What is your favorite season?" => ["Spring", "Summer", "Fall", "Winter"],
-    //     "If you could have dinner with any historical figure, who would it be?" => ["Albert Einstein", "Leonardo da Vinci", "Marie Curie", "Nelson Mandela"],
-    // ];
-
-    //     $quiz->load('questions.options');
-
-    //     dd($user,$quiz);
-
-    //     dd($questions);
-    //     return view('quiz', compact('questions'));
-    // }
-
     public function access(): View
     {
         return view('access');
@@ -203,10 +172,10 @@ class AdminQuizController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Quiz $quiz) : View
+    public function edit(Quiz $quiz): View
     {
         $users = User::where('admin_id', auth()->id())->get();
-        return view('admin.quizzes.edit',compact('quiz', 'users'));
+        return view('admin.quizzes.edit', compact('quiz', 'users'));
     }
 
     /**
@@ -223,8 +192,9 @@ class AdminQuizController extends Controller
     public function destroy($id): RedirectResponse
     {
         $quiz = Quiz::findOrFail($id);
-        dd('deleteOne', $id);
+        // dd('deleteOne', $id);
         if (auth()->id() == $quiz->user_id) {
+            // $quiz->users()->detach();
             $quiz->delete();
 
             return redirect()->route('admin.quizzes.index')

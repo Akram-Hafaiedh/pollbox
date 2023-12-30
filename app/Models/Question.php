@@ -18,7 +18,9 @@ class Question extends Model
         'type',
         'difficulty',
         'order',
-        'required'
+        'required',
+        'image_path',
+        'video_url',
     ];
 
     public function quiz(): BelongsTo

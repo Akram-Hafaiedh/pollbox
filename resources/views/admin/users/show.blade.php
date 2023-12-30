@@ -2,7 +2,7 @@
 
     <div class="flex flex-col md:flex-row">
         @auth
-        <x-dashboard-main-content :page-title="  __('Clien details')">
+        <x-dashboard-main-content :page-title="  __('User details')">
             <h3 class="text-2xl font-semibold">{{ $user->name }} profile</h3>
             {{-- <p class="max-w-2xl text-sm leading-6 text-gray-500 ">Client details.</p> --}}
             <div class="flex justify-between items-center">

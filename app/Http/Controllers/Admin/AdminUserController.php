@@ -24,6 +24,9 @@ class AdminUserController extends Controller
 
         $search = $request->get('search');
         $users = User::query()
+            ->with(['responses' => function ($query) {
+                $query->latest('created_at');
+            }])
             ->where('name', 'LIKE', "%{$search}%")
             ->orWhere('email', 'LIKE', "%{$search}%")
             ->orderBy('created_at', 'desc')
@@ -56,7 +59,7 @@ class AdminUserController extends Controller
             'password' => bcrypt($validatedUser['password']),
             'mobile_number' => $validatedUser['mobile_number'],
             'role' => 'user',
-            'admin_id'=> $authUser->id,
+            'admin_id' => $authUser->id,
         ]);
 
         $password  = $validatedUser['password'];

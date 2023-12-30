@@ -86,8 +86,8 @@ class UserQuizController extends Controller
 
         // $existingResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
         $hasSubmittedResponses = $user->responses()
-        ->where('quiz_id', $quiz->id)
-        ->count() === $quiz->questions->count();
+            ->where('quiz_id', $quiz->id)
+            ->count() === $quiz->questions->count();
         if ($hasSubmittedResponses) {
             return redirect()->back()
                 ->with('error', 'You have already submitted all responses for this quiz.');
@@ -110,17 +110,17 @@ class UserQuizController extends Controller
                 ->where('quiz_id', $quiz->id)
                 ->where('question_id', $questionId)
                 ->first();
-                if ($existingResponse) {
-                    // Update the existing response
-                    $existingResponse->update(['user_response' => $optionId]);
-                } else {
-                    // Create a new response
-                    $user->responses()->create([
-                        'quiz_id' => $quiz->id,
-                        'question_id' => $questionId,
-                        'user_response' => $optionId,
-                    ]);
-                }
+            if ($existingResponse) {
+                // Update the existing response
+                $existingResponse->update(['user_response' => $optionId]);
+            } else {
+                // Create a new response
+                $user->responses()->create([
+                    'quiz_id' => $quiz->id,
+                    'question_id' => $questionId,
+                    'user_response' => $optionId,
+                ]);
+            }
         }
 
         // TODO: Calculate the score
@@ -143,7 +143,7 @@ class UserQuizController extends Controller
         // Display results
 
         // return score if we want to
-        return view('user.quizzes.summary', compact( 'quiz','userResponses'));
+        return view('user.quizzes.summary', compact('quiz', 'userResponses'));
     }
 
     public function history(): View

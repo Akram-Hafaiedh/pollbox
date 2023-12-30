@@ -40,7 +40,8 @@
                 </div>
                 @endif
 
-                <form method="post" action="{{ route('admin.quizzes.store') }}" class="w-full p-6">
+                <form method="post" action="{{ route('admin.quizzes.store') }}" class="w-full p-6"
+                    enctype="multipart/form-data">
                     @csrf
                     <!-- Title-->
                     <div class="my-4">
@@ -77,45 +78,6 @@
 
 
                     </div>
-
-
-                    {{-- <div
-                        class="flex flex-col mt-4 space-x-0 space-y-3 lg:space-x-2 lg:space-y-0 lg:flex-row md:items-center">
-                        <!-- Time Limit -->
-                        <div class="w-full lg:w-1/3">
-                            <x-input-label for="time_limit" :value="__('Time Limit (mins)')" />
-
-                            <x-text-input id="time_limit" class="w-full mt-1" type="number" :value="old('time_limit')"
-                                name="time_limit" required autocomplete="time_limit" />
-
-                            <x-input-error :messages="$errors->get('time_limit')" class="mt-2" />
-
-                        </div>
-                        <!-- Score -->
-                        <div class="w-full lg:w-1/3">
-                            <x-input-label for="score" :value="__('Score')" />
-
-                            <x-text-input id="score" class="w-full mt-1 " type="number" :value="old('score')"
-                                name="score" required autocomplete="score" />
-
-                            <x-input-error :messages="$errors->get('score')" class="mt-2" />
-
-                        </div>
-                        <!-- Visibility-->
-                        <div class="w-full lg:w-1/3">
-                            <x-input-label for="visibility" :value="__('Visibility')" />
-
-                            <select id="visibility" name="visibility"
-                                class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="public">Public</option>
-                                <option value="private">Private</option>
-                                <option value="restricted">Restricted</option>
-                            </select>
-
-                            <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
-
-                        </div>
-                    </div> --}}
                     <!---Radio-Buttons  + selected users -->
                     <div class="flex flex-col mt-4 space-y-3 md:space-y-0 lg:flex-row md:items-center">
 
@@ -130,7 +92,6 @@
                             <x-input-error :messages="$errors->get('active')" class="mt-2" />
 
                         </div>
-
 
                         <!-- Has_Correct_Answers -->
                         <div class="w-full ml-4 lg:w-1/4">
@@ -180,7 +141,8 @@
                                             <input type="checkbox" name="selected_users[]" value="{{ $user->id }}"
                                                 x-model="selectedUsers" {{ is_array(old('selected_users')) &&
                                                 in_array($user->id, old('selected_users')) ? 'checked' : '' }}
-                                            class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500"
+                                            class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox
+                                            focus:ring-indigo-500"
                                             >
 
                                             <p>{{ $user->name }}</p>
@@ -207,13 +169,36 @@
                     <!-- Questions section -->
                     <template x-for="(question, index) in questions" :key="index">
                         <div class="p-2 mt-4 border border-black border-dashed">
-                            <!-- label for question-->
-                            <label :for="'question_' + index" class="block text-sm font-medium text-gray-600">{{
-                                __('Question') }} <span x-text="index + 1"></span></label>
-                            <!-- Input for questions -->
-                            <input type="text" x-model="question.content" :name="'questions[' + index + '][content]'"
-                                class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required />
+                            <!-- Question content -->
+                            <div>
+                                <!-- label for question-->
+                                <label :for="'question_' + index" class="block text-sm font-medium text-gray-600">{{
+                                    __('Question') }} <span x-text="index + 1"></span></label>
+                                <!-- Input for questions -->
+                                <input type="text" x-model="question.content"
+                                    :name="'questions[' + index + '][content]'"
+                                    class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    required />
+                            </div>
+                            <!-- Image upload for question -->
+                            <div class="mt-4">
+                                <label :for="'image_path_' + index" class="block text-sm font-medium text-gray-600">
+                                    {{ __('Question') }} <span x-text="index + 1"></span> {{ __('Image') }}
+                                </label>
+                                <input type="file" :name="'questions[' + index + '][image_path]'"
+                                    x-model="question.image_path" :id="'image_path_' + index"
+                                    class="w-full p-1 mt-1 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-200 file:text-violet-700 hover:file:text-white hover:file:bg-violet-700 text-slate-500" />
+                            </div>
+                            <!-- Video link for question -->
+                            <div class="my-4">
+                                <label :for="'video_url_' + index" class="block text-sm font-medium text-gray-600">
+                                    {{ __('Question') }} <span x-text="index + 1"></span> {{ __('Video URL') }}
+                                </label>
+                                <input type="text" id="video_url" :name="'questions[' + index + '][video_url]'"
+                                    x-model="question.video_url"
+                                    class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+
                             <div
                                 class="flex flex-col items-center w-full my-4 space-y-3 lg:flex-row lg:space-y-0 lg:space-x-3">
                                 <!-- Type -->

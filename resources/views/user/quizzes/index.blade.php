@@ -44,7 +44,7 @@
                 (filterVisibility === '' || '{{ strtolower($quiz->visibility) }}' === filterVisibility.toLowerCase())
             " href="{{ route('user.quizzes.show', $quiz) }}"
                 class="relative z-10 p-6 transition-transform transform bg-gray-200 border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105">
-                <h2 class="mb-2 text-xl font-bold">{{ $quiz->title }}
+                <h2 class="mb-2 text-xl font-bold">#{{ $quiz->id }}-{{ $quiz->title }}
                     @if( $quiz->visibility !== 'public')
                     🔒
                     @endif
@@ -53,14 +53,15 @@
                 </h2>
                 <p class="mb-4">{{ $quiz->description}}</p>
                 <div class="w-full h-2 mb-4 bg-gray-700 rounded">
-                    <div class="h-2 bg-green-500 rounded" style="width:{{ auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
+                    <div class="h-2 bg-green-500 rounded" style="width:{{ $quiz->questions->count() > 0 ? (auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
                         $quiz->questions->count() *
-                        100 }}%;"></div>
+                        100): 0 }}%;"></div>
                 </div>
 
-                <p class="mb-4"> {{ round(auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
+                <p class="mb-4"> {{ round($quiz->questions->count() > 0 ? (auth()->user()->responses()->where('quiz_id',
+                    $quiz->id)->count() /
                     $quiz->questions->count() *
-                    100 )}} % complete</p>
+                    100): 0)}} % complete</p>
                 @if($quiz->visibility ==="restricted")
                 <div class="flex items-center">
 

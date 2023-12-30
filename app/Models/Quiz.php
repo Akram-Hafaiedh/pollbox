@@ -18,8 +18,9 @@ class Quiz extends Model
         'description',
         'active',
         // 'time_limit',
-        'start_date',
-        'end_date',
+        'image_path', //added
+        'start_date', //added
+        'end_date', //added
         'score',
         'has_correct_answers',
         'category_id',

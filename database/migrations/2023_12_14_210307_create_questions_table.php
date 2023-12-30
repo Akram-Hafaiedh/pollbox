@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quiz_id')->constrained()->cascadeOnDelete();
             $table->text('content')->nullable();
-            $table->enum('type', ['multiple_choice', 'single_choice', 'open_ended','numeric','ranking','feedback']);
+            $table->string('image_path')->nullable();
+            $table->string('video_url')->nullable();
+            $table->enum('type', ['multiple_choice', 'single_choice', 'open_ended', 'numeric', 'ranking', 'feedback']);
             $table->enum('difficulty', ['easy', 'medium', 'hard'])->default('medium');
             $table->unsignedInteger('order')->default(0);
             $table->boolean('required')->default(true);

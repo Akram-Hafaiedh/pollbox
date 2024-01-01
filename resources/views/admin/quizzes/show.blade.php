@@ -56,6 +56,10 @@
                             @foreach ($quiz->questions as $question)
                             <div class="mb-4">
                                 <p class="text-lg font-semibold">{{ $question->content }}</p>
+                                {{-- Check if the question type is 'feedback' --}}
+                                @if ($question->type === 'feedback')
+                                <span class="text-indigo-500">(Feedback)</span>
+                                @endif
                                 @if ($question->image_path)
                                 <img class="h-auto mx-auto my-4 max-w-32"
                                     src="{{ asset('storage/' . $question->image_path) }}" alt="Question Image"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Jobs\SendWelcomeEmail;
 use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -23,14 +24,20 @@ class AdminUserController extends Controller
 
 
         $search = $request->get('search');
+
+        $currentAdmin = Auth::user();
+
         $users = User::query()
             ->with(['responses' => function ($query) {
                 $query->latest('created_at');
             }])
-            ->where('name', 'LIKE', "%{$search}%")
-            ->orWhere('email', 'LIKE', "%{$search}%")
+            ->where('admin_id', $currentAdmin->id)
+            // TODO: Add search on the client side
+            // ->where('name', 'LIKE', "%{$search}%")
+            // ->orWhere('email', 'LIKE', "%{$search}%")
             ->orderBy('created_at', 'desc')
             ->paginate(15);
+
         return view('admin.users.index', compact('users', 'search'));
     }
 
@@ -50,7 +57,7 @@ class AdminUserController extends Controller
         $validatedUser = $request->validated();
         // dd($user);
 
-        $authUser = Auth::user();
+        $adminUser = Auth::user();
 
 
         $user = User::create([
@@ -59,11 +66,16 @@ class AdminUserController extends Controller
             'password' => bcrypt($validatedUser['password']),
             'mobile_number' => $validatedUser['mobile_number'],
             'role' => 'user',
-            'admin_id' => $authUser->id,
+            'admin_id' => $adminUser->id,
         ]);
 
         $password  = $validatedUser['password'];
-        Mail::to($user->email)->send(new WelcomeMail($user, $password));
+
+        // Mail::to($user->email)->send(new WelcomeMail($user, $password));
+
+        // Dispatch the job to send the email
+
+        SendWelcomeEmail::dispatch($user, $password);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }

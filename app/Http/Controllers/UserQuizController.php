@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SubmitQuizRequest;
 use App\Http\Resources\QuizResource;
 use App\Models\Option;
 use App\Models\Quiz;
@@ -63,36 +64,51 @@ class UserQuizController extends Controller
         if ($request->is('api/*')) {
 
             return new QuizResource($quiz);
-        } else {    // Check if the user has already submitted responses for this quiz
-            // $hasSubmittedResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
-            // Check if the user has submitted responses for all the questions
-            $hasSubmittedResponses = $user->responses()
-                ->where('quiz_id', $quiz->id)
-                ->count() === $quiz->questions->count();
-
-            // If the user has submitted responses, redirect them away
-            if ($hasSubmittedResponses) {
-                return redirect()->route('user.quizzes.index')
-                    ->with('error', 'You have already responded to this quiz.');
+        } else {
+            if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
+                return redirect()->back()
+                    ->with('error', 'You have already submitted all responses for this quiz.');
             }
 
             return view('user.quizzes.show', compact('quiz'));
         }
     }
-
-    public function submitQuiz(Quiz $quiz, Request $request): RedirectResponse
+    /**
+     * Checks if the user has already submitted responses for the quiz.
+     *
+     * @param mixed $user The user object.
+     * @param mixed $quiz The quiz object.
+     * @return bool Returns true if the user has already submitted responses
+     *              for all the questions in the quiz, false otherwise.
+     */
+    private function hasAlreadySubmittedResponses($user, $quiz): bool
     {
-        $user = auth()->user();
-
-        // $existingResponses = auth()->user()->responses()->where('quiz_id', $quiz->id)->exists();
-        $hasSubmittedResponses = $user->responses()
+        return $user->responses()
             ->where('quiz_id', $quiz->id)
             ->count() === $quiz->questions->count();
-        if ($hasSubmittedResponses) {
+    }
+    /**
+     * Submits a quiz response for a given user.
+     *
+     * @param Quiz $quiz The quiz to submit the response for.
+     * @param Request $request The request object containing the user's response.
+     * @throws Some_Exception_Class Exception thrown if the user has already submitted all responses for the quiz.
+     * @return RedirectResponse The redirect response to the results page.
+     */
+    public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
+    {
+
+        $user = auth()->user();
+
+        // Check if the user has already submitted responses for this quiz
+        if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
             return redirect()->back()
                 ->with('error', 'You have already submitted all responses for this quiz.');
         }
 
+        $validatedData = $request->validated();
+
+        dd($validatedData);
         // validation rules
         $rules = [];
         foreach ($quiz->questions as $question) {
@@ -106,7 +122,7 @@ class UserQuizController extends Controller
 
         foreach ($userResponses as $questionId => $optionId) {
             // $selectedOption = Option::findOrFail($optionId);
-            $existingResponse = $user->responses()
+            $existingResponse = $user->responses
                 ->where('quiz_id', $quiz->id)
                 ->where('question_id', $questionId)
                 ->first();
@@ -115,7 +131,7 @@ class UserQuizController extends Controller
                 $existingResponse->update(['user_response' => $optionId]);
             } else {
                 // Create a new response
-                $user->responses()->create([
+                $user->responses->create([
                     'quiz_id' => $quiz->id,
                     'question_id' => $questionId,
                     'user_response' => $optionId,
@@ -136,7 +152,7 @@ class UserQuizController extends Controller
         $user = auth()->user();
         $quiz->load('questions.options');
         // dd($quiz,$quiz->questions);
-        $userResponses = $user->responses()->where('quiz_id', $quiz->id)->get();
+        $userResponses = $user->responses->where('quiz_id', $quiz->id)->get();
         // dd( $userResponses);
 
         // Fetch user's responses and correct answers

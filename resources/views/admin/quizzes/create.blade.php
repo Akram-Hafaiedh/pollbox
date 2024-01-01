@@ -5,14 +5,15 @@
         @auth
         {{-- TODO make the page title admin > users > create --}}
         <x-dashboard-main-content :page-title="__('Admin Quizz Creation')">
-            <div class="flex flex-col items-center justify-between bg-gray-200" x-data="{
+            <div class="relative flex flex-col items-center justify-between bg-gray-200" x-data="{
                 questions: {{ old('questions') ? json_encode(old('questions')) : '[{content: \'\', options: [\'\', \'\']}]' }},
 
                     hasCorrectAnswers: true,
                     removeOption: function(index, optionIndex) {
                         console.log('Removing option', optionIndex, 'From question', index);
                         this.questions[index].options.splice(optionIndex, 1);
-                    }
+                    },
+                    quizVisibility:'public'
                 }" x-init="console.log($refs)">
 
                 {{-- x-data="{questions:[{content:'', options:['','']}] , hasCorrectAnswers: true }"
@@ -40,7 +41,7 @@
                 </div>
                 @endif
 
-                <form method="post" action="{{ route('admin.quizzes.store') }}" class="w-full p-6"
+                <form method="post" action="{{ route('admin.quizzes.store') }}" class="w-full p-6 mt-10"
                     enctype="multipart/form-data">
                     @csrf
                     <!-- Title-->
@@ -51,23 +52,23 @@
                         <x-input-error :messages="$errors->get('title')" class="mt-2" />
                     </div>
 
-                    <!-- Dates-->
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        <div class="my-4">
+                    <!-- Dates and Visibility-->
+                    <div class="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:my-4">
+                        <div>
                             <x-input-label for="start_date" :value="__('Start Date')" />
                             <x-text-input id="start_date" class="block w-full mt-1" type="date" name="start_date"
                                 :value="old('start_date')" autofocus autocomplete="title" required />
                             <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
                         </div>
-                        <div class="my-4">
+                        <div>
                             <x-input-label for="end_date" :value="__('End Date')" />
                             <x-text-input id="end_date" class="block w-full mt-1" type="date" name="end_date"
                                 :value="old('start_date')" autofocus autocomplete="title" required />
                             <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
                         </div>
-                        <div class="my-4">
+                        <div>
                             <x-input-label for="visibility" :value="__('Visibility')" />
-                            <select id="visibility" name="visibility"
+                            <select id="visibility" name="visibility" x-model="quizVisibility"
                                 class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="public">Public</option>
                                 <option value="private">Private</option>
@@ -75,7 +76,15 @@
                             </select>
                             <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
                         </div>
-
+                        <div>
+                            <x-input-label for="Language" :value="__('Language')" />
+                            <select id="languageSelect" x-model="selectedLanguage" @change="changeLanguage"
+                                class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                                <option value="fr">French</option>
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                            </select>
+                        </div>
 
                     </div>
                     <!---Radio-Buttons  + selected users -->
@@ -122,11 +131,12 @@
                         </div>
 
                         <!--Members-->
-                        <div class="w-full pt-4 lg:pt-0 lg:ml-4 lg:w-1/4">
+
+                        <div x-show="quizVisibility === 'restricted'" class="w-full pt-4 lg:pt-0 lg:ml-4 lg:w-1/4">
 
                             <div x-data="{ open: false, selectedUsers: {{ json_encode(old('selected_users', [])) }} }"
                                 class="mb-4">
-                                <label :for="'users'" class="block mb-2 text-sm font-medium text-gray-600">
+                                <label :for="'users'" class="sr-only block mb-2 text-sm font-medium text-gray-600">
                                     {{ __('Select Users to Invite:') }}
                                 </label>
                                 <div class="relative">
@@ -154,6 +164,7 @@
                             </div>
 
                         </div>
+
 
                     </div>
 
@@ -209,12 +220,11 @@
                                     <select x-model="question.type" :name="'questions[' + index + '][type]'"
                                         :id="'type_' + index"
                                         class="flex w-full mt-1 space-y-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                        <option value="feedback">Feedback</option>
                                         <option value="single_choice">Single Choice</option>
                                         <option value="multiple_choice">Multiple Choice</option>
-                                        <option value="open_ended">Open Ended</option>
                                         <option value="numeric">Numeric</option>
                                         <option value="ranking">Ranking</option>
+                                        <option value="feedback">Feedback</option>
                                         <!-- Add other options as needed -->
                                     </select>
                                 </div>
@@ -260,10 +270,11 @@
                             <div
                                 class="flex flex-col items-center justify-end mt-2 mb-4 space-x-0 space-y-2 lg:flex-row lg:space-x-2 lg:space-y-0">
                                 <!-- Button for Addding options to question-->
-                                <button type="button" @click="question.options.push('')"
-                                    class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md lg:w-max hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
-                                    __('Add Option') }}</button>
-
+                                <template x-if="question.type !== 'feedback'">
+                                    <button type="button" @click="question.options.push('')"
+                                        class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md lg:w-max hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
+                                        __('Add Option') }}</button>
+                                </template>
                                 <!-- Remove question button-->
                                 <button type="button" @click="questions.splice(index, 1)"
                                     class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md lg:w-max hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
@@ -272,46 +283,47 @@
 
 
                             <!-- Options for the current question -->
-
-                            <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
-                                <div>
-                                    <!-- Label for option-->
-                                    <div class="flex flex-row items-center justify-between text-xs">
-                                        <label :for="'option_' + index + '_' + optionIndex"
-                                            class="block text-sm font-medium text-gray-600 ">
-                                            {{ __('Option') }} <span x-text="optionIndex + 1"></span>
-                                        </label>
-                                    </div>
-                                    <div class="flex flex-row items-center mr-2 space-x-2">
-                                        <!-- Input for option-->
-                                        <input :id="'option_' + index + '_' + optionIndex"
-                                            :name="'questions[' + index + '][options][' + optionIndex + '][content]'"
-                                            x-model="option.content"
-                                            class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            type="text" required />
-                                        <!-- Checkbox for correct answer -->
-                                        <template x-if="hasCorrectAnswers">
-                                            <div class="" x-data="{ isCorrect: false }">
-                                                <input type="checkbox" value="1"
-                                                    :id="'option_' + index + '_' + optionIndex + '_correct'" :name="'questions[' + index + '][options][' + optionIndex +
+                            <template x-if="question.type !== 'feedback'">
+                                <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
+                                    <div>
+                                        <!-- Label for option-->
+                                        <div class="flex flex-row items-center justify-between text-xs">
+                                            <label :for="'option_' + index + '_' + optionIndex"
+                                                class="block text-sm font-medium text-gray-600 ">
+                                                {{ __('Option') }} <span x-text="optionIndex + 1"></span>
+                                            </label>
+                                        </div>
+                                        <div class="flex flex-row items-center mr-2 space-x-2">
+                                            <!-- Input for option-->
+                                            <input :id="'option_' + index + '_' + optionIndex"
+                                                :name="'questions[' + index + '][options][' + optionIndex + '][content]'"
+                                                x-model="option.content"
+                                                class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                type="text" required />
+                                            <!-- Checkbox for correct answer -->
+                                            <template x-if="hasCorrectAnswers">
+                                                <div class="" x-data="{ isCorrect: false }">
+                                                    <input type="checkbox" value="1"
+                                                        :id="'option_' + index + '_' + optionIndex + '_correct'" :name="'questions[' + index + '][options][' + optionIndex +
                                                             '][is_correct]'" x-model="isCorrect"
-                                                    class="mx-3 text-indigo-600 border-gray-300 rounded w-7 h-7 form-checkbox focus:ring-indigo-500">
-                                                <!-- Add a hidden input to store the actual value in the form submission -->
-                                                {{-- <input type="hidden" :name="'questions[' + index + '][options][' + optionIndex +
+                                                        class="mx-3 text-indigo-600 border-gray-300 rounded w-7 h-7 form-checkbox focus:ring-indigo-500">
+                                                    <!-- Add a hidden input to store the actual value in the form submission -->
+                                                    {{-- <input type="hidden" :name="'questions[' + index + '][options][' + optionIndex +
                                                             '][is_correct]'"
-                                                    x-bind:value="isCorrect ? 'true' : 'false'"> --}}
-                                            </div>
-                                        </template>
-                                        <template x-else>
-                                            <p>hasCorrectAnswers is undefined</p>
-                                        </template>
-                                        <!-- Remove option button -->
-                                        <button type="button" x-on:click="removeOption(index, optionIndex)"
-                                            class="w-8 h-8 text-white bg-red-500 rounded-md">
-                                            <span class="sr-only">{{ __('Remove Option') }}</span> X
-                                        </button>
+                                                        x-bind:value="isCorrect ? 'true' : 'false'"> --}}
+                                                </div>
+                                            </template>
+                                            <template x-else>
+                                                <p>hasCorrectAnswers is undefined</p>
+                                            </template>
+                                            <!-- Remove option button -->
+                                            <button type="button" x-on:click="removeOption(index, optionIndex)"
+                                                class="w-8 h-8 text-white bg-red-500 rounded-md">
+                                                <span class="sr-only">{{ __('Remove Option') }}</span> X
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                </template>
                             </template>
 
                         </div>

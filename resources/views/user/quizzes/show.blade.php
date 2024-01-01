@@ -10,7 +10,16 @@
         <span class="block sm:inline">{{ session('error') }}</span>
     </div>
     @endif
-
+    @if ($errors->any())
+    <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+        <strong class="font-bold">Validation errors:</strong>
+        <ul class="mt-2 list-disc list-inside">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     <div class="flex items-center justify-center bg-gray-100">
         <div class="w-full" x-data="{ currentSlide: 0, totalSlides: {{ count($quiz->questions) }} }">
             @if ($quiz->questions->count() > 0)
@@ -33,7 +42,11 @@
                         @foreach ($quiz->questions as $key => $question)
                         <div x-show="currentSlide === {{ $loop->index }}" class="transition-opacity duration-500"
                             x-cloak>
-                            <h2 class="mb-4 text-2xl font-semibold">{{ $key + 1 }} - {{ $question->content }}</h2>
+                            <h2 class="mx-auto mt-4 mb-4 text-2xl font-semibold w-fit">{{ $key + 1 }} - {{
+                                $question->content }}
+                                <span class="text-red-500">{{
+                                    $question->required ? '*' : '' }}</span>
+                            </h2>
 
 
                             @if ($question->image_path)
@@ -43,20 +56,119 @@
                             @endif
 
                             @if ($question->video_url)
-                            <div class="max-w-2xl mx-auto my-4 rounded-lg">
+
+                            {{-- *Original iframe without embed --}}
+                            {{-- <div class="max-w-2xl mx-auto my-4 rounded-lg">
                                 <iframe class="w-full h-96" src="{{ $question->video_url }}?controls=0&rel=0&fs=1"
                                     frameborder="0" scrolling="no" allowfullscreen
-                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                    allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            </div> --}}
+
+                            {{--* Embed Iframe --}}
+                            {{-- <iframe width="560" height="315"
+                                src="https://www.youtube.com/embed/vpmVE1hOBow?si=BL-QhXDZAPv-77Uu"
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen></iframe> --}}
+
+
+                            <div class="max-w-2xl mx-auto my-4 rounded-lg">
+                                <div class="aspect-w-16 aspect-h-9">
+                                    <iframe class="w-full h-full"
+                                        src="https://www.youtube.com/embed/{{ getYoutubeVideoId($question->video_url) }}?controls=0&rel=0&fs=1"
+                                        frameborder="0" allowfullscreen></iframe>
+                                </div>
                             </div>
+
+
                             @endif
                             {{-- Options --}}
-                            <div class="mx-auto space-y-2">
+                            <div class="mx-auto space-y-2 w-fit">
+                                {{-- Check if the question type is 'feedback' --}}
+                                @if ($question->type === 'feedback')
+                                <p class="text-sm text-gray-500">Enter your answer here.</p>
+                                <textarea name="responses[{{ $question->id }}]" id="feedback" rows="6" cols="70"
+                                    class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"></textarea>
+                                @endif
+
+                                @if ($question->type === 'multiple_choice')
+                                <p class="text-sm text-gray-500">Choose one or more options.</p>
+                                @endif
+
+                                @if($question->type ==='numeric')
+
+                                <p class="text-sm text-gray-500">Enter a number between 1 and 10.</p>
+                                @endif
+
+                                @if($question->type ==='ranking')
+                                <p class="text-sm text-gray-500">Rank your preference from 1 (lowest) to {{
+                                    count($question->options) }} (highest).
+                                </p>
+                                @endif
+
+                                @if ($question->type === 'single_choice')
+                                <p class="text-sm text-gray-500">Choose one option.</p>
+                                @endif
+
                                 @foreach ($question->options as $option)
-                                <label class="flex items-center justify-center space-x-2">
-                                    <input type="radio" name="responses[{{ $question->id }}]" value="{{ $option->id }}"
-                                        {{-- name="option_group_{{ $loop->parent->index }}" value="{{ $option }}" --}}>
-                                    <span>{{ $option->content }}</span>
+                                @switch($question->type)
+
+                                @case('multiple_choice')
+                                <span class="sr-only">Multiple Choices</span>
+                                <div class="flex items-center py-2 space-x-4">
+                                    <input type="checkbox" name="responses[{{ $question->id }}][{{ $option->id }}]"
+                                        id="{{ $option->id }}" value="true"
+                                        class="w-6 h-6 p-2 text-blue-500 border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+                                    <label for="{{ $option->id }}" class="font-bold text-gray-700">
+                                        <div
+                                            class="px-8 py-2 text-white bg-blue-500 border border-gray-300 rounded-tr-full rounded-bl-full hover:bg-blue-300 hover:text-black ">
+                                            {{ $option->content }}
+                                        </div>
+                                    </label>
+                                </div>
+                                @break
+
+                                @case('single_choice')
+                                <span class="sr-only">Single Choice</span>
+                                <label class="flex items-center justify-start space-x-2 space-y-2">
+                                    <input class="w-6 h-6" type="radio" name="responses[{{ $question->id }}]"
+                                        value="{{ $option->id }}">
+                                    {{-- name="option_group_{{ $loop->parent->index }}" value="{{ $option }}" --}}
+                                    <span
+                                        class="px-8 py-2 text-white bg-blue-500 border border-gray-300 rounded-tr-full rounded-bl-full hover:bg-blue-300 hover:text-black">{{
+                                        $option->content }}</span>
                                 </label>
+                                @break
+
+                                @case('ranking')
+                                <div class="flex items-center justify-between py-2 space-x-4">
+                                    <div for="ranking_response" class="font-bold text-gray-700">
+                                        <div
+                                            class="px-8 py-2 text-white bg-blue-500 border border-gray-300 rounded-tr-full rounded-bl-full hover:bg-blue-300 hover:text-black">
+                                            {{ $option->content }}
+                                        </div>
+                                    </div>
+                                    <input type="number" name="responses[{{ $question->id }}][{{ $option->id }}]"
+                                        class="w-12 p-2 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+                                </div>
+                                @break
+
+                                @case('numeric')
+                                <div class="flex items-center justify-between py-2 space-x-4">
+
+                                    <div class="font-bold text-gray-700">
+                                        <div
+                                            class="px-8 py-2 text-white bg-blue-500 border border-gray-300 rounded-tr-full rounded-bl-full hover:bg-blue-300 hover:text-black">
+                                            {{ $option->content }}
+                                        </div>
+                                    </div>
+                                    <input type="number" name="responses[{{ $question->id }}][{{ $option->id }}]" min="1"
+                                        class="w-12 p-2 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+                                </div>
+                                @break
+
+                                @endswitch
+
                                 @endforeach
                             </div>
                         </div>

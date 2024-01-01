@@ -20,11 +20,13 @@ class QuizSeeder extends Seeder
             $questionsNumber = rand(5, 8);
 
             $quiz->questions()->saveMany(
-                Question::factory($questionsNumber)->create(['quiz_id' => $quiz->id])->each(function ($question) use ($quiz) {
+                Question::factory($questionsNumber)->create(['quiz_id' => $quiz->id])->each(function ($question) {
                     // Create 4 options for each question
-                    // $question->quiz_id = $quiz->id;
-                    // $question->save();
-                    $question->options()->saveMany(Option::factory(4)->create(['question_id' => $question->id]));
+                    if ($question->type !== 'feedback') {
+                        $question->options()->saveMany(Option::factory(4)->create(['question_id' => $question->id]));
+                    }
+
+                    // $question->options()->saveMany(Option::factory(4)->create(['question_id' => $question->id]));
                 })
             );
         });

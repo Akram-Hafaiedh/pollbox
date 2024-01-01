@@ -18,7 +18,7 @@ class QuestionFactory extends Factory
     {
         return [
             'content' => fake()->sentence(),
-            'type' => fake()->randomElement(['multiple_choice', 'single_choice', 'open_ended']),
+            'type' => fake()->randomElement(['multiple_choice', 'single_choice', 'feedback', 'ranking', 'numeric']),
             'difficulty' => fake()->randomElement(['easy', 'medium', 'hard']),
             'required' => fake()->boolean(),
         ];

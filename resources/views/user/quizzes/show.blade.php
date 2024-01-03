@@ -4,18 +4,47 @@
             {{ __($quiz->title) }}
         </h2>
     </x-slot>
-    @if(session('error'))
+    {{-- @if(session('error'))
     <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
         <strong class="font-bold">Error!</strong>
         <span class="block sm:inline">{{ session('error') }}</span>
     </div>
-    @endif
-    @if ($errors->any())
+    @endif --}}
+    {{-- @if ($errors->any())
     <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
         <strong class="font-bold">Validation errors:</strong>
         <ul class="mt-2 list-disc list-inside">
             @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif --}}
+
+    @if ($errors->any())
+    <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+        <strong class="font-bold">Validation errors:</strong>
+        <ul class="mt-2 list-disc list-inside">
+            @foreach ($errors->keys() as $errorKey)
+                {{-- Extract the question identifier from the error key --}}
+                @php
+                    preg_match('/responses\.(\d+)/', $errorKey, $matches);
+                    $questionIdentifier = $matches[1] ?? null;
+                @endphp
+
+                {{-- Determine the question number based on its order in the quiz --}}
+                @if ($questionIdentifier)
+                    @php
+                        // Find the question in the collection and get its index
+                        $questionIndex = $quiz->questions->pluck('id')->search($questionIdentifier);
+                        // Adding 1 to convert from zero-index to human-readable question number
+                        $questionNumber = $questionIndex !== false ? $questionIndex + 1 : '?';
+                    @endphp
+                    <li>Question number {{ $questionNumber }} response is required.</li>
+                @else
+                    {{-- If question number is not found, display the original error message --}}
+                    <li>{{ $errors->first($errorKey) }}</li>
+                @endif
             @endforeach
         </ul>
     </div>
@@ -48,6 +77,8 @@
                                     $question->required ? '*' : '' }}</span>
                             </h2>
 
+                            {{--! Hidden Input --}}
+                            <input type="hidden" name="questions[{{ $question->id }}]" value='{"type":"{{ $question->type }}", "required":{{ $question->required ? "true" : "false" }}}'>
 
                             @if ($question->image_path)
                             <img class="h-auto max-w-md mx-auto mb-8"
@@ -57,21 +88,6 @@
 
                             @if ($question->video_url)
 
-                            {{-- *Original iframe without embed --}}
-                            {{-- <div class="max-w-2xl mx-auto my-4 rounded-lg">
-                                <iframe class="w-full h-96" src="{{ $question->video_url }}?controls=0&rel=0&fs=1"
-                                    frameborder="0" scrolling="no" allowfullscreen
-                                    allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                            </div> --}}
-
-                            {{--* Embed Iframe --}}
-                            {{-- <iframe width="560" height="315"
-                                src="https://www.youtube.com/embed/vpmVE1hOBow?si=BL-QhXDZAPv-77Uu"
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowfullscreen></iframe> --}}
-
-
                             <div class="max-w-2xl mx-auto my-4 rounded-lg">
                                 <div class="aspect-w-16 aspect-h-9">
                                     <iframe class="w-full h-full"
@@ -79,9 +95,9 @@
                                         frameborder="0" allowfullscreen></iframe>
                                 </div>
                             </div>
-
-
                             @endif
+
+
                             {{-- Options --}}
                             <div class="mx-auto space-y-2 w-fit">
                                 {{-- Check if the question type is 'feedback' --}}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Question;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SubmitQuizRequest extends FormRequest
@@ -13,6 +14,7 @@ class SubmitQuizRequest extends FormRequest
     protected function prepareForValidation()
     {
         // dd($this->all());
+        dd($this->all(), $this->rules());
 
         parent::prepareForValidation();
     }
@@ -31,35 +33,43 @@ class SubmitQuizRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules =[
             'reponses' => 'required|array',
+            'questions' => 'required|array',
         ];
 
-        $responses = $this->input('responses');
+        $questionsIput = $this->input('questions',[]);
+        foreach ($questionsIput as $id => $questionData) {
+            $question = json_decode($questionData, true);
+            $numberOfOptions = count($question->options);
+            $type = $question['type'];
+            $isRequired = $question['required'];
+            $fieldRule = $isRequired ? 'required' : 'nullable';
 
-        foreach ($responses as $question => $response) {
-            $questionType = $question->type;
-            switch ($questionType) {
+            // TODO : Add required to required to all fields (depending on the question )
+            switch ($type) {
                 case 'single_choice':
-                    $rules['responses.' . $question] = 'sometimes|in:true,false';
+                    $rules['responses.' . $id] = $fieldRule . '|in:true,false';
                     break;
                 case 'feedback':
-                    $rules['responses.' . $question] = 'nullable|string';
+                    $rules['responses.' . $id] = $fieldRule . '|string';
                     break;
-                case 'number':
-                    $rules['responses.' . $question] = 'nullable|numeric';
+                case 'numeric':
+                    $rules['responses.' . $id] = $fieldRule . '|array';
+                    $rules['responses.' . $id . '.*.ranking'] = "required|integer|between:1,{$numberOfOptions}";
                     break;
                 case 'ranking':
-                    $rules['responses.' . $question] = 'nullable|array';
-                    foreach ($response as $option => $rank) {
-                        $rules['responses.' . $question . '.' . $option] = 'nullable|numeric|min:1|max:10';
-                    }
+                    $rules['responses.' . $id] = $fieldRule . '|array';
+                    $rules['responses.'.$id.'.*'] = $fieldRule  . '|between:1,10';
                     break;
                 case 'multiple_choice':
-                    $rules['responses.' . $question] = 'nullable|array';
-                    $rules['responses.' . $question . '.*'] = 'nullable|in:' . implode(',', $question->options->pluck('id')->toArray());
+                    // Assuming you have a way to get options for multiple_choice questions
+                    $optionIds = Question::with('options')->findOrFail($id)->options->pluck('id')->all();
+                    $rules['responses.' . $id] = $fieldRule . '|array';
+                    $rules['responses.' . $id . '.*'] = ($fieldRule ? 'required' : 'nullable') . '|in:' . implode(',', $optionIds);
                     break;
             }
         }
+        return $rules;
     }
 }

@@ -84,5 +84,32 @@ Route::prefix('user')->group(function () {
     Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
     Route::get('/quizzes/{quiz}/result', [UserQuizController::class, 'showResults'])->name('user.quizzes.results');
 
-    // Route::get('/quizzes/acceess/{quiz}', [UserQuizController::class, 'access'])->name('user.quizzes.acceess');
+    //! ADDED ROUTES FOR QUIZ
+    Route::get('/quiz-start/{quiz}', [UserQuizController::class, 'startQuiz'])->name('quiz-start');
+    Route::get('/quiz-access/{quiz}', [UserQuizController::class, 'access'])->name('quiz-access');
+});
+
+
+// Route::prefix('survey')->group(function () {
+//     Route::get('/', [SurveyController::class, 'index'])->name('surveys.index');
+//     Route::get('/create', [SurveyController::class, 'create'])->name('surveys.create');
+//     Route::post('/store', [SurveyController::class, 'store'])->name('surveys.store');
+//     Route::get('/{survey}', [SurveyController::class, 'show'])->name('surveys.show');
+//     Route::get('/{survey}/result', [SurveyController::class, 'showResults'])->name('surveys.results');
+//     Route::get('/{survey}/acceess', [SurveyController::class, 'access'])->name('surveys.acceess');
+//     Route::get('/{survey}/preview', [SurveyController::class, 'preview'])->name('surveys.preview');
+//     Route::post('/{survey}/submit', [SurveyController::class, 'submit'])->name('surveys.submit');
+//     Route::get('/{survey}/edit', [SurveyController::class, 'edit'])->name('surveys.edit');
+//     Route::patch('/{survey}/update', [SurveyController::class, 'update'])->name('surveys.update');
+//     Route::delete('/{survey}/destroy', [SurveyController::class, 'destroy'])->name('surveys.destroy');
+//     Route::get('/{survey}/questions', [SurveyController::class, 'questions'])->name('surveys.questions');
+//     Route::get('/{survey}/questions/{question}', [SurveyController::class, 'question'])->name('surveys.question');
+//     Route::post('/{survey}/questions', [SurveyController::class, 'storeQuestion'])->name('surveys.storeQuestion');
+//     Route::post('/{survey}/questions/{question}/update', [SurveyController::class, 'updateQuestion'])->name('surveys.updateQuestion');
+//     Route::delete('/{survey}/questions/{question}/destroy', [SurveyController::class, 'destroyQuestion'])->name('surveys.destroyQuestion');
+// });
+
+Route::get('/test', function () {
+    $quiz = App\Models\Quiz::find(1);
+    return view('quizzes.show_quiz', compact('quiz'));
 });

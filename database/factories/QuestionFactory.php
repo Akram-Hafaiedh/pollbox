@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class QuestionFactory extends Factory
 {
+
     /**
      * Define the model's default state.
      *
@@ -16,11 +17,35 @@ class QuestionFactory extends Factory
      */
     public function definition(): array
     {
+
+        $video_ids = [
+            'dQw4w9WgXcQ',
+            '3tmd-ClpJxA',
+            'v2AC41dglnM',
+            // Add more video IDs
+        ];
+        $random_video_id = $video_ids[array_rand($video_ids)];
+
+
         return [
             'content' => fake()->sentence(),
-            'type' => fake()->randomElement(['multiple_choice', 'single_choice', 'feedback', 'ranking', 'numeric']),
-            'difficulty' => fake()->randomElement(['easy', 'medium', 'hard']),
+            'type' => fake()->randomElement([
+                'multiple_choice',
+                'single_choice',
+                'feedback',
+                'ranking',
+                'numeric',
+                'dropdown',
+                'likert_scale',
+                'slider',
+                'date',
+                'file_upload',
+                'text'
+            ]),
+            // 'difficulty' => fake()->randomElement(['easy', 'medium', 'hard']),
             'required' => fake()->boolean(),
+            'image_path' => 'https://via.placeholder.com/300', //! Placeholder image URL
+            'video_url' => 'https://www.youtube.com/embed/' . $random_video_id, //! Random video embed URL
         ];
     }
 }

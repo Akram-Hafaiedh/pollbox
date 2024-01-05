@@ -23,7 +23,13 @@ return new class extends Migration
             // $table->integer('time_limit')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            
+
+
+            $table->string('color')->nullable();
+            $table->string('language')->nullable();
+            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->enum('type', ['quiz', 'survey', 'test'])->default('survey')->nullable();
+
 
             $table->enum('visibility', ['public', 'private', 'restricted'])->default('public');
             $table->boolean('randomize')->default(false);

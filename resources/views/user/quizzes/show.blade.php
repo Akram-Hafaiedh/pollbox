@@ -86,16 +86,7 @@
                                 class="w-32 h-auto">
                             @endif
 
-                            @if ($question->video_url)
 
-                            <div class="max-w-2xl mx-auto my-4 rounded-lg">
-                                <div class="aspect-w-16 aspect-h-9">
-                                    <iframe class="w-full h-full"
-                                        src="https://www.youtube.com/embed/{{ getYoutubeVideoId($question->video_url) }}?controls=0&rel=0&fs=1"
-                                        frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                            @endif
 
 
                             {{-- Options --}}

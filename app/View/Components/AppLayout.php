@@ -7,6 +7,11 @@ use Illuminate\View\View;
 
 class AppLayout extends Component
 {
+
+
+    public function __construct(public string $dir = 'ltr', public string $lang = 'en')
+    {}
+
     /**
      * Get the view / contents that represents the component.
      */

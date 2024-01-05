@@ -16,6 +16,7 @@ class QuizSeeder extends Seeder
      */
     public function run(): void
     {
+
         Quiz::factory(30)->create()->each(function ($quiz) {
             $questionsNumber = rand(5, 8);
 

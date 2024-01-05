@@ -110,6 +110,7 @@ Route::prefix('user')->group(function () {
 // });
 
 Route::get('/test', function () {
-    $quiz = App\Models\Quiz::find(1);
+    $quiz = App\Models\Quiz::find(3);
+    // dd($dir);
     return view('quizzes.show_quiz', compact('quiz'));
 });

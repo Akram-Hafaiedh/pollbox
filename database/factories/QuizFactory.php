@@ -27,6 +27,8 @@ class QuizFactory extends Factory
             'end_date' => fake()->date('Y-m-d'),
             'score' => rand(0, 100),
             'has_correct_answers' => (bool) rand(0, 1),
+            'color' =>fake()->hexColor(),
+            'language' => fake()->languageCode(),
             'category_id' => Category::factory(),
             'user_id' => User::where('role', 'admin')->first()->id,
             'visibility' => fake()->randomElement(['public', 'private', 'restricted']),  // Override default visibility if needed

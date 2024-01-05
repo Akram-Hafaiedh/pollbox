@@ -23,6 +23,12 @@ class Question extends Model
         'video_url',
     ];
 
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);

@@ -17,10 +17,12 @@ class Quiz extends Model
         'title',
         'description',
         'active',
-        // 'time_limit',
+        // 'time_limit', //removed
         'image_path', //added
         'start_date', //added
         'end_date', //added
+        'color', //added
+        'language', // added
         'score',
         'has_correct_answers',
         'category_id',

@@ -14,7 +14,7 @@ class SubmitQuizRequest extends FormRequest
     protected function prepareForValidation()
     {
         // dd($this->all());
-        dd($this->all(), $this->rules());
+        // dd($this->all(), $this->rules());
 
         parent::prepareForValidation();
     }

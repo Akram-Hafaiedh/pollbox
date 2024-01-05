@@ -1,3 +1,5 @@
+
+
 <x-app-layout>
 
     <div class="container mx-auto my-8" x-data="{ searchTerm: '', filterVisibility: '' }">
@@ -42,7 +44,7 @@
                 (searchTerm==='' || '{{ strtolower($quiz->title) }}'.includes(searchTerm.toLowerCase()))&&
                 (filterVisibility === '' || '{{ strtolower($quiz->visibility) }}' === filterVisibility.toLowerCase())"
                 href="{{ route('user.quizzes.show', $quiz) }}"
-                class="relative p-6 transition-transform transform bg-gray-200 border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105 hover:shadow-lg">
+                class="relative p-6 text-white transition-transform transform border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105 hover:shadow-lg"  style="background-color: {{ $quiz->color }}">
                 <!-- Using Blade-->
                 <!-- <h2 class="w-full mb-2 text-xl font-bold">#{{ $quiz->id }}-{{ $quiz->title }}
                     <span
@@ -56,7 +58,7 @@
                         class="px-2 py-1 mr-auto text-sm text-white rounded-full"></span>
                 </h2>
                 <p class="mb-4">{{ $quiz->description }}</p>
-                <div class="w-full h-2 mb-4 bg-gray-700 rounded">
+                <div class="w-full h-2 mb-4 bg-gray-200 rounded">
                     <div class="h-2 bg-green-500 rounded" style="width:{{ $quiz->questions->count() > 0
                                     ? (auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
                                             $quiz->questions->count()) *

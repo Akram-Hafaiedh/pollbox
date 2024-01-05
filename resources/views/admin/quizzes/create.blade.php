@@ -77,19 +77,26 @@
                             <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="Language" :value="__('Language')" />
-                            <select id="languageSelect" x-model="selectedLanguage" @change="changeLanguage"
-                                class="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                            <x-input-label for="language" :value="__('Language')" />
+                            <select id="languageSelect" name="language" x-model="selectedLanguage" @change="changeLanguage"
+                                class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
                                 <option value="fr">French</option>
                                 <option value="en">English</option>
                                 <option value="ar">Arabic</option>
                             </select>
                         </div>
-
                     </div>
                     <!---Radio-Buttons  + selected users -->
                     <div class="flex flex-col mt-4 space-y-3 md:space-y-0 lg:flex-row md:items-center">
 
+                        <!-- Color -->
+                        <div class="w-full lg:w-1/4">
+                            <x-input-label for="color" :value="__('Color')" />
+                            <input class="w-full h-8 rounded-xl" id="color" class="block w-full mt-1" type="color" name="color"
+                                value="old('color')" autofocus autocomplete="lanugage" />
+
+                            <x-input-error :messages="$errors->get('color')" class="mt-2" />
+                        </div>
                         <!-- Active -->
                         <div class="w-full ml-4 lg:w-1/4">
                             <div class="mt-2">
@@ -136,7 +143,7 @@
 
                             <div x-data="{ open: false, selectedUsers: {{ json_encode(old('selected_users', [])) }} }"
                                 class="mb-4">
-                                <label :for="'users'" class="sr-only block mb-2 text-sm font-medium text-gray-600">
+                                <label :for="'users'" class="block mb-2 text-sm font-medium text-gray-600 sr-only">
                                     {{ __('Select Users to Invite:') }}
                                 </label>
                                 <div class="relative">
@@ -151,8 +158,7 @@
                                             <input type="checkbox" name="selected_users[]" value="{{ $user->id }}"
                                                 x-model="selectedUsers" {{ is_array(old('selected_users')) &&
                                                 in_array($user->id, old('selected_users')) ? 'checked' : '' }}
-                                            class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox
-                                            focus:ring-indigo-500"
+                                            class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500"
                                             >
 
                                             <p>{{ $user->name }}</p>

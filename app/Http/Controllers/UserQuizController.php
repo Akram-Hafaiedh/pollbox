@@ -108,13 +108,7 @@ public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResp
 
         $validatedData = $request->validated();
 
-        dd($validatedData);
-        // validation rules
-        $rules = [];
-        foreach ($quiz->questions as $question) {
-            $rules["responses.{$question->id}"] = 'nullable|exists:options,id';
-        }
-        $request->validate($rules);
+
         // validation Ok
         // Store response
         $userResponses = $request->input('responses');

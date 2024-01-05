@@ -21,7 +21,7 @@ class QuizFactory extends Factory
         return [
             'title' => fake()->sentence(3),
             'description' => fake()->sentence(20),
-            'active' => (bool) rand(0, 1),
+            // 'active' => (bool) rand(0, 1),
             // 'time_limit' => rand(15, 60),
             'start_date' => fake()->date('Y-m-d'),
             'end_date' => fake()->date('Y-m-d'),

@@ -13,16 +13,17 @@ class Quiz extends Model
     use HasFactory;
 
     protected $fillable = [
+        'is_finished',
         'user_id',
         'title',
         'description',
         'active',
         // 'time_limit', //removed
-        'image_path', //added
-        'start_date', //added
-        'end_date', //added
-        'color', //added
-        'language', // added
+        'image_path',
+        'start_date',
+        'end_date',
+        'color',
+        'language', 
         'score',
         'has_correct_answers',
         'category_id',

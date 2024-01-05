@@ -3,7 +3,7 @@ $dir = $quiz->language === 'ar' ? 'rtl' : 'ltr';
 $lang = $quiz->language;
 @endphp
 
-<x-app-layout :dir="$dir" :lang="$lang">
+<x-app-layout :$dir :$lang>
     <div class="container mx-auto my-8"
         style="background-color: {{ $quiz->color }}"
         >
@@ -15,9 +15,8 @@ $lang = $quiz->language;
 
             @foreach ($quiz->questions as $index => $question)
             <div class="space-y-4 question">
-                <label for="question_{{ $question->id }}" class="block text-sm font-medium text-gray-700"><span class="text-xl font-bold">Question {{ $index }} :</span>  {{
-                    $question->content }}
-                    {{ $question->required ? '*' : '' }} ({{ $question->type }}) </label>
+                <label for="question_{{ $question->id }}" class="block text-sm font-medium text-gray-700"><span class="text-xl font-bold">{{ $lang==='ar' ?'السؤال' : 'Question' }} {{ $index }} :</span>  {{
+                    $question->content }} <span>{{ $question->required ? '*' : '' }}</span> ({{ $question->type }}) </label>
 
                 {{-- @if ($question->image_path)
                 <img src="{{ asset($question->image_path) }}" alt="Question Image">
@@ -32,11 +31,11 @@ $lang = $quiz->language;
 
                 {{--!Validation--}}
                 @if ($question->type == 'text')
-                <div class="px-2">
-                    <input type="text" name="responses[{{ $question->id }}]"
-                    id="question_{{ $question->id }}" required="{{ $question->required }}"
-                    class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
+                    <div class="px-2">
+                        <input type="text" name="responses[{{ $question->id }}]"
+                        id="question_{{ $question->id }}" required="{{ $question->required }}"
+                        class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
                 @elseif($question->type == 'feedback')
                     <div class="px-2">
                         <textarea name="responses[{{ $question->id }}]" id="question_{{ $question->id }}"
@@ -146,7 +145,7 @@ $lang = $quiz->language;
                 @endif
             </div>
                 @endforeach
-            <button class="px-4 py-2 font-bold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50"
+            <button class="px-4 py-2 font-bold text-white bg-indigo-600 rounded-md rtl:ml-auto ltr:mr-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50"
                 type="submit"
                 >Submit Quiz
             </button>

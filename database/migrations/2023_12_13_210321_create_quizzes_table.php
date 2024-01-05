@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('category_id')->nullable()->constrained();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->boolean('active')->default(true);
+            // $table->boolean('active')->default(true);
             $table->boolean('has_correct_answers')->default(true);
             $table->integer('score')->nullable();
             // $table->integer('time_limit')->nullable();
@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
 
 
+            $table->boolean('is_finished')->default(false); //added
             $table->string('color')->nullable();
             $table->string('language')->nullable();
             $table->enum('status', ['draft', 'published'])->default('draft');

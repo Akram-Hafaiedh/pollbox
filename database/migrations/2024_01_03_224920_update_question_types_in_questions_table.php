@@ -26,6 +26,7 @@ return new class extends Migration
                 'text'
             ])->change();
             $table->dropColumn('difficulty');
+
         });
     }
 

@@ -9,7 +9,11 @@ class AppLayout extends Component
 {
 
 
-    public function __construct(public string $dir = 'ltr', public string $lang = 'en')
+    public function __construct(
+        public string $dir = 'ltr',
+        public string $lang = 'en',
+        public string $color = 'red',
+        )
     {}
 
     /**

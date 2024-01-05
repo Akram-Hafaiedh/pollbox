@@ -10,7 +10,7 @@ class StoreQuizRequest extends FormRequest
     protected function getValidatorInstance()
     {
         // Dump and die the request before validation
-        dd($this->all());
+        // dd($this->all());
 
         return parent::getValidatorInstance();
     }
@@ -42,7 +42,8 @@ class StoreQuizRequest extends FormRequest
             'visibility' => 'required|in:public,private,restricted',
             'randomize' => 'sometimes|boolean',
             'has_correct_answers' => 'sometimes|boolean',
-            'active' => 'sometimes|boolean',
+            'color'=>'required|string',
+            // 'active' => 'sometimes|boolean',
 
             // validation for selected users
 
@@ -56,7 +57,7 @@ class StoreQuizRequest extends FormRequest
             'questions.*.image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', //!added
             'questions.*.video_url' => 'nullable|url', //!added
             'questions.*.type' => 'required|in:multiple_choice,single_choice,feedback,ranking,numeric', //!added
-            'questions.*.difficulty' => 'required|in:easy,medium,hard',
+            // 'questions.*.difficulty' => 'required|in:easy,medium,hard',
             'questions.*.order' => 'nullable|integer',
             'questions.*.required' => 'required|boolean',
 

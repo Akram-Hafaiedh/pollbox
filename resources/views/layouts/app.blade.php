@@ -3,9 +3,6 @@
     <html lang="{{ $lang ?? 'en' }}" dir="{{ $dir ?? 'ltr' }}">
 
     <head>
-
-        {{-- @dd($dir, $lang) --}}
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -81,8 +78,8 @@
             <div class="p-4 m-10 bg-white rounded-md shadow-md">
                 <!-- Header section -->
                 @if (isset($header))
-                <header class="bg-white shadow dark:bg-gray-800">
-                    <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <header class="shadow">
+                    <div class="">
                         {{ $header }}
                     </div>
                 </header>

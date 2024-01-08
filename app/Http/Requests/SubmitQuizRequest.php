@@ -23,7 +23,10 @@ class SubmitQuizRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        // return true;
+
+        // Only allow authenticated users to submit the quiz
+        return auth()->check();
     }
 
     /**
@@ -35,43 +38,49 @@ class SubmitQuizRequest extends FormRequest
     //!  TODO : Recheck again after modification
     public function rules(): array
     {
-        $rules =[
-            'reponses' => 'required|array',
-            'questions' => 'required|array',
-        ];
+        $allInput = $this->all();
 
-        $questionsIput = $this->input('questions',[]);
-        foreach ($questionsIput as $id => $questionData) {
-            $question = json_decode($questionData, true);
-            $numberOfOptions = count($question->options);
-            $type = $question['type'];
-            $isRequired = $question['required'];
-            $fieldRule = $isRequired ? 'required' : 'nullable';
+        // Ensure 'questions' key exists and is an array
+        $questions = isset($allInput['questions']) && is_array($allInput['questions'])
+            ? $allInput['questions']
+            : [];
 
-            // TODO : Add required to required to all fields (depending on the question )
-            switch ($type) {
+        $rules = [];
+
+        foreach ($questions as $index => $question) {
+            $questionId = "questions.$index";
+            $isRequired = $question['required'] == "1";
+
+            switch ($question['type']) {
                 case 'single_choice':
-                    $rules['responses.' . $id] = $fieldRule . '|in:true,false';
+                    $rules["$questionId.selected_option"] = $isRequired ? 'required|string' : 'nullable|string';
                     break;
-                case 'feedback':
-                    $rules['responses.' . $id] = $fieldRule . '|string';
-                    break;
-                case 'numeric':
-                    $rules['responses.' . $id] = $fieldRule . '|array';
-                    $rules['responses.' . $id . '.*.ranking'] = "required|integer|between:1,{$numberOfOptions}";
-                    break;
-                case 'ranking':
-                    $rules['responses.' . $id] = $fieldRule . '|array';
-                    $rules['responses.'.$id.'.*'] = $fieldRule  . '|between:1,10';
+                case 'likert_scale':
+                    $rules["$questionId.scale_value"] = $isRequired ? 'required|integer|between:1,5' : 'nullable|integer|between:1,5';
                     break;
                 case 'multiple_choice':
-                    // Assuming you have a way to get options for multiple_choice questions
-                    $optionIds = Question::with('options')->findOrFail($id)->options->pluck('id')->all();
-                    $rules['responses.' . $id] = $fieldRule . '|array';
-                    $rules['responses.' . $id . '.*'] = ($fieldRule ? 'required' : 'nullable') . '|in:' . implode(',', $optionIds);
+                    $rules["$questionId.selected_options"] = $isRequired ? 'required|array|min:1' : 'nullable|array';
+                    $rules["$questionId.selected_options.*"] = 'integer|distinct';
+                    break;
+                case 'feedback':
+                    $rules["$questionId.answer"] = $isRequired ? 'required|string|max:1000' : 'nullable|string|max:1000';
                     break;
             }
         }
+
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'questions.*.selected_option.required' => 'Please select an option for question :attribute.',
+            'questions.*.scale_value.required' => 'Please provide a scale value for question :attribute.',
+            'questions.*.scale_value.between' => 'The scale value for question :attribute must be between 1 and 5.',
+            'questions.*.selected_options.required' => 'Please select at least one option for question :attribute.',
+            'questions.*.answer.required' => 'Please provide an answer for question :attribute.',
+            'questions.*.answer.max' => 'Your answer for question :attribute is too long. It must be under 1000 characters.',
+            // ...
+        ];
     }
 }

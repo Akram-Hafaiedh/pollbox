@@ -17,8 +17,7 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->string('image_path')->nullable();
             $table->string('video_url')->nullable();
-            $table->enum('type', ['multiple_choice', 'single_choice', 'numeric', 'ranking', 'feedback']);
-            $table->enum('difficulty', ['easy', 'medium', 'hard'])->default('medium');
+            $table->enum('type', ['multiple_choice', 'single_choice', 'likert_scale', 'ranking', 'feedback']);
             $table->unsignedInteger('order')->default(0);
             $table->boolean('required')->default(true);
             $table->timestamps();

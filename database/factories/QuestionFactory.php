@@ -34,13 +34,7 @@ class QuestionFactory extends Factory
                 'single_choice',
                 'feedback',
                 'ranking',
-                'numeric',
-                'dropdown',
                 'likert_scale',
-                'slider',
-                'date',
-                'file_upload',
-                'text'
             ]),
             // 'difficulty' => fake()->randomElement(['easy', 'medium', 'hard']),
             'required' => fake()->boolean(),

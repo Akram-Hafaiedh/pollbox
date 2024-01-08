@@ -95,7 +95,7 @@ class UserQuizController extends Controller
      * @throws Some_Exception_Class Exception thrown if the user has already submitted all responses for the quiz.
      * @return RedirectResponse The redirect response to the results page.
      */
-public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
+    public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
     {
 
         $user = auth()->user();
@@ -107,8 +107,7 @@ public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResp
         }
 
         $validatedData = $request->validated();
-
-
+        dd($validatedData);
         // validation Ok
         // Store response
         $userResponses = $request->input('responses');

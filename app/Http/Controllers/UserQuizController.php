@@ -97,43 +97,62 @@ class UserQuizController extends Controller
      */
     public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
     {
-
         $user = auth()->user();
-
-        // Check if the user has already submitted responses for this quiz
         if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
             return redirect()->back()
                 ->with('error', 'You have already submitted all responses for this quiz.');
         }
-
-        $validatedData = $request->validated();
-        dd($validatedData);
-        // validation Ok
-        // Store response
-        $userResponses = $request->input('responses');
-        // dd($userResponses);
-
-        foreach ($userResponses as $questionId => $optionId) {
-            // $selectedOption = Option::findOrFail($optionId);
-            $existingResponse = $user->responses
-                ->where('quiz_id', $quiz->id)
-                ->where('question_id', $questionId)
-                ->first();
-            if ($existingResponse) {
-                // Update the existing response
-                $existingResponse->update(['user_response' => $optionId]);
-            } else {
-                // Create a new response
-                $user->responses->create([
-                    'quiz_id' => $quiz->id,
-                    'question_id' => $questionId,
-                    'user_response' => $optionId,
-                ]);
+        $questionResponses = $request->validated()['questions'];
+        foreach ($questionResponses as $questionId =>$response) {
+            if (isset($response['selected_option'])) {
+                    Response::updateOrCreate(                [
+                        'user_id' => $user->id,
+                        'question_id' => $questionId,
+                        'quiz_id' => $quiz->id,
+                    ],
+                    [
+                        'selected_option' => $response['selected_option'],
+                    ]);
+            } elseif (isset($response['rankings'])) {
+                foreach ($response['rankings'] as $optionId => $rank) {
+                    Response::updateOrCreate([
+                        'user_id' => $user->id,
+                        'question_id' => $questionId,
+                        'option_id' => $optionId,
+                        'quiz_id' => $quiz->id,
+                    ],
+                    [
+                        'ranking' => $rank,
+                    ]);
+                }
+            }
+            elseif (isset($response['selected_options'])) {
+                foreach ($response['selected_options'] as $optionId) {
+                    Response::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'question_id' => $questionId,
+                            'option_id' => $optionId,
+                            'quiz_id' => $quiz->id,
+                        ],
+                        [
+                            'selected' => true,
+                        ]
+                    );
+                }
+            }elseif(isset($response['feedback'])) {
+                Response::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'question_id' => $questionId,
+                        'quiz_id' => $quiz->id,
+                    ],
+                    [
+                        'answer' => $response['feedback'],
+                    ]
+                );
             }
         }
-
-        // TODO: Calculate the score
-
 
         // Redirect to the results page
         return redirect()->route('user.quizzes.results', $quiz)
@@ -145,8 +164,8 @@ class UserQuizController extends Controller
         $user = auth()->user();
         $quiz->load('questions.options');
         // dd($quiz,$quiz->questions);
-        $userResponses = $user->responses->where('quiz_id', $quiz->id)->get();
-        // dd( $userResponses);
+        $userResponses = $user->responses()->where('quiz_id', $quiz->id)->get();
+        //    dd( $userResponses);
 
         // Fetch user's responses and correct answers
         // Display results

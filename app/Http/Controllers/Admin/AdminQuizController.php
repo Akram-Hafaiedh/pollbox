@@ -69,6 +69,7 @@ class AdminQuizController extends Controller
                 // 'time_limit' => $validatedData['time_limit'],
                 'start_date' => $validatedData['start_date'],
                 'color'=>$validatedData['color'],
+                'language'=>$validatedData['language'],
                 'end_date' => $validatedData['end_date'],
                 'score' => isset($validatedData['score']) ? $validatedData['score'] : '0',
                 'description' => $validatedData['description'],

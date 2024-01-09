@@ -36,7 +36,7 @@ class StoreQuizRequest extends FormRequest
 
             'start_date' => 'nullable|date', //!added
             'end_date' => 'nullable|date|after_or_equal:start_date', //!added
-
+            'language' => 'nullable|string',
             'score' => 'nullable|numeric',
             'description' => 'required|string',
             'visibility' => 'required|in:public,private,restricted',

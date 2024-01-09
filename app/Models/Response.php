@@ -10,7 +10,18 @@ class Response extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_response','quiz_id', 'user_id', 'question_id'];
+    protected $fillable = [
+        // 'user_response',
+        // 'correct',
+        // 'explanation',
+        'quiz_id',
+        'user_id',
+        'question_id',
+        'option_id',
+        'likert_scale',
+        'answer',
+        'ranking',
+    ];
 
     protected $hidden =['quiz_id', 'user_id', 'question_id'];
 

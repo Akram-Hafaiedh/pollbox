@@ -22,12 +22,24 @@ class QuizSeeder extends Seeder
 
             $quiz->questions()->saveMany(
                 Question::factory($questionsNumber)->create(['quiz_id' => $quiz->id])->each(function ($question) {
-                    // Create 4 options for each question
-                    if ($question->type !== 'feedback') {
-                        $question->options()->saveMany(Option::factory(4)->create(['question_id' => $question->id]));
+                    if ($question->type === 'feedback') {
+                        $optionsNumber = 1;
+                    } elseif ($question->type === 'likert_scale') {
+                        $optionsNumber = 10; // For likert_scale, always create 10 options
+                    } else {
+                        $optionsNumber = rand(4, 8);
                     }
 
-                    // $question->options()->saveMany(Option::factory(4)->create(['question_id' => $question->id]));
+                    // If the question is a likert_scale, create options with numbers 1 to 10
+                    if ($question->type === 'likert_scale') {
+                        $options = collect(range(1, 10))->map(function ($number) use ($question) {
+                            return new Option(['question_id' => $question->id, 'content' => (string)$number]);
+                        });
+                        $question->options()->saveMany($options);
+                    } else {
+                        // For other types of questions, use the factory to create random options
+                        $question->options()->saveMany(Option::factory($optionsNumber)->create(['question_id' => $question->id]));
+                    }
                 })
             );
         });

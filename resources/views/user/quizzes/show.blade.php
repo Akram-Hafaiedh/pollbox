@@ -56,7 +56,7 @@
         </div>
     @endif
     <div class="flex items-center justify-center bg-gray-100">
-        <div class="w-full" x-data="{ currentSlide: 0, totalSlides: {{ count($quiz->questions) }} }">
+        <div class="w-full" x-data="{ currentSlide: 0, totalSlides: {{ count($quiz->questions) }}, lang:'{{ $lang }}' }">
             @if ($quiz->questions->count() > 0)
                 <form action="{{ route('user.quizzes.submit', $quiz) }}" method="post">
                     @csrf
@@ -171,42 +171,33 @@
 
                                         @if ($question->type == 'ranking')
                                             <p class="mb-4 text-sm text-gray-500">
-                                                Rank your preference from 1 (lowest) to {{ count($question->options) }}
-                                                (highest)
-                                                .
+                                                Rank your preference from 1 (lowest) to {{ count($question->options) }} (highest)
                                             </p>
-                                            <!-- Hidden input to store the question's ID -->
-                                            <input type="hidden" name="questions[{{ $key }}][id]"
-                                                value="{{ $question->id }}">
+                                            <input type="hidden" name="questions[{{ $key }}][id]" value="{{ $question->id }}">
+                                            <input type="hidden" name="questions[{{ $key }}][type]" value="ranking">
+                                            <input type="hidden" name="questions[{{ $key }}][required]" value="{{ $question->required }}">
 
-                                            <!-- Hidden input to store the question type -->
-                                            <input type="hidden" name="questions[{{ $key }}][type]"
-                                                value="ranking">
-                                            <!-- hidden input for question Required -->
-                                            <input type="hidden" name="questions[{{ $key }}][required]"
-                                                value="{{ $question->required }}">
-
-                                            <div class="px-2" x-data="{ list: {{ Js::from($question->options) }}, dragIndex: null }" x-init="() => {
+                                            <div class="px-2" x-data="{ list: {{ Js::from($question->options) }}.map((item, index) => ({ ...item, rank: index + 1 })), dragIndex: null }" x-init="() => {
                                                 let sortable = new Sortable($el, {
                                                     animation: 150,
-                                                    ghostClass: 'bg-gray-300', // This class will be applied to the ghost element
+                                                    ghostClass: 'bg-gray-300',
                                                     onEnd: (evt) => {
-                                                        let order = sortable.toArray();
-                                                        document.querySelectorAll('.ranking-input').forEach((input, index) => {
-                                                            input.value = order[index];
+                                                        // Update the ranking order based on the new positions after sorting
+                                                        list.forEach((item, index) => {
+                                                            item.rank = index + 1; // Rank should start from 1, not 0
                                                         });
                                                     }
                                                 });
                                             }">
                                                 <template x-for="(item, index) in list" :key="item.id">
                                                     <div class="flex items-center p-3 mb-2 bg-white border border-gray-200 rounded shadow cursor-move"
-                                                        x-text="item.content" x-on:mousedown="dragIndex = index"
+                                                        x-on:mousedown="dragIndex = index"
                                                         x-on:touchstart="dragIndex = index"
                                                         x-on:mouseup="dragIndex = null" x-on:touchend="dragIndex = null"
                                                         :class="{ 'bg-indigo-200': dragIndex === index }">
+                                                        <span x-text="item.content"></span>
                                                         <!-- Hidden input to store the ranking order -->
-                                                        <input type="hidden" :name="'responses[' + item.id + ']'"
-                                                            :value="item.id" class="ranking-input">
+                                                        <input type="hidden" :name="'questions[' + '{{ $key }}' + '][rankings][' + item.id + ']'" x-bind:value="item.rank" class="ranking-input">
                                                     </div>
                                                 </template>
                                             </div>
@@ -226,19 +217,20 @@
                                                 <input type="hidden" name="questions[{{ $key }}][required]"
                                                     value="{{ $question->required }}">
 
-                                                <label for="likert_scale"
-                                                    class="block text-sm font-medium text-gray-700">{{ $question->content }}</label>
-                                                <div class="mt-2">
+                                                <p class="text-sm text-center text-gray-500">
+                                                    {{ $lang === 'ar' ? 'حدد مستوى موافقتك على العبارة التالية' : 'Please indicate your level of agreement with the following statement' }}
+                                                </p>
+                                                <div class="flex justify-center w-full mt-2 space-x-2">
                                                     @foreach ($question->options as $option)
-                                                        <div class="flex flex-row items-center space-x-2">
+                                                        <div class="flex flex-col items-center justify-center space-y-2">
+                                                            <label for="likert_option_{{ $option->id }}"
+                                                                class="w-full text-center text-gray-700 ">
+                                                                {{ $option->content }}
+                                                            </label>
                                                             <input id="likert_option_{{ $option->id }}"
                                                                 name="questions[{{ $key }}][scale_value]"
                                                                 type="radio" value="{{ $option->content }}"
-                                                                class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
-                                                            <label for="likert_option_{{ $option->id }}"
-                                                                class="block text-sm text-gray-700">
-                                                                {{ $option->content }}
-                                                            </label>
+                                                                class="text-indigo-600 border-gray-300 h-7 w-7 focus:ring-indigo-500">
                                                         </div>
                                                     @endforeach
                                                 </div>
@@ -276,25 +268,25 @@
                         </div>
 
                         <!-- Navigation Buttons -->
-                        <div class="flex justify-end w-full px-8 mt-4 space-x-4">
+                        <div class="flex justify-end w-full px-8 mt-4 space-x-4 rtl:flex-row-reverse">
                             <button type="button"
                                 @click.prevent="currentSlide = (currentSlide - 1 + totalSlides) % totalSlides"
                                 :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === 0 }"
                                 class="px-4 py-2 text-white rounded focus:outline-none disabled:opacity-50"
                                 style="background-color: {{ $quiz->color }}"
-                                :disabled="currentSlide === 0">Previous</button>
+                                :disabled="currentSlide === 0">{{ $lang === 'ar' ? 'السابق' : 'Previous' }}</button>
                             <button type="button" @click.prevent="currentSlide = (currentSlide + 1) % totalSlides"
                                 :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === totalSlides - 1 }"
                                 class="px-4 py-2 text-white rounded focus:outline-none disabled:opacity-50"
                                 style="background-color: {{ $quiz->color }}"
-                                :disabled="currentSlide === totalSlides - 1">Next</button>
+                                :disabled="currentSlide === totalSlides - 1">{{ $lang === 'ar' ? 'التالي' : 'Next' }}</button>
                             <!-- Submit Button -->
                             <button type="submit" class="px-4 py-2 text-white rounded focus:outline-none"
                                 :class="{
                                     'bg-red-500': currentSlide !== totalSlides - 1,
                                     'bg-green-500': currentSlide === totalSlides - 1
                                 }">
-                                <span x-text="currentSlide !== totalSlides - 1 ? 'Leave' : 'Submit Quiz'"></span>
+                                <span x-text="currentSlide !== totalSlides - 1 ? (lang === 'ar' ? 'المغادرة' : 'Leave') : (lang === 'ar' ? 'إرسال الاختبار' : 'Submit Quiz')"></span>
                             </button>
                         </div>
                     </div>
@@ -304,4 +296,5 @@
             @endif
         </div>
     </div>
+
 </x-app-layout>

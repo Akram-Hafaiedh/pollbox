@@ -34,6 +34,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    Route::prefix('user')->group(function () {
+        Route::get('/quizzes/history', [UserQuizController::class, 'history'])->name('user.quizzes.history');
+        Route::resource('quizzes', UserQuizController::class)
+            ->names([
+                'index' => 'user.quizzes.index',
+                'show' => 'user.quizzes.show',
+            ])
+            ->only(['index', 'show']);
+        Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
+        Route::get('/quizzes/{quiz}/result', [UserQuizController::class, 'showResults'])->name('user.quizzes.results');
+
+        //! ADDED ROUTES FOR QUIZ
+        Route::get('/quiz-start/{quiz}', [UserQuizController::class, 'startQuiz'])->name('quiz-start');
+        Route::get('/quiz-access/{quiz}', [UserQuizController::class, 'access'])->name('quiz-access');
+    });
+
 });
 
 require __DIR__ . '/auth.php';
@@ -73,21 +91,6 @@ Route::get('/access', [UserQuizController::class, 'access']);
 
 
 
-Route::prefix('user')->group(function () {
-    Route::get('/quizzes/history', [UserQuizController::class, 'history'])->name('user.quizzes.history');
-    Route::resource('quizzes', UserQuizController::class)
-        ->names([
-            'index' => 'user.quizzes.index',
-            'show' => 'user.quizzes.show',
-        ])
-        ->only(['index', 'show']);
-    Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
-    Route::get('/quizzes/{quiz}/result', [UserQuizController::class, 'showResults'])->name('user.quizzes.results');
-
-    //! ADDED ROUTES FOR QUIZ
-    Route::get('/quiz-start/{quiz}', [UserQuizController::class, 'startQuiz'])->name('quiz-start');
-    Route::get('/quiz-access/{quiz}', [UserQuizController::class, 'access'])->name('quiz-access');
-});
 
 
 // Route::prefix('survey')->group(function () {

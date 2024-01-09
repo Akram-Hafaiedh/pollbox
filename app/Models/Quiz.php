@@ -23,7 +23,7 @@ class Quiz extends Model
         'start_date',
         'end_date',
         'color',
-        'language', 
+        'language',
         'score',
         'has_correct_answers',
         'category_id',

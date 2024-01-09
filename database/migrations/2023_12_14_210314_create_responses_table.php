@@ -13,13 +13,19 @@ return new class extends Migration
     {
         Schema::create('responses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('question_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('quiz_id')->constrained()->cascadeOnDelete();
-            $table->text('user_response');
+            $table->foreignId('user_id')->cascadeOnDelete();
+            $table->foreignId('question_id')->cascadeOnDelete();
+            $table->foreignId('quiz_id')->cascadeOnDelete();
+            $table->foreignId('option_id')->nullable(); // For single and multiple-choice questions
+            $table->unsignedTinyInteger('likert_scale')->nullable();
+            $table->unsignedTinyInteger('ranking')->nullable();
+            $table->text('answer')->nullable();
+
             // $table->boolean('correct')->default(false); // moved to options
             // $table->text('explanation')->nullable(); // moved to options
             $table->timestamps();
+
+            $table->unique(['user_id', 'question_id', 'quiz_id', 'option_id']);
         });
     }
 

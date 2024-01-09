@@ -56,7 +56,7 @@ class SubmitQuizRequest extends FormRequest
                     $rules["$questionId.selected_option"] = $isRequired ? 'required|string' : 'nullable|string';
                     break;
                 case 'likert_scale':
-                    $rules["$questionId.scale_value"] = $isRequired ? 'required|integer|between:1,5' : 'nullable|integer|between:1,5';
+                    $rules["$questionId.scale_value"] = $isRequired ? 'required|integer|between:1,10' : 'nullable|integer|between:1,10';
                     break;
                 case 'multiple_choice':
                     $rules["$questionId.selected_options"] = $isRequired ? 'required|array|min:1' : 'nullable|array';
@@ -64,6 +64,14 @@ class SubmitQuizRequest extends FormRequest
                     break;
                 case 'feedback':
                     $rules["$questionId.answer"] = $isRequired ? 'required|string|max:1000' : 'nullable|string|max:1000';
+                    break;
+                case 'ranking':
+                    // Assuming that rankings are submitted as an array of integers
+                    // where each integer is the rank of an option.
+
+                    $numberOfOptions = count($question['rankings']);
+                    $rules["$questionId.rankings"] = $isRequired ? 'required|array|size:' . $numberOfOptions : 'nullable|array';
+                    $rules["$questionId.ranking.*"] = "integer|distinct|min:1|max:$numberOfOptions";
                     break;
             }
         }

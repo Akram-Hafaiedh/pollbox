@@ -114,15 +114,15 @@
                                         {{-- Check if the question type is 'feedback' --}}
                                         @if ($question->type === 'feedback')
                                             <!-- Hidden input to store the question's ID -->
-                                            <input type="hidden" name="questions[{{ $key }}][id]"
+                                            <input type="hidden" name="questions[{{ $question->id }}][id]"
                                                 value="{{ $question->id }}">
 
                                             <!-- Hidden input to store the question type -->
-                                            <input type="hidden" name="questions[{{ $key }}][type]"
+                                            <input type="hidden" name="questions[{{ $question->id }}][type]"
                                                 value="feedback">
 
                                             <!-- hidden input for question Required -->
-                                            <input type="hidden" name="questions[{{ $key }}][required]"
+                                            <input type="hidden" name="questions[{{ $question->id }}][required]"
                                                 value="{{ $question->required }}">
 
                                             <p class="text-sm text-gray-500">
@@ -130,32 +130,26 @@
                                                 {{ $lang === 'ar' ? 'أدخل إجابتك هنا ' : 'Enter your answer here' }}
                                                 .
                                             </p>
-                                            <textarea name="questions[{{ $key }}][answer]" id="feedback-{{ $question->id }}" rows="6"
-                                                cols="70" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300">
-                                            </textarea>
+                                            <textarea name="questions[{{ $question->id }}][answer]" id="feedback-{{ $question->id }}" rows="6"
+                                                cols="70" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"></textarea>
                                         @endif
 
 
                                         @if ($question->type === 'multiple_choice')
-                                            <!-- Hidden input to store the question's ID -->
-                                            <input type="hidden" name="questions[{{ $key }}][id]"
-                                                value="{{ $question->id }}">
-
-                                            <!-- Hidden input to store the question type -->
-                                            <input type="hidden" name="questions[{{ $key }}][type]"
-                                                value="multiple_choice">
-
-                                            <!-- hidden input for question Required -->
-                                            <input type="hidden" name="questions[{{ $key }}][required]"
-                                                value="{{ $question->required }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
                                             <p class="text-sm text-gray-500">
-                                                {{ $lang === 'ar' ? 'اختر خيارًا أو أكثر لخانة الاختيار متعددة الاختيارات' : 'Choose one or more options' }}.
+                                                {{ $lang === 'ar' ?
+                                                     'اختر خيارًا أو أكثر لخانة الاختيار متعددة الاختيارات'
+                                                    : 'Choose one or more options'
+                                                }}.
                                             </p>
                                             @foreach ($question->options as $option)
                                                 <div class="flex items-center py-2 space-x-4">
                                                     <input type="checkbox"
-                                                        name="questions[{{ $key }}][selected_options][]"
+                                                        name="questions[{{ $question->id }}][selected_options][]"
                                                         id="{{ $option->id }}" value="{{ $option->id }}"
                                                         class="w-6 h-6 p-2 text-blue-500 border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
                                                     <label for="{{ $option->id }}" class="font-bold text-gray-700">
@@ -173,9 +167,9 @@
                                             <p class="mb-4 text-sm text-gray-500">
                                                 Rank your preference from 1 (lowest) to {{ count($question->options) }} (highest)
                                             </p>
-                                            <input type="hidden" name="questions[{{ $key }}][id]" value="{{ $question->id }}">
-                                            <input type="hidden" name="questions[{{ $key }}][type]" value="ranking">
-                                            <input type="hidden" name="questions[{{ $key }}][required]" value="{{ $question->required }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
                                             <div class="px-2" x-data="{ list: {{ Js::from($question->options) }}.map((item, index) => ({ ...item, rank: index + 1 })), dragIndex: null }" x-init="() => {
                                                 let sortable = new Sortable($el, {
@@ -197,7 +191,7 @@
                                                         :class="{ 'bg-indigo-200': dragIndex === index }">
                                                         <span x-text="item.content"></span>
                                                         <!-- Hidden input to store the ranking order -->
-                                                        <input type="hidden" :name="'questions[' + '{{ $key }}' + '][rankings][' + item.id + ']'" x-bind:value="item.rank" class="ranking-input">
+                                                        <input type="hidden" :name="'questions[' + '{{ $question->id }}' + '][rankings][' + item.id + ']'" x-bind:value="item.rank" class="ranking-input">
                                                     </div>
                                                 </template>
                                             </div>
@@ -206,16 +200,9 @@
 
                                         @if ($question->type === 'likert_scale')
                                             <div class="my-4">
-                                                <!-- Hidden input to store the question's ID -->
-                                                <input type="hidden" name="questions[{{ $key }}][id]"
-                                                    value="{{ $question->id }}">
-
-                                                <!-- Hidden input to store the question type -->
-                                                <input type="hidden" name="questions[{{ $key }}][type]"
-                                                    value="likert_scale">
-                                                <!-- hidden input for question Required -->
-                                                <input type="hidden" name="questions[{{ $key }}][required]"
-                                                    value="{{ $question->required }}">
+                                                <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
+                                                <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
+                                                <input type="hidden" name="questions[{{ $question->id }}][required]"value="{{ $question->required }}">
 
                                                 <p class="text-sm text-center text-gray-500">
                                                     {{ $lang === 'ar' ? 'حدد مستوى موافقتك على العبارة التالية' : 'Please indicate your level of agreement with the following statement' }}
@@ -228,7 +215,7 @@
                                                                 {{ $option->content }}
                                                             </label>
                                                             <input id="likert_option_{{ $option->id }}"
-                                                                name="questions[{{ $key }}][scale_value]"
+                                                                name="questions[{{ $question->id }}][scale_value]"
                                                                 type="radio" value="{{ $option->content }}"
                                                                 class="text-indigo-600 border-gray-300 h-7 w-7 focus:ring-indigo-500">
                                                         </div>
@@ -240,23 +227,20 @@
 
                                         @if ($question->type === 'single_choice')
                                             <p class="text-sm text-gray-500">
-                                                {{ $lang === 'ar' ? 'اختر خيارًا لخانة الاختيار' : 'Choose one option' }}.
+                                                {{ $lang === 'ar' ?
+                                                    'اختر خيارًا لخانة الاختيار'
+                                                    : 'Choose one option'
+                                                }}.
                                             </p>
-                                            <!-- Hidden input for the question's ID -->
-                                            <input type="hidden" name="questions[{{ $key }}][id]"
-                                                value="{{ $question->id }}">
-                                            <!-- Hidden input for the question's type -->
-                                            <input type="hidden" name="questions[{{ $key }}][type]"
-                                                value="{{ $question->type }}">
-                                            <!-- hidden input for question Required -->
-                                            <input type="hidden" name="questions[{{ $key }}][required]"
-                                                value="{{ $question->required }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
                                             @foreach ($question->options as $option)
                                                 <label class="flex items-center justify-start space-x-2 space-y-2">
                                                     <input class="w-6 h-6" type="radio"
-                                                        name="questions[{{ $key }}][selected_option]"
-                                                        value="{{ $option->content }}">
+                                                        name="questions[{{ $question->id }}][selected_option]"
+                                                        value="{{ $option->id }}">
                                                     <span
                                                         class="px-8 py-2 text-white bg-blue-500 border border-gray-300 rounded-tr-full rounded-bl-full hover:bg-blue-300 hover:text-black">{{ $option->content }}</span>
                                                 </label>

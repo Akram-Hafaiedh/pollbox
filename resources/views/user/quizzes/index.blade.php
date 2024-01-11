@@ -59,7 +59,7 @@
                 </h2>
                 <p class="mb-4">{{ $quiz->description }}</p>
                 <div class="w-full h-2 mb-4 bg-gray-200 rounded">
-                    <div class="h-2 bg-green-500 rounded" style="width:{{ $quiz->questions->count() > 0
+                    <div class="h-2 max-w-md bg-green-500 rounded" style="width:{{ $quiz->questions->count() > 0
                                     ? (auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
                                             $quiz->questions->count()) *
                                         100

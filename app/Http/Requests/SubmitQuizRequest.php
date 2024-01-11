@@ -47,13 +47,14 @@ class SubmitQuizRequest extends FormRequest
 
         $rules = [];
 
+        // dd($questions);
         foreach ($questions as $index => $question) {
             $questionId = "questions.$index";
             $isRequired = $question['required'] == "1";
 
             switch ($question['type']) {
                 case 'single_choice':
-                    $rules["$questionId.selected_option"] = $isRequired ? 'required|string' : 'nullable|string';
+                    $rules["$questionId.selected_option"] = $isRequired ? 'required|numeric' : 'nullable|numeric';
                     break;
                 case 'likert_scale':
                     $rules["$questionId.scale_value"] = $isRequired ? 'required|integer|between:1,10' : 'nullable|integer|between:1,10';

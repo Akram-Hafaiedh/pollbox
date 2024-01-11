@@ -226,9 +226,9 @@
                                     <select x-model="question.type" :name="'questions[' + index + '][type]'"
                                         :id="'type_' + index"
                                         class="flex w-full mt-1 space-y-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                        <option value="single_choice">Single Choice</option>
-                                        <option value="multiple_choice">Multiple Choice</option>
-                                        <option value="numeric">Numeric</option>
+                                        <option value="single_choice">Choix unique</option>
+                                        <option value="multiple_choice">Choix multiple</option>
+                                        <option value="likert_scale">Choix Likert</option>
                                         <option value="ranking">Ranking</option>
                                         <option value="feedback">Feedback</option>
                                         <!-- Add other options as needed -->

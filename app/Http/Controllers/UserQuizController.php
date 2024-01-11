@@ -15,6 +15,14 @@ use Illuminate\View\View;
 
 class UserQuizController extends Controller
 {
+
+    public function dashboard()
+    {
+        $latestQuizzes = Quiz::latest()->take(5)->get(); // Get the latest 5 quizzes
+
+        return view('user.dashboard', compact('latestQuizzes'));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -97,12 +105,16 @@ class UserQuizController extends Controller
      */
     public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
     {
+        // dd($request->validated());
+
         $user = auth()->user();
         if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
             return redirect()->back()
                 ->with('error', 'You have already submitted all responses for this quiz.');
         }
         $questionResponses = $request->validated()['questions'];
+
+        
         foreach ($questionResponses as $questionId =>$response) {
             if (isset($response['selected_option'])) {
                     Response::updateOrCreate(                [
@@ -111,7 +123,7 @@ class UserQuizController extends Controller
                         'quiz_id' => $quiz->id,
                     ],
                     [
-                        'selected_option' => $response['selected_option'],
+                        'option_id' => $response['selected_option'],
                     ]);
             } elseif (isset($response['rankings'])) {
                 foreach ($response['rankings'] as $optionId => $rank) {
@@ -140,7 +152,7 @@ class UserQuizController extends Controller
                         ]
                     );
                 }
-            }elseif(isset($response['feedback'])) {
+            }elseif(isset($response['answer'])) {
                 Response::updateOrCreate(
                     [
                         'user_id' => $user->id,
@@ -148,7 +160,18 @@ class UserQuizController extends Controller
                         'quiz_id' => $quiz->id,
                     ],
                     [
-                        'answer' => $response['feedback'],
+                        'answer' => $response['answer'],
+                    ]
+                );
+            }elseif(isset($response['scale_value'])) {
+                Response::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'question_id' => $questionId,
+                        'quiz_id' => $quiz->id,
+                    ],
+                    [
+                        'likert_scale' => $response['scale_value'],
                     ]
                 );
             }
@@ -165,7 +188,10 @@ class UserQuizController extends Controller
         $quiz->load('questions.options');
         // dd($quiz,$quiz->questions);
         $userResponses = $user->responses()->where('quiz_id', $quiz->id)->get();
-        //    dd( $userResponses);
+
+
+
+        // dd( $userResponses);
 
         // Fetch user's responses and correct answers
         // Display results

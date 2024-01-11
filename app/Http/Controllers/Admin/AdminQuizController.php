@@ -79,8 +79,6 @@ class AdminQuizController extends Controller
             ]);
 
             // Store questions
-
-
             foreach ($validatedData['questions']  as $questionData) {
                 // $quiz->users()->attach($validatedData['users']);
                 $question = Question::create([

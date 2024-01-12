@@ -1,17 +1,17 @@
 <x-guest-layout>
-    <div class="w-full max-w-md space-y-4 mx-auto">
+    <div class="w-full max-w-md mx-auto space-y-4">
         <div class="flex flex-col items-center justify-center w-full max-w-md space-y-4">
             <!-- Session Status -->
             <x-auth-session-status class="mb-4" :status="session('status')" />
 
             <div class="flex flex-col items-center justify-center w-full space-y-4">
-                <div>
+                <div class="my-8">
                     <a href="/">
-                        <x-application-logo class="w-20 h-20 text-gray-500 fill-current" />
+                        <img class="h-28 w-28" src="{{ asset('assets/icon2.svg') }}" alt="Logo">
                     </a>
                 </div>
 
-                <h2 class="my-6 font-sans text-3xl font-bold">Login</h2>
+                {{-- <h2 class="my-6 font-mono text-3xl font-bold text-[#064b7a]">Se connecter</h2> --}}
 
                 <form method="POST" action="{{ route('login') }}" class="w-full">
 
@@ -39,7 +39,7 @@
                     <div class="block mt-4">
                         <label for="remember_me" class="inline-flex items-center">
                             <input id="remember_me" type="checkbox"
-                                class="text-indigo-600 border-gray-300 rounded shadow-sm focus:ring-indigo-500"
+                                class="text-[#064b7a] border-gray-300 rounded shadow-sm focus:ring-[#064b7a] focus:border-[#064b7a]"
                                 name="remember">
                             <span class="text-sm text-gray-600 ms-2 ">{{ __('Remember me') }}</span>
                         </label>

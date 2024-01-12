@@ -278,12 +278,12 @@
                                 <!-- Button for Addding options to question-->
                                 <template x-if="question.type !== 'feedback'">
                                     <button type="button" @click="question.options.push('')"
-                                        class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md lg:w-max hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
+                                        class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out border border-transparent rounded-md bg-primary lg:w-max hover:bg-primary/75 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
                                         __('Add Option') }}</button>
                                 </template>
                                 <!-- Remove question button-->
                                 <button type="button" @click="questions.splice(index, 1)"
-                                    class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md lg:w-max hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
+                                    class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out border border-transparent rounded-md bg-secondary lg:w-max hover:bg-secondary focus:bg-secondary/75 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
                                     __('Remove Question') }}</button>
                             </div>
 
@@ -336,7 +336,7 @@
                     </template>
                     <!-- Button for adding question -->
                     <button type="button" @click="questions.push({content: '', options: ['','']})"
-                        class="px-4 py-2 mt-2 text-white bg-blue-500 rounded-md">
+                        class="px-4 py-2 mt-2 text-sm text-white uppercase rounded-md bg-primary">
                         {{ __('Add Question') }}
                     </button>
                     {{-- <button type="button" @click="questions.push({})"

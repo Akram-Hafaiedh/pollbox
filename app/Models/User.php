@@ -89,4 +89,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invitation::class, 'sender_id');
     }
+
+    public function isAdmin():bool
+    {
+        return $this->is_admin;
+    }
+
+    public function isRole(String $role)
+    {
+
+    }
 }

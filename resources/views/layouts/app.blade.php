@@ -20,44 +20,48 @@
 <body class="font-sans antialiased bg-gray-100">
     <div class="flex h-screen ">
         <!--Sidebar -->
+
+        {{-- TODO Couldt make @isAdmin blade --}}
         @if (Auth::check() && Auth::user()->role === 'admin')
         <div
-            class='fixed top-0 left-0 w-64 h-screen overflow-y-auto text-gray-100 transition-all duration-300 bg-gray-800'>
+            class='fixed top-0 left-0 w-64 h-screen overflow-y-auto text-gray-100 transition-all duration-300 bg-gray-200'>
             <div class="flex flex-col justify-between h-full">
                 <div>
                     <div class='flex flex-col items-center my-5'>
                         <a href='{{ route("admin.dashboard") }}'>
-                            <x-application-logo
-                                class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" />
+
+                            <img class="h-28 w-28" src="{{ asset('assets/icon2.svg') }}" alt="Logo">
+                            {{-- <x-application-logo class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" /> --}}
                         </a>
-                        <div class='p-5'>
+                        {{-- <div class='p-5'>
                             <a href="{{ route('admin.dashboard') }}" class="text-2xl font-semibold text-white">
                                 {{ config('app.name') }}
                             </a>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class='flex flex-col mt-10'>
                         <x-side-link route="admin.dashboard" icon="home">Dashboard</x-side-link>
                         <x-side-link route="admin.users.index" icon="user">Users</x-side-link>
                         <x-side-link route="admin.quizzes.index" icon="user">Quizzes</x-side-link>
                         <x-side-link route="admin.topQuizzes" icon="user">Top 3 Clients Reports</x-side-link>
-                        <x-side-link route="dashboard" icon="user">Settings</x-side-link>
-                        <x-side-link route="dashboard" icon="user">More Settings</x-side-link>
+                        <x-side-link route="admin.settings.index" icon="user">Settings</x-side-link>
+                        <x-side-link route="admin.more-settings" icon="user">More Settings</x-side-link>
                         <!-- User Information and Logout Link -->
                     </div>
                 </div>
-                <div class="p-4 mt-auto space-y-2 text-white bg-gray-700 divide-y">
+                <div class="p-4 mt-auto space-y-2 text-white divide-y bg-[#064b7a]">
                     @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="px-4 py-2 rounded-md">
+                        <a href="{{ route('logout') }}" class="px-4 py-2 rounded-md" onclick="event.preventDefault();
+                        this.closest('form').submit();">
                             Logout
-                        </button>
+                        </a>
                     </form>
                     {{-- <span class="block ">{{ Auth::user()->role }}</span> --}}
                     <div class="flex items-center pt-2 mb-2">
                         <div
-                            class="flex items-center justify-center w-10 h-10 mr-3 text-sm font-bold text-gray-500 bg-gray-100 rounded-full">
+                            class="flex items-center justify-center w-10 h-10 mr-3 text-sm font-bold text-white bg-orange-600 rounded-full">
                             {{ substr(Auth::user()->name, 0, 2) }}
                         </div>
                         <div>
@@ -73,7 +77,7 @@
         <!-- Main Content -->
         <div class="flex-1  {{ Auth::check() && Auth::user()->role == 'admin' ? 'ml-64' : '' }}">
             @unless(Auth::check() && Auth::user()->role == 'admin')
-            @include('layouts.navigation')
+                @include('layouts.navigation')
             @endunless
             <div class="p-4 m-10 bg-white rounded-md shadow-md">
                 <!-- Header section -->

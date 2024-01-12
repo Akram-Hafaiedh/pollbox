@@ -24,5 +24,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
         Blade::component('app-layout', AppLayout::class);
+
+
+        Blade::if('admin', function () {
+            return auth()->check() && auth()->user()->isAdmin();
+        });
     }
 }

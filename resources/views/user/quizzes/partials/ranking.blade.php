@@ -1,24 +1,22 @@
 {{-- resources\views\user\quizzes\partials\ranking.blade.php --}}
 @if ($question->type === 'ranking')
     <div class="mt-4">
-
         @php
-        echo $rankingResponses = $userResponses->where('question_id', $question->id);
-            echo "<br><br>";
-            echo $rankingResponses = $userResponses->where('question_id', $question->id)->sortBy('ranking');            $rankedOptionIDs = explode(',', $rankingResponse->content ?? '');
-            $optionIdToRanking = $rankingResponses->pluck('ranking', 'option_id');
-            // Sort the question options based on the ranking
-            echo "<br><br>";
-            echo $sortedOptions = $question->options->sortBy(function ($option) use ($optionIdToRanking) {
-                return $optionIdToRanking[$option->id] ?? null;
+            // Create an array mapping option IDs to their ranks
+            $optionIdToRanking = $userResponses->where('question_id', $question->id)
+                                               ->pluck('rank', 'response_id');
+
+            // Sort the question options based on the user's ranks
+            $sortedOptions = $question->options->sort(function ($option) use ($optionIdToRanking) {
+                // Find the rank of the option ID, return a large number if not found to push to the end
+                return $optionIdToRanking[$option->id] ?? PHP_INT_MAX;
             });
-            // Retrieve the user's rankings for this question
-            // Assume the response is a comma-separated list of option IDs in ranked order
-            // Retrieve the options in the order they were ranked
         @endphp
-        <ol class="mt-1 list-decimal list-inside">
+        <ol class="space-y-2 list-decimal list-inside">
             @foreach ($sortedOptions as $option)
-                <li>{{ $option->id  }} - {{ $option->content }}</li>
+                <li class="p-3 rounded-full shadow bg-secondary/70">
+                    {{ $option->content }}
+                </li>
             @endforeach
         </ol>
     </div>

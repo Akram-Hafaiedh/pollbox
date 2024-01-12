@@ -12,7 +12,7 @@
                     @php
                         // Determine if this scale value was chosen
                         $isSelected = $likertResponse && (int)$likertResponse->likert_scale === $scaleValue;
-                        $class = $isSelected ? 'text-white bg-blue-500' : 'text-gray-500 bg-gray-200';
+                        $class = $isSelected ? 'text-white bg-primary' : 'text-black bg-secondary/70';
                     @endphp
                     <li class="{{ $class }} px-2 py-1 text-center rounded-full">{{ $scaleValue }}</li>
                 @endforeach

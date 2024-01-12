@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminQuizController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserQuizController;
 use App\Models\Question;
@@ -86,6 +87,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     ]);
 
     Route::get('/admin/surveys', [SurveyController::class, 'index'])->name('admin.surveys.index');
+
+    Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+    Route::get('/more-settings', [SettingsController::class, 'more'])->name('admin.more-settings');
 });
 
 

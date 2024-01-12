@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="container mx-auto my-8">
+    <div class="container mx-auto my-8" x-data="{open : false}">
         <h1 class="mb-4 text-3xl font-semibold">Quiz Summary</h1>
         <h1 class="mb-4 text-xl font-semibold">Title : {{ $quiz->title }} </h1>
         <span class="">Created At : {{ $quiz->created_at }}</span>
@@ -14,7 +14,7 @@
         <ol class="grid grid-cols-1 gap-2 pl-4 list-decimal md:grid-cols-2">
             @foreach ($quiz->questions as $question)
             <li class="my-4">
-                <p class="font-semibold">{{ $question->content }} ({{ $question->type }})</p>
+                    <p class="font-semibold" x-on:click="open = ! open">{{ $question->content }} </p>
                 {{-- @if ($question->options->count() > 0)
                 <ul class="pl-4 mt-4 space-y-2">
                     @foreach ($question->options as $option)

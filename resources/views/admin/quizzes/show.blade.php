@@ -34,6 +34,7 @@
                         <p class="text-sm text-gray-500">Created at: {{ $quiz->created_at->format('Y-m-d H:i:s') }}</p>
 
                         <p class="text-sm text-gray-700">Score: {{ $quiz->score }}</p>
+                        <p></p>
 
                         @isset( $quiz->selectedUsers->first()->pivot->code)
                         <p class="text-sm text-gray-700">Code : {{ $quiz->selectedUsers->first()->pivot->code }}</p>
@@ -90,6 +91,11 @@
                     </div>
 
                     <!--Users related to the quiz-->
+                    @if($quiz->visibility === 'restricted')
+                    @php
+                    $users = $quiz->selectedUsers;
+                    @endphp
+
                     <div class="w-full lg:w-1/3 min-w-64">
                         <div
                             class="flex items-center justify-between px-6 py-5 pb-1 font-semibold border-b border-gray-100">
@@ -126,6 +132,7 @@
                             </ul>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </x-dashboard-main-content>

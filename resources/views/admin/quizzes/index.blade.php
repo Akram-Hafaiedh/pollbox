@@ -22,7 +22,7 @@
                             <label for="pdf-file" class="mr-2" @click="pdfFile = true">
                                 <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
                                 <button type="button"
-                                    class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                                    class="px-4 py-2 font-bold text-white rounded bg-primary hover:bg-blue-700"
                                     x-on:click="$refs.pdfInput.click()">
                                     <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -47,7 +47,7 @@
                             </label>
                         </div>
                         <a href="{{ route('admin.quizzes.create') }}"
-                            class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
+                            class="inline-flex items-center px-4 py-2 font-bold tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
                             {{ __('Add quiz') }}
                         </a>
 
@@ -56,7 +56,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit" x-on:click="isOpenDestroyAll = true"
-                                class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                                class="inline-flex items-center px-4 py-2 font-bold tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
                                 {{ __('Delete all') }}
                             </button>
                         </form>
@@ -212,7 +212,7 @@
         @if(isset($quizzes))
         <table class="table w-full my-4 divide-y">
             <thead
-                class="py-2 font-medium text-left text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+                class="py-2 font-medium text-left text-white bg-gradient-to-r from-primary via-primary to-secondary">
                 <tr>
                     <th class="py-2">#</th>
                     <th class="py-2">Title</th>

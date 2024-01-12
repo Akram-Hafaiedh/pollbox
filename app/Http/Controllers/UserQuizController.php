@@ -18,7 +18,7 @@ class UserQuizController extends Controller
 
     public function dashboard()
     {
-        $latestQuizzes = Quiz::latest()->take(5)->get(); // Get the latest 5 quizzes
+        $latestQuizzes = Quiz::latest()->take(6)->get(); // Get the latest 5 quizzes
 
         return view('user.dashboard', compact('latestQuizzes'));
     }
@@ -114,7 +114,7 @@ class UserQuizController extends Controller
         }
         $questionResponses = $request->validated()['questions'];
 
-        
+
         foreach ($questionResponses as $questionId =>$response) {
             if (isset($response['selected_option'])) {
                     Response::updateOrCreate(                [

@@ -110,28 +110,19 @@
 
 
                                     {{-- Options --}}
-                                    <div class="max-w-xl mx-auto mt-6">
+                                    <div class="container mx-auto mt-6 ml-56">
                                         {{-- Check if the question type is 'feedback' --}}
                                         @if ($question->type === 'feedback')
                                             <!-- Hidden input to store the question's ID -->
-                                            <input type="hidden" name="questions[{{ $question->id }}][id]"
-                                                value="{{ $question->id }}">
-
-                                            <!-- Hidden input to store the question type -->
-                                            <input type="hidden" name="questions[{{ $question->id }}][type]"
-                                                value="feedback">
-
-                                            <!-- hidden input for question Required -->
-                                            <input type="hidden" name="questions[{{ $question->id }}][required]"
-                                                value="{{ $question->required }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
+                                            <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
                                             <p class="text-sm text-gray-500">
                                                 <!-- Display the prompt in Arabic if $lang is set to 'ar', otherwise in English -->
                                                 {{ $lang === 'ar' ? 'أدخل إجابتك هنا ' : 'Enter your answer here' }}
-                                                .
                                             </p>
-                                            <textarea name="questions[{{ $question->id }}][answer]" id="feedback-{{ $question->id }}" rows="6"
-                                                cols="70" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"></textarea>
+                                            <textarea name="questions[{{ $question->id }}][answer]" id="feedback-{{ $question->id }}" rows="6" cols="100" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"></textarea>
                                         @endif
 
 
@@ -151,12 +142,9 @@
                                                     <input type="checkbox"
                                                         name="questions[{{ $question->id }}][selected_options][]"
                                                         id="{{ $option->id }}" value="{{ $option->id }}"
-                                                        class="w-6 h-6 p-2 text-blue-500 border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+                                                        class="w-6 h-6 p-2 border-gray-300 rounded text-primary focus:outline-none focus:ring focus:border-primary/25">
                                                     <label for="{{ $option->id }}" class="font-bold text-gray-700">
-                                                        <div
-                                                            class="px-8 py-2 text-white bg-blue-500 border border-gray-300 rounded-tr-full rounded-bl-full hover:bg-blue-300 hover:text-black">
-                                                            {{ $option->content }}
-                                                        </div>
+                                                        <div class="px-4 py-2 text-white border border-gray-300 rounded-full bg-primary hover:bg-primary/25 hover:text-black">{{ $option->content }} </div>
                                                     </label>
                                                 </div>
                                             @endforeach
@@ -164,8 +152,11 @@
 
 
                                         @if ($question->type == 'ranking')
+                                        <p class="text-sm text-gray-500 ">
+                                            {{ $lang === 'ar' ?'أدرج خيارًا أو أكثر للترتيب متعددة الاختيارات': 'Drag and drop your options' }}
+                                        </p>
                                             <p class="mb-4 text-sm text-gray-500">
-                                                Rank your preference from 1 (lowest) to {{ count($question->options) }} (highest)
+                                                {{ $lang === 'ar' ? 'ترتيب خياراتك' : 'Rank your options from 1 (lowest) to ' . count($question->options) . ' (highest)' }}
                                             </p>
                                             <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
                                             <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
@@ -184,12 +175,12 @@
                                                 });
                                             }">
                                                 <template x-for="(item, index) in list" :key="item.id">
-                                                    <div class="flex items-center p-3 mb-2 bg-white border border-gray-200 rounded shadow cursor-move"
+                                                    <div class="flex items-center p-3 mb-2 bg-white border border-gray-200 rounded-full shadow cursor-move w-fit"
                                                         x-on:mousedown="dragIndex = index"
                                                         x-on:touchstart="dragIndex = index"
                                                         x-on:mouseup="dragIndex = null" x-on:touchend="dragIndex = null"
-                                                        :class="{ 'bg-indigo-200': dragIndex === index }">
-                                                        <span x-text="item.content"></span>
+                                                        :class="{ 'bg-primary': dragIndex === index }">
+                                                        <span  x-text="item.content"></span>
                                                         <!-- Hidden input to store the ranking order -->
                                                         <input type="hidden" :name="'questions[' + '{{ $question->id }}' + '][rankings][' + item.id + ']'" x-bind:value="item.rank" class="ranking-input">
                                                     </div>
@@ -217,7 +208,7 @@
                                                             <input id="likert_option_{{ $option->id }}"
                                                                 name="questions[{{ $question->id }}][scale_value]"
                                                                 type="radio" value="{{ $option->content }}"
-                                                                class="text-indigo-600 border-gray-300 h-7 w-7 focus:ring-indigo-500">
+                                                                class="border-gray-300 text-primary h-7 w-7 focus:ring-primary/70">
                                                         </div>
                                                     @endforeach
                                                 </div>
@@ -238,11 +229,11 @@
 
                                             @foreach ($question->options as $option)
                                                 <label class="flex items-center justify-start space-x-2 space-y-2">
-                                                    <input class="w-6 h-6" type="radio"
+                                                    <input class="w-6 h-6 text-primary" type="radio"
                                                         name="questions[{{ $question->id }}][selected_option]"
                                                         value="{{ $option->id }}">
                                                     <span
-                                                        class="px-8 py-2 text-white bg-blue-500 border border-gray-300 rounded-tr-full rounded-bl-full hover:bg-blue-300 hover:text-black">{{ $option->content }}</span>
+class="px-4 py-2 font-bold text-white border border-gray-300 rounded-full bg-primary hover:bg-primary/25 hover:text-black">{{ $option->content }}</span>
                                                 </label>
                                             @endforeach
                                         @endif

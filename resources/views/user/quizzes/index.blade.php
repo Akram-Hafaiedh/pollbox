@@ -2,10 +2,9 @@
 
 <x-app-layout>
 
+    <x-dashboard-main-content :page-title="__('My Quizzes')">
     <div class="container mx-auto my-8" x-data="{ searchTerm: '', filterVisibility: '' }">
-        <div class="flex justify-between">
-            <h1 class="mb-4 text-3xl font-semibold">{{ $user->name }}'s Quizzes</h1>
-        </div>
+
         @if (session('error'))
         <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
             <strong class="font-bold">Error!</strong>
@@ -59,23 +58,24 @@
                 </h2>
                 <p class="mb-4">{{ $quiz->description }}</p>
                 <div class="w-full h-2 mb-4 bg-gray-200 rounded">
-                    <div class="h-2 max-w-md bg-green-500 rounded" style="width:{{ $quiz->questions->count() > 0
-                                    ? (auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
-                                            $quiz->questions->count()) *
-                                        100
-                                    : 0 }}%;">
+                    <div class="h-2 max-w-md bg-green-500 rounded"
+                    style="width:{{ $quiz->questions->count() > 0  ? (auth()->user()->responses()->where('quiz_id', $quiz->id)->pluck('question_id')->unique()->count() /  $quiz->questions->count()) * 100  : 0 }}%;">
                     </div>
                 </div>
 
                 <p class="mb-4">
-                    {{ round(
-                    $quiz->questions->count() > 0
-                    ? (auth()->user()->responses()->where('quiz_id', $quiz->id)->count() /
-                    $quiz->questions->count()) *
-                    100
-                    : 0,
-                    ) }}
-                    % complete</p>
+                    {{
+                        round(
+                            $quiz->questions->count() > 0
+                            ? (auth()->user()->responses()
+                                    ->where('quiz_id', $quiz->id)
+                                    ->distinct('question_id')
+                                    ->count('question_id') / $quiz->questions->count()) * 100
+                            : 0
+                        )
+                    }}% complete
+                </p>
+
                 @if ($quiz->visibility === 'restricted')
                 <div class="flex items-center">
 
@@ -133,5 +133,5 @@
         <p class="text-gray-500">No quizzes found for {{ $user->name }}.</p>
         @endif
     </div>
-
+    </x-dashboard-main-content>
 </x-app-layout>

@@ -1,327 +1,381 @@
 <x-app-layout>
-
-    <div class="flex flex-col md:flex-row">
-
+    {{-- TODO errors  --}}
+    <div class="flex flex-col md:flex-row" x-data="quizForm()">
         @auth
-        {{-- TODO make the page title admin > users > create --}}
-        <x-dashboard-main-content :page-title="__('Admin Quizz Creation')">
-            <div class="flex flex-col items-center justify-between bg-gray-200" x-data="{
-                questions: {{ count($quiz->questions)!==0 ? json_encode($quiz->questions) : '[{content: \'\', options: [\'\', \'\']}]' }},
-
-                    hasCorrectAnswers: true,
-                    removeOption: function(index, optionIndex) {
-                        console.log('Removing option', optionIndex, 'From question', index);
-                        this.questions[index].options.splice(optionIndex, 1);
-                    }
-                }" x-init="console.log($refs)">
-
-                {{-- x-data="{questions:[{content:'', options:['','']}] , hasCorrectAnswers: true }"
-                x-init="console.log($refs)"> --}}
-
-                {{--
-                @php
-                $oldQuestions = old('questions');
-                if (is_array($oldQuestions)) {
-                echo '
-                <pre>';
-                    print_r($oldQuestions);
-                    echo '</pre>';
-                }
-                @endphp --}}
-
-                @if ($errors->any())
-                <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
-                    <strong class="font-bold">Validation errors:</strong>
-                    <ul class="mt-2 list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                <form method="post" action="{{ route('admin.quizzes.store') }}" class="w-full p-6">
-                    @csrf
-                    <!-- Title-->
-                    <div>
-                        <x-input-label for="title" :value="__('Title')" />
-                        <x-text-input id="title" class="block w-full mt-1" type="text" name="title"
-                            :value="$quiz->title" autofocus autocomplete="title" required />
-                        <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                    </div>
-
-                    <div
-                        class="flex flex-col mt-4 space-x-0 space-y-3 lg:space-x-2 lg:space-y-0 lg:flex-row md:items-center">
-                        <!-- Time Limit -->
-                        <div class="w-full lg:w-1/3">
-                            <x-input-label for="time_limit" :value="__('Time Limit (mins)')" />
-
-                            <x-text-input id="time_limit" class="w-full mt-1" type="number" :value="$quiz->time_limit"
-                                name="time_limit" required autocomplete="time_limit" />
-
-                            <x-input-error :messages="$errors->get('time_limit')" class="mt-2" />
-
+            <x-dashboard-main-content :page-title="__('Admin Quizz Creation')">
+                <div class="relative flex flex-col items-center justify-between bg-gray-200">
+                    @if (session('success'))
+                        <div class="relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded"
+                            role="success">
+                            <strong class="font-bold">Success</strong>
+                            <span class="block sm:inline">{{ session('success') }}</span>
                         </div>
-                        <!-- Score -->
-                        <div class="w-full lg:w-1/3">
-                            <x-input-label for="score" :value="__('Score')" />
+                    @endif
 
-                            <x-text-input id="score" class="w-full mt-1 " type="number" :value="$quiz->score"
-                                name="score" required autocomplete="score" />
-
-                            <x-input-error :messages="$errors->get('score')" class="mt-2" />
-
+                    @if ($errors->any())
+                        <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+                            <strong class="font-bold">Validation errors:</strong>
+                            <ul class="mt-2 list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-                        <!-- Visibility-->
-                        <div class="w-full lg:w-1/3">
-                            <x-input-label for="visibility" :value="__('Visibility')" />
+                    @endif
 
-                            <select id="visibility" name="visibility"
-                                class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="public">Public</option>
-                                <option value="private">Private</option>
-                                <option value="restricted">Restricted</option>
-                            </select>
+                    <form method="post" action="{{ route('admin.quizzes.update', $quiz) }}" enctype="multipart/form-data"
+                        class="w-full p-6 mt-10">
+                        @csrf
 
-                            <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
-
+                        @method('PUT')
+                        <!-- Title-->
+                        <div class="my-4">
+                            <x-input-label for="title" :value="__('Titre')" />
+                            <x-text-input id="title" class="block w-full mt-1 text-sm" type="text" name="title"
+                                :value="old('title') ?? $quiz->title" autofocus autocomplete="title" required />
+                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
                         </div>
-                    </div>
-                    <!---Radio-Buttons  + selected users -->
-                    <div class="flex flex-col mt-4 space-y-3 md:space-y-0 lg:flex-row md:items-center">
 
-                        <!-- Active -->
-                        <div class="w-full ml-4 lg:w-1/4">
-                            <div class="mt-2">
-                                <input type="checkbox" id="active" name="active" value="1" {{ $quiz->active ? 'checked'
-                                    : '' }}
-                                    class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500">
-                                <label for="active" class="ml-2 text-gray-700">Active</label>
+                        <!-- Dates and Visibility-->
+                        <div class="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:my-4">
+                            <div>
+                                <x-input-label for="start_date" :value="__('Date de départ')" />
+                                <x-text-input id="start_date" class="block w-full mt-1 text-sm" type="date"
+                                    name="start_date" :value="old('start_date') ?? $quiz->start_date" autofocus autocomplete="start_date" required />
+                                <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
                             </div>
-                            <x-input-error :messages="$errors->get('active')" class="mt-2" />
-
+                            <div>
+                                <x-input-label for="end_date" :value="__('Date de fin')" />
+                                <x-text-input id="end_date" class="block w-full mt-1 text-sm" type="date"
+                                    name="end_date" :value="old('end_date') ?? $quiz->end_date" autofocus autocomplete="end_date" required />
+                                <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="visibility" :value="__('Visibilité')" />
+                                <select id="visibility" name="visibility" x-model ="visibility"
+                                    class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary">
+                                    <option value="public"
+                                        {{ old('visibility', $quiz->visibility) === 'public' ? 'selected' : '' }}>
+                                        Public
+                                    </option>
+                                    <option value="private"
+                                        {{ old('visibility', $quiz->visibility) === 'private' ? 'selected' : '' }}>
+                                        Private
+                                    </option>
+                                    <option value="restricted"
+                                        {{ old('visibility', $quiz->visibility) === 'restricted' ? 'selected' : '' }}>
+                                        Restricted
+                                    </option>
+                                </select>
+                                <x-input-error :messages="$errors->get('visibility')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="language" :value="__('Langue')" />
+                                <select id="languageSelect" name="language" x-model="selectedLanguage"
+                                    @change="changeLanguage"
+                                    class="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:outline-none focus:border-primary focus:ring-primary">
+                                    <option value="fr"
+                                        {{ old('language', $quiz->language) === 'fr' ? 'selected' : '' }}>
+                                        Français
+                                    </option>
+                                    <option value="en"
+                                        {{ old('language', $quiz->language) === 'en' ? 'selected' : '' }}>
+                                        Anglais
+                                    </option>
+                                    <option value="ar"
+                                        {{ old('language', $quiz->language) === 'ar' ? 'selected' : '' }}>
+                                        Arabe
+                                    </option>
+                                </select>
+                                <x-input-error :messages="$errors->get('language')" class="mt-2" />
+                            </div>
                         </div>
+                        <!---Radio-Buttons  + selected users -->
+                        <div class="flex flex-col mt-4 space-y-3 md:space-y-0 lg:flex-row md:items-center">
 
+                            <!-- Colors -->
+                            <div class="w-full px-2 lg:w-1/3">
+                                <x-input-label for="bg-color" :value="__('Couleur de fond')" />
 
-                        <!-- Has_Correct_Answers -->
-                        <div class="w-full ml-4 lg:w-1/4">
+                                <input
+                                    class="block w-full mt-1 border-gray-300 h-9 rounded-xl focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                    id="bg-color" type="color" name="bg-color"
+                                    value="{{ old('bg-color', $quiz->{'bg-color'}) }}" autofocus autocomplete="bg-color" />
 
-                            <div class="mt-2">
-                                <input x-model="hasCorrectAnswers" type="checkbox" id="has_correct_answers" value="1" {{
-                                    $quiz->has_correct_answers ? 'checked' : '' }} name="has_correct_answers"
-                                    class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500">
-                                <!-- You can style the checkbox according to your design preferences -->
-                                <label for="has_correct_answers" class="ml-2 text-gray-700">Has Correct Answers</label>
+                                <x-input-error :messages="$errors->get('bg-color')" class="mt-2" />
                             </div>
 
-                            <x-input-error :messages="$errors->get('has_correct_answers')" class="mt-2" />
-                        </div>
+                            <div class="w-full px-2 lg:w-1/3">
+                                <x-input-label for="text-color" :value="__('Couleur de texte')" />
 
-                        <!-- Randomize -->
-                        <div class="w-full ml-4 lg:w-1/4">
-                            <div class="mt-2">
-                                <input type="checkbox" id="randomize" name="randomize" value="1" {{ $quiz->randomize
-                                    ? 'checked' : '' }}
-                                    class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500">
-                                <!-- You can style the checkbox according to your design preferences -->
-                                <label for="randomize" class="ml-2 text-gray-700">Random Order</label>
+                                <input
+                                    class="block w-full mt-1 border-gray-300 h-9 rounded-xl focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                    id="text-color" type="color" name="text-color"
+                                    value="{{ old('text-color') ?? $quiz->{'text-color'} }}" autofocus
+                                    autocomplete="text-color" />
+
+                                <x-input-error :messages="$errors->get('text-color')" class="mt-2" />
                             </div>
 
-                            <x-input-error :messages="$errors->get('randomize')" class="mt-2" />
+                            <!--Members-->
+
+                            <div x-show="visibility === 'restricted'" class="w-full lg:pt-0 lg:ml-4 lg:w-1/3">
+
+                                <div x-data="{ open: false, selectedUsers: {{ json_encode(old('selected_users', [])) }} }">
+                                    <label :for="'users'" class="block text-sm font-medium text-gray-600">
+                                        {{ __('Utilisateurs a inviter') }}
+                                    </label>
+                                    <div class="relative">
+                                        <input type="text" id="selected_users" name="selected_users"
+                                            x-model="selectedUsers" x-on:click="open = true"
+                                            class="block w-full px-3 py-2 mt-1 leading-5 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring focus:border-blue-300 sm:text-sm"
+                                            placeholder="Select users..." multiple readonly>
+                                        <div x-show="open" x-on:click.away="open = false"
+                                            class="absolute z-50 w-full mt-2 overflow-x-scroll bg-white border border-gray-300 rounded-md shadow-md h-60">
+                                            @foreach ($users as $user)
+                                                <label class="flex flex-row items-center px-4 py-2 space-x-2 ">
+                                                    <input type="checkbox" name="selected_users[]"
+                                                        value="{{ $user->id }}" x-model="selectedUsers"
+                                                        {{ is_array(old('selected_users')) && in_array($user->id, old('selected_users')) ? 'checked' : '' }}
+                                                        class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500">
+
+                                                    <p>{{ $user->name }}</p>
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    <x-input-error :messages="$errors->get('users')" class="mt-2" />
+                                </div>
+
+                            </div>
+
 
                         </div>
 
-                        <!--Members-->
-                        <div class="w-full pt-4 lg:pt-0 lg:ml-4 lg:w-1/4">
+                        <!-- Description -->
+                        <div class="mt-4">
+                            <x-input-label for="description" :value="__('Description')" />
+                            <x-text-area rows="4" id="description" class="block w-full mt-1 text-sm"
+                                name="description"
+                                autocomplete="description">{{ old('description', $quiz->description) }}</x-text-area>
+                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                        </div>
 
-                            <div x-data="{ open: false, selectedUsers: {{ json_encode($quiz->selected_users)}} }"
-                                class="mb-4">
-                                <label :for="'users'" class="block mb-2 text-sm font-medium text-gray-600">
-                                    {{ __('Select Users to Invite:') }}
-                                </label>
-                                <div class="relative">
-                                    <input type="text" id="selected_users" name="selected_users" x-model="selectedUsers"
-                                        x-on:click="open = true"
-                                        class="block w-full px-3 py-2 leading-5 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring focus:border-blue-300 sm:text-sm"
-                                        placeholder="Select users..." multiple readonly>
-                                    <div x-show="open" x-on:click.away="open = false"
-                                        class="absolute z-50 w-full mt-2 overflow-x-scroll bg-white border border-gray-300 rounded-md shadow-md h-60">
-                                        @foreach ($users as $user)
-                                        <label class="flex flex-row items-center px-4 py-2 space-x-2 ">
-                                            <input type="checkbox" name="selected_users[]" value="{{ $user->id }}"
-                                                x-model="selectedUsers" {{ is_array(old('selected_users')) &&
-                                                in_array($user->id, $quiz->selected_users) ? 'checked' : '' }}
-                                            class="w-5 h-5 text-indigo-600 border-gray-300 rounded form-checkbox focus:ring-indigo-500"
-                                            >
 
-                                            <p>{{ $user->name }}</p>
+                        <!-- Questions section -->
+
+                        <template x-for="(question, questionIndex) in questions" :key="questionIndex">
+                            <div class="p-2 mt-4 border border-black border-dashed">
+                                <!-- Question content -->
+                                <label x-bind:for="'questions[' + questionIndex + '][content]'"
+                                    class="block text-sm font-medium text-gray-700">Question <span
+                                        x-text="questionIndex + 1"></span></label>
+                                <div class="flex justify-center mt-1 space-x-2">
+                                    <input x-bind:id="'questions[' + questionIndex + '][content]'"
+                                        x-model="question.content" type="text"
+                                        :name="'questions[' + questionIndex + '][content]'" placeholder="Question text"
+                                        class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                        x-model="question.content">
+
+                                    <button type="button" @click="removeQuestion(questionIndex)"
+                                        class="flex items-center px-3 py-2 text-sm font-medium text-white transition-colors duration-150 ease-in-out bg-red-600 rounded hover:bg-red-700">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        {{-- Remove --}}
+                                    </button>
+
+                                </div>
+                                <div
+                                    class="flex flex-col items-center w-full my-4 space-y-3 lg:flex-row lg:space-y-0 lg:space-x-3">
+                                    <!-- Image upload for question -->
+                                    <div class="w-full lg:w-1/2">
+                                        <label :for="'image_path_' + questionIndex"
+                                            class="block text-sm font-medium text-gray-600">
+                                            {{ __('Question') }} <span x-text="questionIndex + 1"></span>
+                                            {{ __('Image') }}
                                         </label>
-                                        @endforeach
+                                        <input type="file"
+                                            class="w-full p-1 mt-1 text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 file:mr-4 file:py-[5px] file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:text-white hover:file:bg-primary text-slate-500"
+                                            :name="'questions[' + questionIndex + '][image_path]'"
+                                            x-model="question.image_path" :id="'image_path_' + questionIndex">
+
+                                    </div>
+                                    <!-- Video link for question -->
+                                    <div class="w-full lg:w-1/2">
+                                        <label :for="'video_url_' + questionIndex"
+                                            class="block text-sm font-medium text-gray-600">
+                                            {{ __('Question') }} <span x-text="questionIndex + 1"></span>
+                                            {{ __('Video URL') }}
+                                        </label>
+                                        <input type="text" id="video_url"
+                                            :name="'questions[' + questionIndex + '][video_url]'"
+                                            x-model="question.video_url"
+                                            class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     </div>
                                 </div>
-                                <x-input-error :messages="$errors->get('users')" class="mt-2" />
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mt-4">
-                        <x-input-label for="description" :value="__('Description')" />
-                        <x-text-area rows="4" id="description" class="block w-full mt-1" name="description"
-                            autocomplete="description">{{ $quiz->description }}</x-text-area>
-                        <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                    </div>
-
-
-                    <!-- Questions section -->
-                    <template x-for="(question, index) in questions" :key="index">
-                        <div class="p-2 mt-4 border border-black border-dashed">
-                            <!-- label for question-->
-                            <label :for="'question_' + index" class="block text-sm font-medium text-gray-600">{{
-                                __('Question') }} <span x-text="index + 1"></span></label>
-                            <!-- Input for questions -->
-                            <input type="text" x-model="question.content" :name="'questions[' + index + '][content]'"
-                                class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required />
-                            <div
-                                class="flex flex-col items-center w-full my-4 space-y-3 lg:flex-row lg:space-y-0 lg:space-x-3">
-                                <!-- Type -->
-                                <div class="w-full lg:w-1/4">
-                                    <label :for="'type_' + index" class="block text-sm font-medium text-gray-600 ">
-                                        {{ __('Type') }}
-                                    </label>
-                                    <select x-model="question.type" :name="'questions[' + index + '][type]'"
-                                        :id="'type_' + index"
-                                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ">
-                                        <option value="multiple_choice">Multiple Choice</option>
-                                        <option value="single_choice">Single Choice</option>
-                                        <option value="open_ended">Open Ended</option>
-                                        <!-- Add other options as needed -->
-                                    </select>
-                                </div>
-                                <!-- Difficulty -->
-                                <div class="w-full lg:w-1/4">
-                                    <label :for="'difficulty_' + index" class="block text-sm font-medium text-gray-600">
-                                        {{ __('Difficulty') }}
-                                    </label>
-                                    <select x-model="question.difficulty" :name="'questions[' + index + '][difficulty]'"
-                                        :id="'difficulty_' + index"
-                                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ">
-                                        <option value="easy">Easy</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="hard">Hard</option>
-                                        <!-- Add other options as needed -->
-                                    </select>
-                                </div>
-                                <!-- Order -->
-                                <div class="w-full lg:w-1/4 ">
-                                    <label :for="'order_' + index" class="block text-sm font-medium text-gray-600 ">
-                                        {{ __('Order') }}
-                                    </label>
-                                    <input x-model="question.order" :name="'questions[' + index + '][order]'"
-                                        :id="'order_' + index"
-                                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 "
-                                        type="number" min="0" />
-                                </div>
-                                <!-- Required -->
-                                <div class="w-full lg:w-1/4">
-                                    <label :for="'required_' + index" class="block text-sm font-medium text-gray-600">
-                                        {{ __('Required') }}
-                                    </label>
-                                    <select x-model="question.required" :name="'questions[' + index + '][required]'"
-                                        :id="'required' + index"
-                                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ">
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
-                                        <!-- Add other options as needed -->
-                                    </select>
-                                </div>
-
-                            </div>
-                            <div
-                                class="flex flex-col items-center justify-end mt-2 mb-4 space-x-0 space-y-2 lg:flex-row lg:space-x-2 lg:space-y-0">
-                                <!-- Button for Addding options to question-->
-                                <button type="button" @click="question.options.push('')"
-                                    class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md lg:w-max hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
-                                    __('Add Option') }}</button>
-
-                                <!-- Remove question button-->
-                                <button type="button" @click="questions.splice(index, 1)"
-                                    class="inline-flex items-center justify-center w-full px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md lg:w-max hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
-                                    __('Remove Question') }}</button>
-                            </div>
-
-
-                            <!-- Options for the current question -->
-
-                            <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
-                                <div>
-                                    <!-- Label for option-->
-                                    <div class="flex flex-row items-center justify-between text-xs">
-                                        <label :for="'option_' + index + '_' + optionIndex"
+                                <div
+                                    class="flex flex-col items-center w-full my-4 space-y-3 lg:flex-row lg:space-y-0 lg:space-x-3">
+                                    <!-- Type -->
+                                    <div class="w-full lg:w-1/2">
+                                        <label :for="'type_' + questionIndex"
                                             class="block text-sm font-medium text-gray-600 ">
-                                            {{ __('Option') }} <span x-text="optionIndex + 1"></span>
+                                            {{ __('Type De Réponse') }}
                                         </label>
+                                        <select x-model="question.type" :name="'questions[' + questionIndex + '][type]'"
+                                            :id="'type_' + questionIndex"
+                                            class="flex w-full mt-1 space-y-2 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                            <option value="single_choice">Choix unique</option>
+                                            <option value="multiple_choice">Choix multiple</option>
+                                            <option value="likert_scale">Choix Likert</option>
+                                            <option value="ranking">Classement</option>
+                                            <option value="feedback">Commentaire</option>
+                                            <!-- Add other options as needed -->
+                                        </select>
                                     </div>
-                                    <div class="flex flex-row items-center mr-2 space-x-2">
-                                        <!-- Input for option-->
-                                        <input :id="'option_' + index + '_' + optionIndex"
-                                            :name="'questions[' + index + '][options][' + optionIndex + '][content]'"
-                                            x-model="option.content"
-                                            class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            type="text" required />
-                                        <!-- Checkbox for correct answer -->
-                                        <template x-if="hasCorrectAnswers">
-                                            <div class="" x-data="{ isCorrect: false }">
-                                                <input type="checkbox" value="1"
-                                                    :id="'option_' + index + '_' + optionIndex + '_correct'" :name="'questions[' + index + '][options][' + optionIndex +
-                                                            '][is_correct]'" x-model="isCorrect"
-                                                    class="mx-3 text-indigo-600 border-gray-300 rounded w-7 h-7 form-checkbox focus:ring-indigo-500">
-                                                <!-- Add a hidden input to store the actual value in the form submission -->
-                                                {{-- <input type="hidden" :name="'questions[' + index + '][options][' + optionIndex +
-                                                            '][is_correct]'"
-                                                    x-bind:value="isCorrect ? 'true' : 'false'"> --}}
-                                            </div>
-                                        </template>
-                                        <template x-else>
-                                            <p>hasCorrectAnswers is undefined</p>
-                                        </template>
-                                        <!-- Remove option button -->
-                                        <button type="button" x-on:click="removeOption(index, optionIndex)"
-                                            class="w-8 h-8 text-white bg-red-500 rounded-md">
-                                            <span class="sr-only">{{ __('Remove Option') }}</span> X
-                                        </button>
+
+
+                                    <!-- Required -->
+                                    <div class="w-full lg:w-1/2">
+                                        <label :for="'required_' + questionIndex"
+                                            class="block text-sm font-medium text-gray-600">
+                                            {{ __('Réponse Requise') }}
+                                        </label>
+                                        <select x-model="question.required"
+                                            :name="'questions[' + questionIndex + '][required]'"
+                                            :id="'required' + questionIndex"
+                                            class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ">
+                                            <option value="1">Oui</option>
+                                            <option value="0">Non</option>
+                                            <!-- Add other options as needed -->
+                                        </select>
                                     </div>
+
                                 </div>
-                            </template>
+
+
+                                <!-- Options for the current question -->
+                                <template x-if="question.type !== 'feedback'">
+                                    <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
+                                        <div>
+                                            <!-- Label for option-->
+                                            <div class="flex flex-row items-center justify-between mt-2 text-xs">
+                                                <label :for="'option_' + questionIndex + '_' + optionIndex"
+                                                    class="block text-sm font-medium text-gray-600 ">
+                                                    {{ __('Option') }} <span x-text="optionIndex + 1"></span>
+                                                </label>
+                                            </div>
+                                            <div class="flex flex-row items-center mr-2 space-x-2">
+                                                <!-- Input for option-->
+                                                <input :id="'option_' + questionIndex + '_' + optionIndex"
+                                                    :name="'questions[' + questionIndex + '][options][' + optionIndex +
+                                                        '][content]'"
+                                                    x-model="option.content"
+                                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                    type="text" placeholder="Option text" />
+                                                <!-- Remove option button -->
+                                                <div class="flex flex-row space-x-2">
+                                                    <!-- Remove Option Button -->
+                                                    <button type="button"
+                                                        @click="removeOption(questionIndex, optionIndex)"
+                                                        class="flex items-center px-3 py-2 text-sm font-medium text-white transition-colors duration-150 ease-in-out bg-red-600 rounded hover:bg-red-700">
+                                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                        {{-- Remove --}}
+                                                    </button>
+
+                                                    <!-- Add Option Button -->
+                                                    <button type="button" @click="addOption(questionIndex, optionIndex)"
+                                                        class="flex items-center px-3 py-2 text-sm font-medium text-white transition-colors duration-150 ease-in-out rounded bg-primary hover:bg-primary/75 ">
+                                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M12 4v16m8-8H4" />
+                                                        </svg>
+                                                        {{-- Add Option --}}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+
+                            </div>
+                        </template>
+                        <!-- Button for adding question -->
+                        <button type="button" @click="addQuestion"
+                            class="px-4 py-2 mt-2 text-sm text-white uppercase rounded-md bg-primary">
+                            {{ __('Ajouter une question') }}
+                        </button>
+
+                        <div class="flex justify-end mt-6">
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out border border-transparent rounded-md bg-primary hover:bg-secondary focus:bg-secondary active:bg-secondary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 ">
+                                {{ __('Créer Le Quiz') }}
+                            </button>
+                            <a href="{{ route('admin.quizzes.index') }}"
+                                class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out border border-transparent rounded-md ms-3 bg-primary hover:bg-secondary focus:bg-secondary active:bg-secondary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 ">
+                                {{ __('Annuler') }}
+                            </a>
 
                         </div>
-                    </template>
-                    <!-- Button for adding question -->
-                    <button type="button" @click="questions.push({content: '', options: ['','']})"
-                        class="px-4 py-2 mt-2 text-white bg-blue-500 rounded-md">
-                        {{ __('Add Question') }}
-                    </button>
-                    {{-- <button type="button" @click="questions.push({})"
-                        class="px-4 py-2 mt-2 text-white bg-blue-500 rounded-md">
-                        {{ __('Add Question') }}
-                    </button> --}}
-                    <div class="flex justify-end mt-6">
-                        <a href="{{ route('admin.quizzes.index') }}"
-                            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">
-                            {{ __('Cancel') }}
-                        </a>
-                        <button type="submit"
-                            class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md ms-3 hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">{{
-                            __('Create Quizz') }}</button>
-
-                    </div>
-                </form>
-            </div>
-        </x-dashboard-main-content>
+                    </form>
+                </div>
+            </x-dashboard-main-content>
         @endauth
-
     </div>
+
+    <script type="text/javascript">
+        function quizForm() {
+            return {
+                questions: {{ Js::from($quiz->questions->toArray()) }},
+                addQuestion() {
+                    this.questions.push({
+                        content: '',
+                        options: [{
+                                content: ''
+                            },
+                            {
+                                content: ''
+                            },
+                            {
+                                content: ''
+                            }
+                        ]
+                    });
+                },
+                removeQuestion(questionIndex) {
+                    this.questions.splice(questionIndex, 1);
+                },
+                addOption(questionIndex, optionIndex) {
+                    let newOption = {
+                        content: ''
+                    };
+                    this.questions[questionIndex].options.splice(optionIndex + 1, 0, newOption);
+                },
+                removeOption(questionIndex, optionIndex) {
+                    this.questions[questionIndex].options.splice(optionIndex, 1);
+                }
+            };
+        }
+
+        let visibility = {{ Js::from($quiz->visibility ?? 'public') }};
+        let selectedLanguage = {{ Js::from($quiz->language ?? 'fr') }};
+    </script>
 </x-app-layout>
+<style>
+    /* Targeting the color well in webkit browsers */
+    input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+        border: none;
+        border-radius: 0.375rem;
+    }
+</style>

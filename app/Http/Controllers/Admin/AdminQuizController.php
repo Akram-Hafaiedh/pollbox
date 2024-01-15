@@ -68,8 +68,8 @@ class AdminQuizController extends Controller
                 'title' => $validatedData['title'],
                 // 'time_limit' => $validatedData['time_limit'],
                 'start_date' => $validatedData['start_date'],
-                'color'=>$validatedData['color'],
-                'language'=>$validatedData['language'],
+                'color' => $validatedData['color'],
+                'language' => $validatedData['language'],
                 'end_date' => $validatedData['end_date'],
                 'score' => isset($validatedData['score']) ? $validatedData['score'] : '0',
                 'description' => $validatedData['description'],
@@ -175,6 +175,8 @@ class AdminQuizController extends Controller
     public function edit(Quiz $quiz): View
     {
         $users = User::where('admin_id', auth()->id())->get();
+        $quiz->load('questions', 'questions.options');
+
         return view('admin.quizzes.edit', compact('quiz', 'users'));
     }
 
@@ -214,18 +216,6 @@ class AdminQuizController extends Controller
 
     public function topQuizzes(): View
     {
-        // $topUsers = User::with(['quizzes' => function ($query) {
-        //     $query->where('has_correct_answers', true)
-        //         ->orderBy('score', 'desc')
-        //         ->take(3);
-        // }])->get();
-
-
-        $topQuizzes = Quiz::where('has_correct_answers', true)
-            ->orderBy('score', 'desc') // Replace with the actual column
-            ->take(3)
-            ->get();
-        // dd($topQuizzes);
-        return view('admin.quizzes.top-quizzes', compact('topQuizzes'));
+        return view('admin.quizzes.top-quizzes');
     }
 }

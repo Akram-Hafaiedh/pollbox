@@ -18,21 +18,20 @@ class QuizFactory extends Factory
      */
     public function definition(): array
     {
+
+        $languages = ['fr', 'ar', 'en'];
         return [
             'title' => fake()->sentence(3),
             'description' => fake()->sentence(20),
-            // 'active' => (bool) rand(0, 1),
-            // 'time_limit' => rand(15, 60),
             'start_date' => fake()->date('Y-m-d'),
             'end_date' => fake()->date('Y-m-d'),
-            'score' => rand(0, 100),
-            'has_correct_answers' => (bool) rand(0, 1),
-            'color' =>fake()->hexColor(),
-            'language' => fake()->languageCode(),
+            'bg-color' => fake()->hexColor(),
+            'text-color' => fake()->hexColor(),
+            'language' => fake()->randomElement($languages),
             'category_id' => Category::factory(),
             'user_id' => User::where('role', 'admin')->first()->id,
-            'visibility' => fake()->randomElement(['public', 'private', 'restricted']),  // Override default visibility if needed
-            // 'randomize' => true,        // Override default randomize value if needed
+            'visibility' => fake()->randomElement(['public', 'private', 'restricted']),
+
         ];
     }
 }

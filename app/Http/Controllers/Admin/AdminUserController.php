@@ -33,8 +33,8 @@ class AdminUserController extends Controller
             }])
             ->where('admin_id', $currentAdmin->id)
             // TODO: Add search on the client side
-            // ->where('name', 'LIKE', "%{$search}%")
-            // ->orWhere('email', 'LIKE', "%{$search}%")
+            ->where('name', 'LIKE', "%{$search}%")
+            ->orWhere('email', 'LIKE', "%{$search}%")
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 

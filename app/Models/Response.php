@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Number;
 
 class Response extends Model
 {
@@ -38,5 +39,10 @@ class Response extends Model
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);
+    }
+
+    public static function totalParticipants(Quiz $quiz): Number
+    {
+        return static::where('quiz_id', '=', $quiz->id)->distinct('user_id')->count('user_id');
     }
 }

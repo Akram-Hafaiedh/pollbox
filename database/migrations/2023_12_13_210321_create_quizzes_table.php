@@ -17,12 +17,12 @@ return new class extends Migration
             $table->foreignId('category_id')->nullable()->constrained();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
             $table->boolean('is_finished')->default(false); //added
-            $table->string('text-color')->nullable();
-            $table->string('bg-color')->nullable();
-            $table->string('language')->nullable();
+            $table->string('text_color');
+            $table->string('bg_color');
+            $table->string('language');
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->enum('type', ['quiz', 'survey', 'test'])->default('survey')->nullable();
 

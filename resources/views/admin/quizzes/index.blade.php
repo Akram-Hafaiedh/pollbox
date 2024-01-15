@@ -221,8 +221,8 @@
                             <th class="py-2 text-center">Date de debut</th>
                             <th class="py-2 text-center">Date de fin</th>
                             <th class="py-2 text-center">Nb. Questions</th>
-                            <th cols="1" class="py-2 ">Nb. Membres</th>
-                            <th class="py-2 ">Visibilité</th>
+                            <th class="py-2 text-center">Nb. Personnes</th>
+                            <th class="py-2 text-center">Visibilité</th>
                             <th class="py-2 text-center text-nowrap">Crée le</th>
                             <th class="py-2 text-center">Actions</th>
                         </tr>

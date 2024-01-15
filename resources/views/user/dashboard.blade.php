@@ -7,8 +7,11 @@
 
                     <div class="grid justify-start grid-cols-1 gap-4 md:grid-cols-2">
                         @forelse ($latestQuizzes as $quiz)
-                            <div class="p-6 duration-300 ease-in-out bg-white border-2 rounded-lg shadow-md  ransition hover:shadow-xl min-w-64">
+                            <div class="p-6 duration-300 ease-in-out bg-white border-2 rounded-lg shadow-md ransition hover:shadow-xl min-w-64">
                                 <a href="{{ route('user.quizzes.show', $quiz->id) }}" class="text-lg text-primary-dark/80 hover:text-primary">{{ $quiz->title }}</a>
+                                <div class="mt-2 text-sm">
+                                    <span class="text-gray-600">Questions: {{ $quiz->questions->count() }}</span>
+                                </div>
                                 <div class="mt-2 text-sm text-gray-600">
                                     Published on: {{ $quiz->created_at->format('M d, Y') }}
                                 </div>

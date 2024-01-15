@@ -9,10 +9,11 @@
             <div class="flex items-center justify-between">
                 <div class="flex space-x-2">
                     <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
+                        {{-- TODO DELETE ALL --}}
                         <label for="pdf-file" class="mr-2" @click="pdfFile = true">
                             <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
                             <button type="button"
-                                class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                                class="h-10 px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
                                 x-on:click="$refs.pdfInput.click()">
                                 <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -25,7 +26,7 @@
                         <label for="csv-file">
                             <input id="csv-file" type="file" accept=".csv" class="hidden" x-ref="csvInput">
                             <button type="button"
-                                class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700"
+                                class="h-10 px-4 py-2 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700"
                                 x-on:click="$refs.csvInput.click()">
                                 <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -37,18 +38,31 @@
                         </label>
                     </div>
                     <a href="{{ route('admin.users.create') }}"
-                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
-                        {{ __('Add user')}}</a>
-                    {{-- TODO DELETE ALL --}}
+                        class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
+                        <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        {{ __('Add User') }}
+                    </a>
                     <a href="#"
-                        class="inline-flex items-center px-4 py-2 tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
-                        {{ __('Delete all')}}</a>
-
+                        class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                        <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3-3h8l1 3h-10l1-3z"></path>
+                        </svg>
+                        {{ __('Delete All')}}
+                    </a>
                 </div>
-                <form action="{{ route('admin.users.index') }}" method="GET">
-                    <x-text-input id="search" name="search" type="text" class="mt-1" :value="old('search',$search)"
-                        placeholder="Search users" />
-                    <button type="submit">Search</button>
+                <form action="{{ route('admin.users.index') }}" method="GET" class="flex items-center space-x-4">
+                    <x-text-input id="search" name="search" type="text" class="text-sm border-gray-300 rounded-md"
+                        :value="old('search',$search)" placeholder="Rechercher" />
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Search</button>
                 </form>
             </div>
 
@@ -60,10 +74,10 @@
                     class="font-medium text-left text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
                     <tr>
                         <th class="py-2">#</th>
-                        <th class="py-2">Name</th>
+                        <th class="py-2">Nom</th>
                         <th class="py-2">Email</th>
                         <th class="py-2">Status</th>
-                        <th class="py-2">Lastest Response</th>
+                        <th class="py-2">Dernière Connexion</th>
                         <th class="py-2 text-center">Created At</th>
                         <th class="py-2 text-center">Actions</th>
                     </tr>
@@ -87,11 +101,7 @@
                             @endif
                         </td>
                         <td>
-                            @if($user->responses->isNotEmpty())
-                            {{ $user->responses->first()->created_at ?? 'No responses' }}
-                            @else
-                            No responses
-                            @endif
+                            {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : '' }}
                         </td>
                         {{-- TODO ADD ACTIVE OR INACTIVE TO USERS --}}
                         {{-- <td>@if ($quiz->active) <span class="text-green-500">Active</span> @else <span

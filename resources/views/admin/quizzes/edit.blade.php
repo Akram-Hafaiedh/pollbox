@@ -1,8 +1,9 @@
 <x-app-layout>
     {{-- TODO errors  --}}
+
     <div class="flex flex-col md:flex-row" x-data="quizForm()">
         @auth
-            <x-dashboard-main-content :page-title="__('Admin Quizz Creation')">
+            <x-dashboard-main-content :page-title="__('Modification de quiz')">
                 <div class="relative flex flex-col items-center justify-between bg-gray-200">
                     @if (session('success'))
                         <div class="relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded"
@@ -26,7 +27,6 @@
                     <form method="post" action="{{ route('admin.quizzes.update', $quiz) }}" enctype="multipart/form-data"
                         class="w-full p-6 mt-10">
                         @csrf
-
                         @method('PUT')
                         <!-- Title-->
                         <div class="my-4">
@@ -95,14 +95,14 @@
 
                             <!-- Colors -->
                             <div class="w-full px-2 lg:w-1/3">
-                                <x-input-label for="bg-color" :value="__('Couleur de fond')" />
+                                <x-input-label for="bg_color" :value="__('Couleur de fond')" />
 
                                 <input
                                     class="block w-full mt-1 border-gray-300 h-9 rounded-xl focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                    id="bg-color" type="color" name="bg-color"
-                                    value="{{ old('bg-color', $quiz->{'bg-color'}) }}" autofocus autocomplete="bg-color" />
+                                    id="bg_color" type="color" name="bg_color"
+                                    value="{{ old('bg_color', $quiz->{'bg_color'}) }}" autofocus autocomplete="bg_color" />
 
-                                <x-input-error :messages="$errors->get('bg-color')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('bg_color')" class="mt-2" />
                             </div>
 
                             <div class="w-full px-2 lg:w-1/3">
@@ -110,11 +110,11 @@
 
                                 <input
                                     class="block w-full mt-1 border-gray-300 h-9 rounded-xl focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                    id="text-color" type="color" name="text-color"
-                                    value="{{ old('text-color') ?? $quiz->{'text-color'} }}" autofocus
-                                    autocomplete="text-color" />
+                                    id="text_color" type="color" name="text_color"
+                                    value="{{ old('text_color') ?? $quiz->{'text_color'} }}" autofocus
+                                    autocomplete="text_color" />
 
-                                <x-input-error :messages="$errors->get('text-color')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('text_color')" class="mt-2" />
                             </div>
 
                             <!--Members-->
@@ -200,7 +200,7 @@
                                         <input type="file"
                                             class="w-full p-1 mt-1 text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 file:mr-4 file:py-[5px] file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:text-white hover:file:bg-primary text-slate-500"
                                             :name="'questions[' + questionIndex + '][image_path]'"
-                                            x-model="question.image_path" :id="'image_path_' + questionIndex">
+                                            :id="'image_path_' + questionIndex">
 
                                     </div>
                                     <!-- Video link for question -->
@@ -257,7 +257,7 @@
 
 
                                 <!-- Options for the current question -->
-                                <template x-if="question.type !== 'feedback'">
+                                <template x-if="question.type !== 'feedback' && question.type !== 'likert_scale'">
                                     <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
                                         <div>
                                             <!-- Label for option-->
@@ -316,13 +316,12 @@
                         <div class="flex justify-end mt-6">
                             <button type="submit"
                                 class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out border border-transparent rounded-md bg-primary hover:bg-secondary focus:bg-secondary active:bg-secondary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 ">
-                                {{ __('Créer Le Quiz') }}
+                                {{ __('Modifier Le Quiz') }}
                             </button>
                             <a href="{{ route('admin.quizzes.index') }}"
                                 class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out border border-transparent rounded-md ms-3 bg-primary hover:bg-secondary focus:bg-secondary active:bg-secondary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 ">
                                 {{ __('Annuler') }}
                             </a>
-
                         </div>
                     </form>
                 </div>

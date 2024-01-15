@@ -15,6 +15,7 @@ use App\Helpers\CodeHelper;
 use App\Models\Category;
 use App\Models\Option;
 use App\Models\Question;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 
@@ -55,72 +56,44 @@ class AdminQuizController extends Controller
      */
     public function store(StoreQuizRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
 
 
-        $validatedData = $request->validated();
+        DB::transaction(function ()  use ($validated, $request){
 
-        // dd($validatedData);
-
-        if (auth()->check()) {
-            // Store the quiz
             $quiz = Quiz::create([
                 'user_id' => auth()->id(),
-                'title' => $validatedData['title'],
-                // 'time_limit' => $validatedData['time_limit'],
-                'start_date' => $validatedData['start_date'],
-                'color' => $validatedData['color'],
-                'language' => $validatedData['language'],
-                'end_date' => $validatedData['end_date'],
-                'score' => isset($validatedData['score']) ? $validatedData['score'] : '0',
-                'description' => $validatedData['description'],
-                // 'active' => isset($validatedData['active']) ? $validatedData['active'] : false,
-                'visibility' => isset($validatedData['visibility']) ? $validatedData['visibility'] : false,
-                'has_correct_answers' => isset($validatedData['has_correct_answers']) ? $validatedData['has_correct_answers'] : false,
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'],
+                'text_color' => $validated['text_color'],
+                'bg_color' => $validated['bg_color'],
+                'language' => $validated['language'],
+                'visibility' => $validated['visibility'] ?? false,
             ]);
 
-            // Store questions
-            foreach ($validatedData['questions']  as $questionData) {
-                // $quiz->users()->attach($validatedData['users']);
-                $question = Question::create([
-                    'quiz_id' => $quiz->id,
+
+            foreach ($validated['questions']  as $questionData) {
+                $question = $quiz->questions()->create([
                     'content' => $questionData['content'],
                     'type' => $questionData['type'],
-                    // 'difficulty' => $questionData['difficulty'],
-                    'order' => isset($questionData['order']) ? $questionData['order'] : 0,
                     'required' => $questionData['required'],
                     'video_url' => $questionData['video_url'],
+                    'image_path'=>isset($questionData['image_path']) && $questionData['image_path']->isValid() ? $questionData['image_path']->store('question_images', 'public') : null,
                 ]);
-
-                // Upload and store the question image
-                if (isset($questionData['image_path']) && $questionData['image_path']->isValid()) {
-                    // dd('upload image');
-                    $imagePath = $questionData['image_path']->store('question_images', 'public');
-                    // dd($imagePath);
-                    $question->update(['image_path' => $imagePath]);
-                }
-
-                // Store options
+                isset($questionData['options']) ?: $questionData['options'] = [];
                 foreach ($questionData['options'] as $optionData) {
-                    // Create the option
-                    Option::create([
+                    $question->options()->create([
                         'content' => $optionData['content'],
-                        'is_correct' => isset($optionData['is_correct']) ? $optionData['is_correct'] : false,
-                        // 'explanation'=>$optionData['explanation'],
-                        'question_id' => $question->id,
                     ]);
                 }
             }
-
-
-            // Create an invitation for the restricted uesrs
-            if ($validatedData['visibility'] === 'restricted') {
-
+            if ($validated['visibility'] === 'restricted') {
+                $selectedUsers  = $request('selected_users',[]);
                 $accessCode = CodeHelper::generateAccessCode();
-                // $accessCode = generateAccessCode();
-
-                foreach ($request->input('selected_users', []) as $userId) {
-                    Invitation::create([
-                        'quiz_id' => $quiz->id,
+                foreach ( $selectedUsers as $userId) {
+                    $quiz->invitation()->create([
                         'sender_id' => auth()->id(),
                         'recipient_id' => $userId,
                         'code' => $accessCode,
@@ -128,16 +101,10 @@ class AdminQuizController extends Controller
                     ]);
                 }
             }
-
-
-
-
+        });
             return redirect()->route('admin.quizzes.index')
-                ->with('success', __('Quiz created successfully!'));
-        } else {
-            return redirect()->route('login')
-                ->with('error', __('You must be logged in to create a quizz'));
-        }
+                ->with('success', __('Quiz Créé avec Succés !'));
+
     }
     // public function userQuizzes(User $user)
     // {
@@ -161,11 +128,6 @@ class AdminQuizController extends Controller
 
         $quiz->load('selectedUsers');
         $users = $quiz->selectedUsers;
-
-
-        // dd($quiz->selectedUsers->first()->pivot->code);
-
-
         return view('admin.quizzes.show', compact('quiz', 'users'));
     }
 
@@ -183,9 +145,61 @@ class AdminQuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateQuizRequest $request, Quiz $quiz)
+    public function update(UpdateQuizRequest $request, Quiz $quiz): RedirectResponse
     {
-        //
+        $validated = $request->validated();
+
+
+        DB::transaction(function () use ($validated, $request, $quiz) {
+            // Update the quiz details
+            $quiz->update([
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'],
+                'text_color' => $validated['text_color'],
+                'bg_color' => $validated['bg_color'],
+                'language' => $validated['language'],
+                'visibility' => $validated['visibility'] ?? false,
+            ]);
+
+            // Update the questions and options
+            // This assumes you want to replace all existing questions and options with new ones
+            $quiz->questions()->delete(); // Delete existing questions (and related options through cascading, if set up)
+            foreach ($validated['questions'] as $questionData) {
+                $question = $quiz->questions()->create([
+                    'content' => $questionData['content'],
+                    'type' => $questionData['type'],
+                    'required' => $questionData['required'],
+                    'video_url' => $questionData['video_url'],
+                    'image_path' => isset($questionData['image_path']) && $questionData['image_path']->isValid() ? $questionData['image_path']->store('question_images', 'public') : null,
+                ]);
+                isset($questionData['options']) ?: $questionData['options'] = [];
+                foreach ($questionData['options'] as $optionData) {
+                    $question->options()->create([
+                        'content' => $optionData['content'],
+                    ]);
+                }
+            }
+
+            // Update the invitations if the quiz is restricted
+            if ($validated['visibility'] === 'restricted') {
+                $selectedUsers = $request->input('selected_users', []);
+                $quiz->invitations()->delete(); // Delete existing invitations
+                $accessCode = CodeHelper::generateAccessCode();
+                foreach ($selectedUsers as $userId) {
+                    $quiz->invitations()->create([
+                        'sender_id' => auth()->id(),
+                        'recipient_id' => $userId,
+                        'code' => $accessCode,
+                        'pending' => true,
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->route('admin.quizzes.index')
+            ->with('success', __('Quiz Mis à Jour avec Succés !'));
     }
 
     /**
@@ -214,8 +228,5 @@ class AdminQuizController extends Controller
             ->with('success', __('All quizzes deleted successfully'));
     }
 
-    public function topQuizzes(): View
-    {
-        return view('admin.quizzes.top-quizzes');
-    }
+
 }

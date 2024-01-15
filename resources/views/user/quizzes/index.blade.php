@@ -43,7 +43,7 @@
                 (searchTerm==='' || '{{ strtolower($quiz->title) }}'.includes(searchTerm.toLowerCase()))&&
                 (filterVisibility === '' || '{{ strtolower($quiz->visibility) }}' === filterVisibility.toLowerCase())"
                 href="{{ route('user.quizzes.show', $quiz) }}"
-                class="relative p-6 text-white transition-transform transform border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105 hover:shadow-lg"  style="background-color: {{ $quiz->color }}">
+                class="relative p-6 text-white transition-transform transform border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105 hover:shadow-lg"  style="background-color: {{ $quiz->bg_color }};color:{{ $quiz->text_color }}">
                 <!-- Using Blade-->
                 <!-- <h2 class="w-full mb-2 text-xl font-bold">#{{ $quiz->id }}-{{ $quiz->title }}
                     <span

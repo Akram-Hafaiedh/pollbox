@@ -18,6 +18,8 @@ class StoreQuizRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
+
+    // TODO : make the admin only can do this with roles
     public function authorize(): bool
     {
         return true;
@@ -32,39 +34,25 @@ class StoreQuizRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            // 'time_limit' => 'required|numeric', //!removed
-
-            'start_date' => 'nullable|date', //!added
-            'end_date' => 'nullable|date|after_or_equal:start_date', //!added
-            'language' => 'nullable|string',
-            'score' => 'nullable|numeric',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'language' => 'required|string',
             'description' => 'required|string',
             'visibility' => 'required|in:public,private,restricted',
-            'randomize' => 'sometimes|boolean',
-            'has_correct_answers' => 'sometimes|boolean',
-            'color'=>'required|string',
-            // 'active' => 'sometimes|boolean',
-
-            // validation for selected users
-
-            'selected_users' => 'nullable|array', //!added
-            'selected_users.*' => 'exists:users,id', //!added
-
-            // Validation rules for questions array
-            // 'questions' => 'required|array|min:1',
+            'bg_color'=>'required|hex_color|string',
+            'text_color'=>'required|hex_color|string',
+            'selected_users' => 'nullable|array',
+            'selected_users.*' => 'exists:users,id',
             'questions.*' => 'required|array|min:1',
             'questions.*.content' => 'required|string',
-            'questions.*.image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', //!added
-            'questions.*.video_url' => 'nullable|url', //!added
-            'questions.*.type' => 'required|in:multiple_choice,single_choice,feedback,ranking,numeric', //!added
-            // 'questions.*.difficulty' => 'required|in:easy,medium,hard',
+            'questions.*.image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'questions.*.video_url' => 'nullable|url',
+            'questions.*.type' => 'required|in:multiple_choice,single_choice,feedback,ranking,likert_scale',
             'questions.*.order' => 'nullable|integer',
             'questions.*.required' => 'required|boolean',
-
-            // Validation rules for options array within each question
-            'questions.*.options' => 'required|array|min:2',
+            'questions.*.options' => 'sometimes|array|min:2',
             'questions.*.options.*.content' => 'required|string|max:255',
-            'questions.*.options.*.is_correct' => 'sometimes|boolean', //TODO: maybe gonna be removed later
+            'questions.*.options.*.is_correct' => 'sometimes|boolean', //* maybe gonna be removed later
         ];
     }
 }

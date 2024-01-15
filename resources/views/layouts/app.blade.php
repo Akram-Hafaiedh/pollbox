@@ -9,6 +9,8 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" sizes="180x180" href="{{ asset('assets/favicon.svg') }}">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -45,7 +47,7 @@
                             <x-side-link route="admin.dashboard" icon="fa fa-home">Dashboard</x-side-link>
                             <x-side-link route="admin.users.index" icon="fa fa-user">Users</x-side-link>
                             <x-side-link route="admin.quizzes.index" icon="fa fa-question-circle">Quizzes</x-side-link>
-                            <x-side-link route="admin.topQuizzes" icon="fa fa-bar-chart">Reports</x-side-link>
+                            <x-side-link route="admin.reports.dashboard" icon="fa fa-bar-chart">Reports</x-side-link>
                             <x-side-link route="admin.settings.index" icon="fa fa-cogs">Settings</x-side-link>
                             <x-side-link route="admin.more-settings" icon="fa fa-cog">More Settings</x-side-link>
                             <!-- User Information and Logout Link -->

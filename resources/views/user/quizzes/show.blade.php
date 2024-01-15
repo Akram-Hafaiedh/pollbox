@@ -6,7 +6,7 @@
 <x-app-layout :$dir :$lang>
     <x-slot name="header">
         <h2 class="w-full px-4 py-6 text-xl font-semibold leading-tight text-white"
-            style="background-color: {{ $quiz->color }}">
+            style="background-color: {{ $quiz->bg_color }}">
             {{ __($quiz->title) }}
         </h2>
     </x-slot>
@@ -70,7 +70,7 @@
                                         'bg-gray-300': currentSlide !== index -
                                             1
                                     }"
-                                    :style="currentSlide === index - 1 ? 'background-color: {{ $quiz->color }}' : ''"
+                                    :style="currentSlide === index - 1 ? 'background-color: {{ $quiz->bg_color }}' : ''"
                                     class="flex items-center justify-center w-10 h-10 mx-1 rounded-full focus:outline-none">
                                     <span class="" x-text="index"></span>
                                 </button>
@@ -110,7 +110,7 @@
 
 
                                     {{-- Options --}}
-                                    <div class="container mx-auto mt-6 ml-56">
+                                    <div class="container flex flex-col items-center justify-center mx-auto mt-6">
                                         {{-- Check if the question type is 'feedback' --}}
                                         @if ($question->type === 'feedback')
                                             <!-- Hidden input to store the question's ID -->
@@ -118,7 +118,7 @@
                                             <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
                                             <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
-                                            <p class="text-sm text-gray-500">
+                                            <p class="mb-4 text-sm text-gray-500">
                                                 <!-- Display the prompt in Arabic if $lang is set to 'ar', otherwise in English -->
                                                 {{ $lang === 'ar' ? 'أدخل إجابتك هنا ' : 'Enter your answer here' }}
                                             </p>
@@ -248,12 +248,12 @@ class="px-4 py-2 font-bold text-white border border-gray-300 rounded-full bg-pri
                                 @click.prevent="currentSlide = (currentSlide - 1 + totalSlides) % totalSlides"
                                 :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === 0 }"
                                 class="px-4 py-2 text-white rounded focus:outline-none disabled:opacity-50"
-                                style="background-color: {{ $quiz->color }}"
+                                style="background-color: {{ $quiz->bg_color }}"
                                 :disabled="currentSlide === 0">{{ $lang === 'ar' ? 'السابق' : 'Previous' }}</button>
                             <button type="button" @click.prevent="currentSlide = (currentSlide + 1) % totalSlides"
                                 :class="{ 'bg-gray-500 text-gray-300 cursor-not-allowed': currentSlide === totalSlides - 1 }"
                                 class="px-4 py-2 text-white rounded focus:outline-none disabled:opacity-50"
-                                style="background-color: {{ $quiz->color }}"
+                                style="background-color: {{ $quiz->bg_color }}"
                                 :disabled="currentSlide === totalSlides - 1">{{ $lang === 'ar' ? 'التالي' : 'Next' }}</button>
                             <!-- Submit Button -->
                             <button type="submit" class="px-4 py-2 text-white rounded focus:outline-none"

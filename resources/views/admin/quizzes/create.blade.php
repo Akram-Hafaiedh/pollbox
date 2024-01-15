@@ -2,7 +2,7 @@
     {{-- TODO errors  --}}
     <div class="flex flex-col md:flex-row" x-data="quizForm()">
         @auth
-            <x-dashboard-main-content :page-title="__('Admin Quizz Creation')">
+            <x-dashboard-main-content :page-title="__('Creation de quiz')">
                 <div class="relative flex flex-col items-center justify-between bg-gray-200">
                     @if (session('success'))
                         <div class="relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded"
@@ -29,7 +29,7 @@
                         <!-- Title-->
                         <div class="my-4">
                             <x-input-label for="title" :value="__('Titre')" />
-                            <x-text-input id="title" class="block w-full mt-1" type="text" name="title"
+                            <x-text-input id="title" class="block w-full mt-1 text-sm" type="text" name="title"
                                 :value="old('title')" autofocus autocomplete="title" required />
                             <x-input-error :messages="$errors->get('title')" class="mt-2" />
                         </div>
@@ -38,20 +38,20 @@
                         <div class="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:my-4">
                             <div>
                                 <x-input-label for="start_date" :value="__('Date de départ')" />
-                                <x-text-input id="start_date" class="block w-full mt-1" type="date" name="start_date"
+                                <x-text-input id="start_date" class="block w-full mt-1 text-sm" type="date" name="start_date"
                                     :value="old('start_date')" autofocus autocomplete="start_date" required />
                                 <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
                             </div>
                             <div>
                                 <x-input-label for="end_date" :value="__('Date de fin')" />
-                                <x-text-input id="end_date" class="block w-full mt-1" type="date" name="end_date"
+                                <x-text-input id="end_date" class="block w-full mt-1 text-sm" type="date" name="end_date"
                                     :value="old('end_date')" autofocus autocomplete="end_date" required />
                                 <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
                             </div>
                             <div>
                                 <x-input-label for="visibility" :value="__('Visibilité')" />
                                 <select id="visibility" name="visibility" x-model="quizVisibility"
-                                    class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary">
+                                    class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary">
                                     <option value="public">Public</option>
                                     <option value="private">Private</option>
                                     <option value="restricted">Restricted</option>
@@ -62,7 +62,7 @@
                                 <x-input-label for="language" :value="__('Langue')" />
                                 <select id="languageSelect" name="language" x-model="selectedLanguage"
                                     @change="changeLanguage"
-                                    class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:border-primary focus:ring-primary">
+                                    class="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:outline-none focus:border-primary focus:ring-primary">
                                     <option value="fr">Français</option>
                                     <option value="en">Anglais</option>
                                     <option value="ar">Arabe</option>
@@ -75,25 +75,25 @@
 
                             <!-- Colors -->
                             <div class="w-full px-2 lg:w-1/3">
-                                <x-input-label for="bg-color" :value="__('Couleur de fond')" />
+                                <x-input-label for="bg_color" :value="__('Couleur de fond')" />
 
                                 <input
                                     class="block w-full h-8 mt-1 border-gray-300 rounded-xl focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                    id="bg-color" type="color" name="bg-color" value="{{ old('bg-color', '#000000') }}"
-                                    autofocus autocomplete="bg-color" />
+                                    id="bg_color" type="color" name="bg_color" value="{{ old('bg_color', '#000000') }}"
+                                    autofocus autocomplete="bg_color" />
 
-                                <x-input-error :messages="$errors->get('bg-color')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('bg_color')" class="mt-2" />
                             </div>
 
                             <div class="w-full px-2 lg:w-1/3">
-                                <x-input-label for="text-color" :value="__('Couleur de texte')" />
+                                <x-input-label for="text_color" :value="__('Couleur de texte')" />
 
                                 <input
                                     class="block w-full h-8 mt-1 border-gray-300 rounded-xl focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                    id="text-color" type="color" name="text-color"
-                                    value="{{ old('text-color', '#000000') }}" autofocus autocomplete="text-color" />
+                                    id="text_color" type="color" name="text_color"
+                                    value="{{ old('text_color', '#000000') }}" autofocus autocomplete="text_color" />
 
-                                <x-input-error :messages="$errors->get('text-color')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('text_color')" class="mt-2" />
                             </div>
 
                             <!--Members-->
@@ -176,8 +176,8 @@
                                             {{ __('Image') }}
                                         </label>
                                         <input type="file"
-                                            class="w-full p-1 mt-1 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:text-white hover:file:bg-primary text-slate-500"
-                                            :name="'questions[' + questionIndex + '][image_path]'"
+                                        class="w-full p-1 mt-1 text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-indigo-500 file:mr-4 file:py-[5px] file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:text-white hover:file:bg-primary text-slate-500"
+                                        :name="'questions[' + questionIndex + '][image_path]'"
                                             x-model="question.image_path" :id="'image_path_' + questionIndex">
 
                                     </div>
@@ -188,10 +188,10 @@
                                             {{ __('Question') }} <span x-text="questionIndex + 1"></span>
                                             {{ __('Video URL') }}
                                         </label>
-                                        <input type="text" id="video_url"
+                                        <input type="text" id="video_url" placeholder="https://www.youtube.com/embed/UbEpM-VwOU8"
                                             :name="'questions[' + questionIndex + '][video_url]'"
-                                            x-model="question.video_url"
-                                            class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                            x-model="question.video_url" x-bind:id="'video_url_' + questionIndex"²
+                                            class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     </div>
                                 </div>
                                 <div
@@ -204,7 +204,7 @@
                                         </label>
                                         <select x-model="question.type" :name="'questions[' + questionIndex + '][type]'"
                                             :id="'type_' + questionIndex"
-                                            class="flex w-full mt-1 space-y-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                            class="flex w-full mt-1 space-y-2 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                             <option value="single_choice">Choix unique</option>
                                             <option value="multiple_choice">Choix multiple</option>
                                             <option value="likert_scale">Choix Likert</option>
@@ -224,7 +224,7 @@
                                         <select x-model="question.required"
                                             :name="'questions[' + questionIndex + '][required]'"
                                             :id="'required' + questionIndex"
-                                            class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ">
+                                            class="w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ">
                                             <option value="1">Oui</option>
                                             <option value="0">Non</option>
                                             <!-- Add other options as needed -->
@@ -235,7 +235,7 @@
 
 
                                 <!-- Options for the current question -->
-                                <template x-if="question.type !== 'feedback'">
+                                <template x-if="question.type !== 'feedback' && question.type !== 'likert_scale'">
                                     <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
                                         <div>
                                             <!-- Label for option-->

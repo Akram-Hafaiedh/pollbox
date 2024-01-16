@@ -2,6 +2,8 @@
     {{-- TODO errors  --}}
 
     <div class="flex flex-col md:flex-row" x-data="quizForm()">
+
+        @dump($quiz)
         @auth
             <x-dashboard-main-content :page-title="__('Modification de quiz')">
                 <div class="relative flex flex-col items-center justify-between bg-gray-200">
@@ -257,7 +259,8 @@
 
 
                                 <!-- Options for the current question -->
-                                <template x-if="question.type !== 'feedback' && question.type !== 'likert_scale'">
+                                <!-- <template x-if="question.type !== 'feedback' && question.type !== 'likert_scale'"> -->
+                                <template x-if="question.type !== 'feedback' >
                                     <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
                                         <div>
                                             <!-- Label for option-->

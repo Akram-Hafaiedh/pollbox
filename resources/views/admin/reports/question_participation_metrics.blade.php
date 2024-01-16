@@ -4,6 +4,7 @@
             <div class="p-4 bg-gray-100">
                 <a href="{{ url()->previous() }}">Go Back</a>
             </div>
+
         </x-dashboard-main-content>
     </div>
 </x-app-layout>

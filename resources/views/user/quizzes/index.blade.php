@@ -44,12 +44,6 @@
                 (filterVisibility === '' || '{{ strtolower($quiz->visibility) }}' === filterVisibility.toLowerCase())"
                 href="{{ route('user.quizzes.show', $quiz) }}"
                 class="relative p-6 text-white transition-transform transform border-2 border-transparent rounded-lg hover:border-gray-800 hover:scale-105 hover:shadow-lg"  style="background-color: {{ $quiz->bg_color }};color:{{ $quiz->text_color }}">
-                <!-- Using Blade-->
-                <!-- <h2 class="w-full mb-2 text-xl font-bold">#{{ $quiz->id }}-{{ $quiz->title }}
-                    <span
-                        class="text-sm rounded-full mr-auto text-white py-1 px-2 @if ($quiz->visibility === 'public') bg-green-500 @elseif($quiz->visibility === 'private') bg-red-500 @elseif($quiz->visibility === 'restricted') bg-blue-500 @endif">
-                        {{ Str::ucfirst($quiz->visibility) }}</span>
-                </h2> -->
                 <h2 x-data="{ visibility: '{{ $quiz->visibility }}' }" class="w-full mb-2 text-xl font-bold">
                     #{{ $quiz->id }}-{{ $quiz->title }}
                     <span x-text="visibility.charAt(0).toUpperCase() + visibility.slice(1)"
@@ -78,7 +72,6 @@
 
                 @if ($quiz->visibility === 'restricted')
                 <div class="flex items-center">
-
                     <div class="w-10 h-10 mr-3 overflow-hidden bg-gray-100 rounded-full">
                         <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Norman Walters profile picture">
                     </div>
@@ -110,27 +103,10 @@
             </a>
             @endforeach
         </div>
-        {{--
-        <!-- Fade Background -->
-        <div x-show="showModal" class="fixed inset-0 bg-black opacity-50" @click="showModal = false"></div>
-
-        <!-- Modal -->
-        <div x-show="showModal" @click.away="showModal = false; console.log('away');"
-            class="fixed inset-0 overflow-y-auto">
-            <div class="flex items-center justify-center min-h-screen">
-                <div class="p-6 bg-white rounded-lg shadow-xl">
-                    <!-- Code Input Form -->
-                    <form action="{{ route('user.quizzes.show', $quiz) }}" method="post">
-                        @csrf
-                        <label for="code" class="block text-sm font-medium text-gray-700">Enter 4-digit Code:</label>
-                        <input type="text" name="code" id="code" class="p-2 mt-1 border rounded-md" maxlength="4">
-                        <button type="submit" class="p-2 mt-2 text-white bg-blue-500 rounded-md">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div> --}}
         @else
-        <p class="text-gray-500">No quizzes found for {{ $user->name }}.</p>
+        <div class="grid w-full grid-rows-1 grid-cols-1 min-h-[50vh] bg-gray-100 justify-center items-center">
+            <p class="text-center text-gray-500">No quizzes found for {{ $user->name }}.</p>
+        </div>
         @endif
     </div>
     </x-dashboard-main-content>

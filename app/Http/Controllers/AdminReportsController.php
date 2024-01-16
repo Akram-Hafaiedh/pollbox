@@ -96,7 +96,7 @@ class AdminReportsController extends Controller
 
     public function showQuizParticipationMetrics() : View
     {
-        return view('admin.reports quiz_participation_metrics');
+        return view('admin.reports.quiz_participation_metrics');
     }
     public function showQuestionParticipationMetrics() : View
     {

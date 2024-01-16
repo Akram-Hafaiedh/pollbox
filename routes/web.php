@@ -63,6 +63,7 @@ require __DIR__ . '/auth.php';
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     // Your admin routes here
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::delete('/users/destroyAll', [AdminUserController::class, 'destroyAll'])->name('admin.users.destroyAll');
     Route::resource('/users', AdminUserController::class)->names([
         'index' => 'admin.users.index',
         'create' => 'admin.users.create',
@@ -71,6 +72,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'edit' => 'admin.users.edit',
         'update' => 'admin.users.update',
         'destroy' => 'admin.users.destroy',
+
     ]);
 
 

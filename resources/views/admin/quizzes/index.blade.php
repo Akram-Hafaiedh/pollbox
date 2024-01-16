@@ -4,51 +4,43 @@
             @auth
                 <x-dashboard-main-content :page-title="__('Admin Quizzes')">
                     @if (session('error'))
-                        <div class="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+                        <div class="relative px-4 py-3 my-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
                             <strong class="font-bold">Error!</strong>
                             <span class="block sm:inline">{{ session('error') }}</span>
                         </div>
                     @endif
                     @if (session('success'))
-                        <div class="relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded"
+                        <div class="relative px-4 py-3 my-3 text-green-700 bg-green-100 border border-green-400 rounded"
                             role="success">
                             <strong class="font-bold">Success</strong>
                             <span class="block sm:inline">{{ session('success') }}</span>
                         </div>
                     @endif
                     <div class="flex items-center justify-between ">
-                        <div class="flex items-center space-x-2">
+                        <div class="flex space-x-2">
                             <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
                                 <label for="pdf-file" class="mr-2" @click="pdfFile = true">
                                     <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
                                     <button type="button"
-                                        class="px-4 py-2 font-bold text-white rounded bg-primary hover:bg-blue-700"
+                                        class="h-10 px-4 py-2 text-sm font-bold text-white rounded bg-primary hover:bg-blue-700"
                                         x-on:click="$refs.pdfInput.click()">
-                                        <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M4 6h16M4 12h8m-8 6h16" />
-                                        </svg>
+                                        <i class="inline-block w-4 h-4 mr-1 fa-regular fa-file-pdf"></i>
                                         Import PDF
                                     </button>
                                 </label>
                                 <label for="csv-file">
                                     <input id="csv-file" type="file" accept=".csv" class="hidden" x-ref="csvInput">
                                     <button type="button"
-                                        class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700"
+                                        class="h-10 px-4 py-2 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700"
                                         x-on:click="$refs.csvInput.click()">
-                                        <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                        </svg>
+                                        <i class="inline-block w-4 h-4 mr-1 fa-solid fa-file-csv"></i>
                                         Import CSV
                                     </button>
                                 </label>
                             </div>
-                            <a href="{{ route('admin.quizzes.create') }}"
-                                class="inline-flex items-center px-4 py-2 font-bold tracking-widest text-white transition duration-150 ease-in-out bg-purple-500 border border-transparent rounded-md hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
-                                {{ __('Add quiz') }}
+                            <a href="{{ route('admin.quizzes.create') }}" class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
+                                <i class="inline-block w-4 h-4 mr-1 fa-solid fa-plus"></i>
+                                {{ __('Add Quiz') }}
                             </a>
 
                             <form @submit.prevent="isOpenDestroyAll = true" method='POST'
@@ -56,7 +48,8 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" x-on:click="isOpenDestroyAll = true"
-                                    class="inline-flex items-center px-4 py-2 font-bold tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                                class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                                <i class="inline-block w-4 h-4 mr-1 fa-solid fa-trash-can-arrow-up"></i>
                                     {{ __('Delete all') }}
                                 </button>
                             </form>
@@ -201,18 +194,17 @@
                                 </div>
                             </div>
                         </div>
-                        <form action="{{ route('admin.quizzes.index') }}" method="GET">
-                            <x-text-input id="search" name="search" type="text" class="mt-1" :value="old('search', $search)"
-                                placeholder="Search quizzes" />
-                            <button type="submit">Search</button>
+                        <form action="{{ route('admin.quizzes.index') }}" method="GET" class="flex items-center space-x-4">
+                            <x-text-input id="search" name="search" type="text" class="text-sm border-gray-300 rounded-md" :value="old('search', $search)"
+                                placeholder="Rechercher" />
+                            <button class="px-4 py-2 text-sm font-bold text-white rounded-md bg-secondary hover:text-black hover:bg-secondary/50" type="submit">Search</button>
                         </form>
                     </div>
             </div>
 
             @if (isset($quizzes))
                 <table class="table w-full my-4 divide-y">
-                    <thead
-                        class="py-2 font-medium text-left text-white bg-gradient-to-r from-primary via-primary to-secondary">
+                    <thead class="py-2 text-sm font-medium text-left text-white bg-gradient-to-r from-primary via-primary to-secondary">
                         <tr>
                             <th class="py-2">#</th>
                             <th class="py-2">Titre</th>
@@ -228,7 +220,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-sm">
-                        @foreach ($quizzes as $quiz)
+                        @forelse ($quizzes as $quiz)
                             <tr class="hover:bg-indigo-100 odd:bg-gray-100 even:bg-white">
                                 <td><a href="{{ route('admin.quizzes.show', $quiz) }}">{{ $quiz->id }}</a></td>
                                 <td><a
@@ -249,42 +241,39 @@
                                     {{ Str::ucfirst($quiz->visibility) }}
                                 </td>
                                 {{-- <td class="text-center">{{ $quiz->time_limit ? $quiz->time_limit . ' mins' : '-' }}</td> --}}
-                                <td class="text-center">{{ $quiz->created_at->format('Y-m-d') }}</td>
+                                <td class="px-2 text-center text-nowrap">{{ $quiz->created_at->format('Y-m-d') }}</td>
                                 <td class="flex justify-center space-x-1">
                                     <!-- Show action -->
                                     <a href="{{ route('admin.quizzes.show', $quiz) }}"
                                         class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-blue-200 hover:fill-indigo-700 ">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="18"
-                                            viewBox="0 0 576 512">
-                                            <path
-                                                d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z" />
-                                        </svg>
+                                        <i class="text-lg text-secondary fa-solid fa-eye"></i>
                                     </a>
                                     <!-- Edit action -->
                                     <a href="{{ route('admin.quizzes.edit', $quiz) }}"
                                         class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-yellow-200 hover:fill-indigo-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16"
-                                            viewBox="0 0 512 512">
-                                            <path
-                                                d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" />
-                                        </svg>
+                                        <i class="text-lg text-secondary fa-solid fa-pen-to-square"></i>
                                     </a>
                                     <!-- Delete Action-->
                                     <button x-data
                                         @click.prevent="isOpenDeleteSingle = true; quizToDelete={{ $quiz->id }}"
                                         type="submit"
                                         class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-red-100 hover:fill-indigo-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14"
-                                            viewBox="0 0 448 512">
-                                            <path
-                                                d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
-                                        </svg>
+                                        <i class="text-lg text-secondary fa-solid fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="11" class="flex items-center justify-center h-[50vh]">
+                                <p class="text-center text-gray-500">No Quizzes</p>
+                            </td>
+                        </tr>
+
+                        @endforelse
+
                     </tbody>
                 </table>
+
                 {{ $quizzes->links() }}
             @endif
             </x-dashboard-main-content>

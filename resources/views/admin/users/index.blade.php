@@ -1,25 +1,35 @@
 <x-app-layout>
 
-    <div class="flex flex-col md:flex-row">
+    <div
+        x-data ="{isOpenDestroyAll: false, isOpenDeleteSingle: false, userToDelete: null}"
+        class="flex flex-col md:flex-row"
+        >
 
         @auth
         <x-dashboard-main-content :page-title="  __('Admin Clients')">
             <!-- Buttons -->
-
+            @if (session('error'))
+                <div class="relative px-4 py-3 my-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+            @if (session('success'))
+                <div class="relative px-4 py-3 my-3 text-green-700 bg-green-100 border border-green-400 rounded"
+                    role="success">
+                    <strong class="font-bold">Success</strong>
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
             <div class="flex items-center justify-between">
                 <div class="flex space-x-2">
                     <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
-                        {{-- TODO DELETE ALL --}}
                         <label for="pdf-file" class="mr-2" @click="pdfFile = true">
                             <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
                             <button type="button"
                                 class="h-10 px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
                                 x-on:click="$refs.pdfInput.click()">
-                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 6h16M4 12h8m-8 6h16" />
-                                </svg>
+                                <i class="fa fa-file-pdf"></i>
                                 Import PDF
                             </button>
                         </label>
@@ -28,42 +38,170 @@
                             <button type="button"
                                 class="h-10 px-4 py-2 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700"
                                 x-on:click="$refs.csvInput.click()">
-                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                </svg>
+                                <i class="inline-block w-4 h-4 mr-1 fa-solid fa-file-csv"></i>
                                 Import CSV
                             </button>
                         </label>
                     </div>
-                    <a href="{{ route('admin.users.create') }}"
-                        class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
-                        <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
+                    <a href="{{ route('admin.users.create') }}" class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
+                        <i class="inline-block w-4 h-4 mr-1 fa-solid fa-plus"></i>
                         {{ __('Add User') }}
                     </a>
-                    <a href="#"
-                        class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
-                        <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3-3h8l1 3h-10l1-3z"></path>
-                        </svg>
+                    <form @submit.prevent="isOpenDestroyAll = true" method="POST"
+                        action="{{ route('admin.users.destroyAll') }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                        <i class="inline-block w-4 h-4 mr-1 fa-solid fa-trash-can-arrow-up"></i>
                         {{ __('Delete All')}}
-                    </a>
+                        </button>
+                    </form>
                 </div>
                 <form action="{{ route('admin.users.index') }}" method="GET" class="flex items-center space-x-4">
                     <x-text-input id="search" name="search" type="text" class="text-sm border-gray-300 rounded-md"
                         :value="old('search',$search)" placeholder="Rechercher" />
-                    <button type="submit"
-                        class="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Search</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-bold text-white rounded-md bg-secondary hover:bg-blue-700">Search</button>
                 </form>
+                    <!-- Confirmation Modals for deleteAll() -->
+                    <div x-cloak x-show="isOpenDestroyAll" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-y-auto">
+                    <div class="flex items-end justify-center p-4 pb-20 text-center sm:block sm:p-0">
+                        <div x-show="isOpenDestroyAll" class="fixed inset-0 transition-opacity"
+                            aria-hidden="true">
+                            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                        </div>
+
+                        <!-- This element is to trick the browser into centering the modal contents. -->
+                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                            aria-hidden="true">&#8203;</span>
+
+                        <!-- Confirmation Modal Content -->
+                        <div x-show="isOpenDestroyAll" x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                            <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div
+                                        class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                                        <!-- Heroicon name: outline/exclamation -->
+                                        <svg class="w-6 h-6 text-red-600" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 9v2m0 4h.01m-6-6h12a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                            Destroy All Users
+                                        </h3>
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-500">
+                                                Are you sure you want to destroy all users? This action cannot
+                                                be
+                                                undone.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+                                <form method="POST" action="{{ route('admin.quizzes.destroyAll') }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                        Destroy
+                                    </button>
+                                </form>
+                                <button type="button" x-on:click="isOpenDestroyAll = false"
+                                    class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Confirmation Modals for deleteOne() -->
+                <div x-cloak x-show="isOpenDeleteSingle" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 z-50 overflow-y-auto">
+                    <div class="flex items-end justify-center p-4 pb-20 text-center sm:block sm:p-0">
+                        <div x-show="isOpenDeleteSingle" class="fixed inset-0 transition-opacity"
+                            aria-hidden="true">
+                            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                        </div>
+
+                        <!-- This element is to trick the browser into centering the modal contents. -->
+                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                            aria-hidden="true">&#8203;</span>
+
+                        <!-- Confirmation Modal Content -->
+                        <div x-show="isOpenDeleteSingle" x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                            <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div
+                                        class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                                        <!-- Heroicon name: outline/exclamation -->
+                                        <svg class="w-6 h-6 text-red-600" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 9v2m0 4h.01m-6-6h12a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                            Deteting a User
+                                        </h3>
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-500">
+                                                Are you sure you want to delete this user? This action cannot be
+                                                undone.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+
+
+                                <form :action="`/admin/users/${userToDelete}`" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <script>
+                                        console.log('Form action:', `/admin/users/${userToDelete}`);
+                                    </script>
+                                    <button type="submit"
+                                        class="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600">{{ __('Delete') }}</button>
+                                </form>
+                                <button type="button" x-on:click="isOpenDeleteSingle = false"
+                                    class="inline-flex justify-center w-full px-4 py-2 mt-3 mr-4 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -103,34 +241,21 @@
                         <td>
                             {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : '' }}
                         </td>
-                        {{-- TODO ADD ACTIVE OR INACTIVE TO USERS --}}
-                        {{-- <td>@if ($quiz->active) <span class="text-green-500">Active</span> @else <span
-                                class="text-red-500">Inactive</span> @endif</td> --}}
-                        {{-- <td class="text-center">{{ $quiz->time_limit ? $quiz->time_limit . ' mins' : '-' }}</td>
-                        --}}
                         <td class="text-center">{{ $user->created_at->format('Y-m-d') }}</td>
                         <td class="flex justify-center space-x-2">
                             <a href="{{ route('admin.users.edit', $user) }}"
                                 class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-100 rounded-md shadow-sm hover:bg-blue-400 hover:fill-white fill-blue-500">
                                 <div class='sr-only'>Edit User</div>
-                                <svg class="" xmlns="http://www.w3.org/2000/svg" height="16" width="20"
-                                    viewBox="0 0 640 512">
-                                    <path
-                                        d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z" />
-                                </svg>
+                                <x-icons.user-edit />
                             </a>
                             <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block">
                                 <div class="sr-only">Delete User</div>
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
+                                <button type="submit" @click.prevent="isOpenDeleteSingle = true; userToDelete={{ $user->id }}"
                                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-100 rounded-md shadow-sm hover:bg-red-400 fill-red-500 hover:fill-white">
                                     <div class="sr-only">Delete</div>
-                                    <svg class="" xmlns="http://www.w3.org/2000/svg" height="16" width="20"
-                                        viewBox="0 0 640 512">
-                                        <path
-                                            d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L353.3 251.6C407.9 237 448 187.2 448 128C448 57.3 390.7 0 320 0C250.2 0 193.5 55.8 192 125.2L38.8 5.1zM264.3 304.3C170.5 309.4 96 387.2 96 482.3c0 16.4 13.3 29.7 29.7 29.7H514.3c3.9 0 7.6-.7 11-2.1l-261-205.6z" />
-                                    </svg>
+                                    <x-icons.user-delete />
                                 </button>
                             </form>
                         </td>

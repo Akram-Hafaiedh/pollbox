@@ -205,9 +205,9 @@ class AdminQuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id): RedirectResponse
+    public function destroy(Quiz $quiz): RedirectResponse
     {
-        $quiz = Quiz::findOrFail($id);
+        // $quiz = Quiz::findOrFail($id);
         // dd('deleteOne', $id);
         if (auth()->id() == $quiz->user_id) {
             // $quiz->users()->detach();
@@ -220,12 +220,20 @@ class AdminQuizController extends Controller
     }
 
     public function destroyAll(): RedirectResponse
-
     {
-        dd('deleteAll');
 
-        return redirect()->route('admin.quizzes.index')
-            ->with('success', __('All quizzes deleted successfully'));
+        $quizzes = Quiz::where('user_id', auth()->id())->get();
+
+        if(count($quizzes)>0){
+
+            foreach ($quizzes as $quiz) {
+                $quiz->delete();
+            }
+
+            return redirect()->route('admin.quizzes.index')
+                ->with('success', __('All quizzes deleted successfully'));
+        }
+        return redirect()->route('admin.quizzes.index')->with('error', 'No quiz found');
     }
 
 

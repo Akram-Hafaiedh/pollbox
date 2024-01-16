@@ -15,45 +15,25 @@
             @foreach ($quiz->questions as $question)
             <li class="my-4">
                     <p class="font-semibold" x-on:click="open = ! open">{{ $question->content }} </p>
-                {{-- @if ($question->options->count() > 0)
-                <ul class="pl-4 mt-4 space-y-2">
-                    @foreach ($question->options as $option)
-                        <li class="@class([
-                                'px-4 py-2 rounded-full w-fit',
-                                'bg-blue-500 text-white' => $userResponses->where('question_id', $question->id)->where('option_id', $option->id)->isNotEmpty(),
-                                'bg-gray-200' => $userResponses->where('question_id', $question->id)->where('option_id', $option->id)->isEmpty(),
-                            ])">{{ $option->content }}
-                        </li>
-                    @endforeach
-                </ul>
-                @endif --}}
 
-                            {{-- Check the type of the question and render accordingly --}}
                 @switch($question->type)
 
                     @case('single_choice')
-                        {{-- Single option question handling --}}
                         @include('user.quizzes.partials.single_option', ['question' => $question, 'userResponses' => $userResponses])
                     @break
                     @case('multiple_choice')
-                        {{-- Multiple option question handling --}}
                         @include('user.quizzes.partials.multiple_options', ['question' => $question, 'userResponses' => $userResponses])
                     @break
                     @case('feedback')
-                        {{-- Feedback question handling --}}
                         @include('user.quizzes.partials.feedback', ['question' => $question, 'userResponses' => $userResponses])
                     @break
                     @case('likert_scale')
-                        {{-- Likert scale question handling --}}
                         @include('user.quizzes.partials.likert_scale', ['question' => $question, 'userResponses' => $userResponses])
                     @break
                     @case('ranking')
-                        {{-- Likert scale question handling --}}
                         @include('user.quizzes.partials.ranking', ['question' => $question, 'userResponses' => $userResponses])
                     @break
-                    {{-- Add other cases for different question types as needed --}}
                     @default
-                        {{-- Default handling if no type matches --}}
                         <p>Question type not supported.</p>
                 @endswitch
             </li>

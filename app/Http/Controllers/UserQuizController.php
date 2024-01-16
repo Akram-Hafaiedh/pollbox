@@ -205,9 +205,18 @@ class UserQuizController extends Controller
         // dd('history');
         $user = auth()->user();
 
-        $quizzes = $user->responses->map(function ($response) {
-            return $response->quiz;
-        })->unique();
+        // $quizzes = $user->responses->map(function ($response) {
+        //     return $response->quiz;
+        // })->unique();
+        $quizzes = $user->responses()
+            ->with('quiz')
+            ->get()
+            ->pluck('quiz')
+            ->unique('id')
+            ->filter();
+
+
+
         return view('user.quizzes.history', compact('user', 'quizzes'));
     }
 }

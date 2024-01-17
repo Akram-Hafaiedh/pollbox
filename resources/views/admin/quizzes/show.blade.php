@@ -33,22 +33,33 @@
                                 <p class="mb-6 text-gray-600 ">Description :
                                     <span class="block mt-4">{{ $quiz->description }}</span>
                                 </p>
+
+
+                                    
+
+                                <p class="text-sm text-gray-700">
+                                    Période: Entre
+                                    <span
+                                        class="font-semibold">{{ Carbon\Carbon::parse($quiz->start_date)->isoFormat('MMM D, YYYY') }}</span>
+                                    et
+                                    <span
+                                        class="font-semibold">{{ Carbon\Carbon::parse($quiz->end_date)->isoFormat('MMM D, YYYY') }}</span>
+                                </p>
+
                                 <p class="text-sm text-gray-500">Created : {{ $quiz->created_at->diffForHumans() }}</p>
-
-                                <p class="text-sm text-gray-700">Color :
+                                <p class="flex items-center text-sm text-gray-700">Color :
                                     <span style="background-color: {{ $quiz->text_color }};"
-                                        class="w-5 h-5 rounded-full"></span>
+                                        class="inline-block w-5 h-5 ml-2 border border-gray-900 rounded-full"></span>
                                 </p>
 
-                                <p class="text-sm text-gray-700">Score: {{ $quiz->score }}</p>
-                                <p></p>
 
-                                @isset($quiz->selectedUsers->first()->pivot->code)
-                                    <p class="text-sm text-gray-700">Code : {{ $quiz->selectedUsers->first()->pivot->code }}</p>
-                                @endisset
-                                <p class="{{ $quiz->active ? 'text-green-500 font-bold' : 'text-red-500' }}">
-                                    {{ $quiz->active ? 'Active' : 'Inactive' }}
+                                <p class="flex items-center text-sm text-gray-700">Background :
+                                    <span style="background-color: {{ $quiz->background_color }};"
+                                        class="inline-block w-5 h-5 ml-2 border border-gray-900 rounded-full"></span>
                                 </p>
+
+                                <p class="text-sm text-gray-700">Questions: {{ count($quiz->questions) }}</p>
+
                             </div>
                         </div>
                         <div class="flex flex-col w-full my-2 mt-8 space-x-2 lg:flex-row">

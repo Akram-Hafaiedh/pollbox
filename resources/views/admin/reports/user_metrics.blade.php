@@ -21,6 +21,9 @@
                     </div>
                 </div>
             </div>
+            <div class="min-h-[50vh]">
+
+            </div>
         </x-dashboard-main-content>
     </div>
 </x-app-layout>

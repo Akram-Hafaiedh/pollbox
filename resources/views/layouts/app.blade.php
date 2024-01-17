@@ -33,15 +33,9 @@
                     <div>
                         <div class='flex flex-col items-center my-5'>
                             <a href='{{ route('admin.dashboard') }}'>
-
                                 <img class="h-28 w-28" src="{{ asset('assets/icon2.svg') }}" alt="Logo">
                                 {{-- <x-application-logo class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" /> --}}
                             </a>
-                            {{-- <div class='p-5'>
-                            <a href="{{ route('admin.dashboard') }}" class="text-2xl font-semibold text-white">
-                                {{ config('app.name') }}
-                            </a>
-                        </div> --}}
                         </div>
                         <div class='flex flex-col mt-10'>
                             <x-side-link route="admin.dashboard" icon="fa fa-home">Dashboard</x-side-link>
@@ -78,11 +72,14 @@
                 </div>
             </div>
         @endif
+
         <!-- Main Content -->
         <div class="flex-1  {{ Auth::check() && Auth::user()->role == 'admin' ? 'ml-64' : '' }}">
-            @unless (Auth::check() && Auth::user()->role == 'admin')
+            @unless (Auth::check() && Auth::user()->role === 'admin')
                 @include('layouts.navigation')
             @endunless
+
+
             <div class="p-4 m-10 bg-white rounded-md shadow-md">
                 <!-- Header section -->
                 @if (isset($header))

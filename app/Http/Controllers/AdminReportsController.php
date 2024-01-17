@@ -28,17 +28,13 @@ class AdminReportsController extends Controller
 
     public function showQuizMetrics () : View
     {
-        $totalQuizzes = Quiz::count();
-        $activeQuizzes = Quiz::where('end_date', '>', now())->count();
-        $completedQuizzes = Quiz::has('responses')->count();
 
-        $quizMetrics = [
-            'totalQuizzes' => $totalQuizzes,
-            'activeQuizzes' => $activeQuizzes,
-            'completedQuizzes' => $completedQuizzes,
-        ];
 
-        return view('admin.reports.quiz_metrics', compact('quizMetrics'));
+        $quizzes = Quiz::paginate(15);
+
+        // $quizzes->laod('options');
+
+        return view('admin.reports.quiz_metrics', compact('quizzes'));
     }
 
     public function showParticipationMetrics() : View

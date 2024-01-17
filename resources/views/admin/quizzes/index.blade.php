@@ -4,7 +4,8 @@
             @auth
                 <x-dashboard-main-content :page-title="__('Admin Quizzes')">
                     @if (session('error'))
-                        <div class="relative px-4 py-3 my-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
+                        <div class="relative px-4 py-3 my-3 text-red-700 bg-red-100 border border-red-400 rounded"
+                            role="alert">
                             <strong class="font-bold">Error!</strong>
                             <span class="block sm:inline">{{ session('error') }}</span>
                         </div>
@@ -38,7 +39,8 @@
                                     </button>
                                 </label>
                             </div>
-                            <a href="{{ route('admin.quizzes.create') }}" class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
+                            <a href="{{ route('admin.quizzes.create') }}"
+                                class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
                                 <i class="inline-block w-4 h-4 mr-1 fa-solid fa-plus"></i>
                                 {{ __('Add Quiz') }}
                             </a>
@@ -48,8 +50,8 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" x-on:click="isOpenDestroyAll = true"
-                                class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
-                                <i class="inline-block w-4 h-4 mr-1 fa-solid fa-trash-can-arrow-up"></i>
+                                    class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                                    <i class="inline-block w-4 h-4 mr-1 fa-solid fa-trash-can-arrow-up"></i>
                                     {{ __('Delete all') }}
                                 </button>
                             </form>
@@ -125,9 +127,8 @@
                             <!-- Confirmation Modals for deleteOne() -->
                             <div x-cloak x-show="isOpenDeleteSingle" x-transition:enter="transition ease-out duration-300"
                                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                                x-transition:leave="transition ease-in duration-200"
-                                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                                class="fixed inset-0 z-50 overflow-y-auto">
+                                x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+                                x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-y-auto">
                                 <div class="flex items-end justify-center p-4 pb-20 text-center sm:block sm:p-0">
                                     <div x-show="isOpenDeleteSingle" class="fixed inset-0 transition-opacity"
                                         aria-hidden="true">
@@ -194,88 +195,93 @@
                                 </div>
                             </div>
                         </div>
-                        <form action="{{ route('admin.quizzes.index') }}" method="GET" class="flex items-center space-x-4">
-                            <x-text-input id="search" name="search" type="text" class="text-sm border-gray-300 rounded-md" :value="old('search', $search)"
-                                placeholder="Rechercher" />
-                            <button class="px-4 py-2 text-sm font-bold text-white rounded-md bg-secondary hover:text-black hover:bg-secondary/50" type="submit">Search</button>
+                        <form action="{{ route('admin.quizzes.index') }}" method="GET"
+                            class="flex items-center space-x-4">
+                            <x-text-input id="search" name="search" type="text"
+                                class="text-sm border-gray-300 rounded-md" :value="old('search', $search)" placeholder="Rechercher" />
+                            <button
+                                class="px-4 py-2 text-sm font-bold text-white rounded-md bg-secondary hover:text-black hover:bg-secondary/50"
+                                type="submit">Search</button>
                         </form>
                     </div>
             </div>
 
-            @if (isset($quizzes))
-                <table class="table w-full my-4 divide-y">
-                    <thead class="py-2 text-sm font-medium text-left text-white bg-gradient-to-r from-primary via-primary to-secondary">
-                        <tr>
-                            <th class="py-2">#</th>
-                            <th class="py-2">Titre</th>
-                            <th class="py-2 ">Description</th>
-                            <th class="py-2 ">Langue</th>
-                            <th class="py-2 text-center">Date de debut</th>
-                            <th class="py-2 text-center">Date de fin</th>
-                            <th class="py-2 text-center">Nb. Questions</th>
-                            <th class="py-2 text-center">Nb. Personnes</th>
-                            <th class="py-2 text-center">Visibilité</th>
-                            <th class="py-2 text-center text-nowrap">Crée le</th>
-                            <th class="py-2 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        @forelse ($quizzes as $quiz)
-                            <tr class="hover:bg-indigo-100 odd:bg-gray-100 even:bg-white">
-                                <td><a href="{{ route('admin.quizzes.show', $quiz) }}">{{ $quiz->id }}</a></td>
-                                <td><a
-                                        href="{{ route('admin.quizzes.show', $quiz) }}">{{ Str::limit($quiz->title, 20) }}</a>
-                                </td>
-                                <td><a href=''>{{ Str::limit($quiz->description, 50) }}</a></td>
-                                <td>{{ $quiz->language === 'fr' ? 'Français' : ($quiz->language === 'en' ? 'Anglais' : 'Arabe') }}
-                                </td>
-                                <td class="text-center text-nowrap">{{ $quiz->start_date }}</td>
-                                <td class="text-center text-nowrap">{{ $quiz->end_date }}</td>
 
-                                <td class="text-center"> {{ count($quiz->questions) }}</td>
-                                <td class="text-center">
-                                    {{ $quiz->visibility === 'restricted' ? count($quiz->selectedUsers) : '' }}
-                                    {{-- {{ rand(1,100) }} --}}
-                                </td>
-                                <td class="text-center">
-                                    {{ Str::ucfirst($quiz->visibility) }}
-                                </td>
-                                {{-- <td class="text-center">{{ $quiz->time_limit ? $quiz->time_limit . ' mins' : '-' }}</td> --}}
-                                <td class="px-2 text-center text-nowrap">{{ $quiz->created_at->format('Y-m-d') }}</td>
-                                <td class="flex justify-center space-x-1">
-                                    <!-- Show action -->
-                                    <a href="{{ route('admin.quizzes.show', $quiz) }}"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-blue-200 hover:fill-indigo-700 ">
-                                        <i class="text-lg text-secondary fa-solid fa-eye"></i>
-                                    </a>
-                                    <!-- Edit action -->
-                                    <a href="{{ route('admin.quizzes.edit', $quiz) }}"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-yellow-200 hover:fill-indigo-700">
-                                        <i class="text-lg text-secondary fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <!-- Delete Action-->
-                                    <button x-data
-                                        @click.prevent="isOpenDeleteSingle = true; quizToDelete={{ $quiz->id }}"
-                                        type="submit"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-red-100 hover:fill-indigo-700">
-                                        <i class="text-lg text-secondary fa-solid fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                        <tr>
-                            <td colspan="11" class="flex items-center justify-center h-[50vh]">
-                                <p class="text-center text-gray-500">No Quizzes</p>
+            <table class="table w-full my-4 divide-y">
+                <thead
+                    class="py-2 text-sm font-medium text-left text-white bg-gradient-to-r from-primary via-primary to-secondary">
+                    <tr>
+                        <th class="py-2">#</th>
+                        <th class="py-2">Titre</th>
+                        <th class="py-2 ">Description</th>
+                        <th class="py-2 ">Langue</th>
+                        <th class="py-2 text-center">Date de debut</th>
+                        <th class="py-2 text-center">Date de fin</th>
+                        <th class="py-2 text-center">Nb. Questions</th>
+                        <th class="py-2 text-center">Nb. Personnes</th>
+                        <th class="py-2 text-center">Visibilité</th>
+                        <th class="py-2 text-center text-nowrap">Crée le</th>
+                        <th class="py-2 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @forelse ($quizzes as $quiz)
+                        <tr class="hover:bg-indigo-100 odd:bg-gray-100 even:bg-white">
+                            <td><a href="{{ route('admin.quizzes.show', $quiz) }}">{{ $quiz->id }}</a></td>
+                            <td><a href="{{ route('admin.quizzes.show', $quiz) }}">{{ Str::limit($quiz->title, 20) }}</a>
+                            </td>
+                            <td><a href=''>{{ Str::limit($quiz->description, 50) }}</a></td>
+                            <td>{{ $quiz->language === 'fr' ? 'Français' : ($quiz->language === 'en' ? 'Anglais' : 'Arabe') }}
+                            </td>
+                            <td class="text-center text-nowrap">{{ $quiz->start_date }}</td>
+                            <td class="text-center text-nowrap">{{ $quiz->end_date }}</td>
+
+                            <td class="text-center"> {{ count($quiz->questions) }}</td>
+                            <td class="text-center">
+                                {{ $quiz->visibility === 'restricted' ? count($quiz->selectedUsers) : '' }}
+                                {{-- {{ rand(1,100) }} --}}
+                            </td>
+                            <td class="text-center">
+                                {{ Str::ucfirst($quiz->visibility) }}
+                            </td>
+                            {{-- <td class="text-center">{{ $quiz->time_limit ? $quiz->time_limit . ' mins' : '-' }}</td> --}}
+                            <td class="px-2 text-center text-nowrap">{{ $quiz->created_at->format('Y-m-d') }}</td>
+                            <td class="flex justify-center space-x-1">
+                                <!-- Show action -->
+                                <a href="{{ route('admin.quizzes.show', $quiz) }}"
+                                    class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-blue-200 hover:fill-indigo-700 ">
+                                    <i class="text-lg text-secondary fa-solid fa-eye"></i>
+                                </a>
+                                <!-- Edit action -->
+                                <a href="{{ route('admin.quizzes.edit', $quiz) }}"
+                                    class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-yellow-200 hover:fill-indigo-700">
+                                    <i class="text-lg text-secondary fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <!-- Delete Action-->
+                                <button x-data
+                                    @click.prevent="isOpenDeleteSingle = true; quizToDelete={{ $quiz->id }}"
+                                    type="submit"
+                                    class="inline-flex items-center p-2 text-sm font-medium text-white rounded-md shadow-sm fill-indigo-500 hover:bg-red-100 hover:fill-indigo-700">
+                                    <i class="text-lg text-secondary fa-solid fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
+                    @empty
+                        <tr>
+                            <td colspan="11" class="text-center">
+                                <p class="text-gray-400 min-h-[50vh] flex items-center justify-center space-x-2 ">
+                                    <i class="text-xl fas fa-scribd"></i><span class="text-lg font-semibold"> No Quizzes
+                                        Found
+                                    </span>
+                                </p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
 
-                        @endforelse
+            {{ $quizzes->links() }}
 
-                    </tbody>
-                </table>
-
-                {{ $quizzes->links() }}
-            @endif
             </x-dashboard-main-content>
         @endauth
 

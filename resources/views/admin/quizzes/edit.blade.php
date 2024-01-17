@@ -3,7 +3,6 @@
 
     <div class="flex flex-col md:flex-row" x-data="quizForm()">
 
-        @dump($quiz)
         @auth
             <x-dashboard-main-content :page-title="__('Modification de quiz')">
                 <div class="relative flex flex-col items-center justify-between bg-gray-200">
@@ -180,7 +179,7 @@
                                         x-model="question.content">
 
                                     <button type="button" @click="removeQuestion(questionIndex)"
-                                        class="flex items-center px-3 py-2 text-sm font-medium text-white transition-colors duration-150 ease-in-out bg-red-600 rounded hover:bg-red-700">
+                                        class="flex items-center px-3 py-2 text-sm font-medium text-white transition-colors duration-150 ease-in-out rounded bg-secondary/80 hover:bg-secondary">
                                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -260,7 +259,7 @@
 
                                 <!-- Options for the current question -->
                                 <!-- <template x-if="question.type !== 'feedback' && question.type !== 'likert_scale'"> -->
-                                <template x-if="question.type !== 'feedback' >
+                                <template x-if="question.type !== 'feedback'">
                                     <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
                                         <div>
                                             <!-- Label for option-->

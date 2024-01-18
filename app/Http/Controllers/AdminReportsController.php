@@ -26,15 +26,43 @@ class AdminReportsController extends Controller
     }
 
 
-    public function showQuizMetrics () : View
+    public function showQuizMetrics (Request $request) : View
     {
 
 
-        $quizzes = Quiz::paginate(15);
+        $start_date = request()->get('start_date_filter');
+        $end_date = request()->get('end_date_filter');
+        $name = request()->get('title_filter');
 
-        // $quizzes->laod('options');
+        // dd($request->all());
+
+        $query = Quiz::query();
+
+        if($start_date && !$end_date) {
+            $query->where('start_date', '>=', $start_date);
+        }
+        if($end_date && !$start_date) {
+            $query->where('end_date', '<=', $end_date);
+        }
+
+        if ($start_date && $end_date) {
+            $query->where('start_date', '>=', $start_date)->where('end_date', '<=', $end_date);
+        }
+
+        if ($name) {
+            $query->where('title', 'LIKE', '%' . $name . '%');
+        }
+
+        $quizzes = $query->paginate(15);
 
         return view('admin.reports.quiz_metrics', compact('quizzes'));
+
+        // $quizzes = Quiz::paginate(15);
+
+        // // $quizzes->laod('options');
+
+        // $quizzes = Quiz::with('options')->get();
+        // return view('admin.reports.quiz_metrics', compact('quizzes'));
     }
 
     public function showParticipationMetrics() : View

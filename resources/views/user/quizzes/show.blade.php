@@ -89,9 +89,6 @@
                                         <span class="text-red-500">{{ $question->required ? '*' : '' }}</span>
                                     </h2>
 
-
-
-
                                     <div class='flex flex-row items-center justify-center space-x-2'>
                                         @if ($question->image_path)
                                             <img class="h-auto max-w-full" src="{{ asset($question->image_path) }}"
@@ -127,7 +124,8 @@
 
 
                                         @if ($question->type === 'multiple_choice')
-                                            <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
+                                            <div class="my-4">
+                                                <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
                                             <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
                                             <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
@@ -148,13 +146,14 @@
                                                     </label>
                                                 </div>
                                             @endforeach
+                                            </div>
                                         @endif
 
 
                                         @if ($question->type == 'ranking')
-                                        <p class="text-sm text-gray-500 ">
-                                            {{ $lang === 'ar' ?'أدرج خيارًا أو أكثر للترتيب متعددة الاختيارات': 'Drag and drop your options' }}
-                                        </p>
+                                            <p class="text-sm text-gray-500 ">
+                                                {{ $lang === 'ar' ?'أدرج خيارًا أو أكثر للترتيب متعددة الاختيارات': 'Drag and drop your options' }}
+                                            </p>
                                             <p class="mb-4 text-sm text-gray-500">
                                                 {{ $lang === 'ar' ? 'ترتيب خياراتك' : 'Rank your options from 1 (lowest) to ' . count($question->options) . ' (highest)' }}
                                             </p>
@@ -217,25 +216,26 @@
 
 
                                         @if ($question->type === 'single_choice')
-                                            <p class="text-sm text-gray-500">
-                                                {{ $lang === 'ar' ?
-                                                    'اختر خيارًا لخانة الاختيار'
-                                                    : 'Choose one option'
-                                                }}.
-                                            </p>
-                                            <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
-                                            <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
-                                            <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
+                                            <div class="my-4">
+                                                <p class="text-sm text-gray-500">
+                                                    {{ $lang === 'ar' ?
+                                                        'اختر خيارًا لخانة الاختيار'
+                                                        : 'Choose one option'
+                                                    }}.
+                                                </p>
+                                                <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
+                                                <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
+                                                <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
-                                            @foreach ($question->options as $option)
-                                                <label class="flex items-center justify-start space-x-2 space-y-2">
-                                                    <input class="w-6 h-6 text-primary" type="radio"
-                                                        name="questions[{{ $question->id }}][selected_option]"
-                                                        value="{{ $option->id }}">
-                                                    <span
-class="px-4 py-2 font-bold text-white border border-gray-300 rounded-full bg-primary hover:bg-primary/25 hover:text-black">{{ $option->content }}</span>
-                                                </label>
-                                            @endforeach
+                                                @foreach ($question->options as $option)
+                                                    <label class="flex items-center justify-start space-x-2 space-y-2">
+                                                        <input class="w-6 h-6 text-primary" type="radio"
+                                                            name="questions[{{ $question->id }}][selected_option]"
+                                                            value="{{ $option->id }}">
+                                                        <span class="px-4 py-2 font-bold text-white border border-gray-300 rounded-full bg-primary hover:bg-primary/25 hover:text-black">{{ $option->content }}</span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
                                         @endif
                                     </div>
                                 </div>

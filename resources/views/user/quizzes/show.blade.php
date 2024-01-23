@@ -161,27 +161,39 @@
                                             <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
                                             <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
-                                            <div class="px-2" x-data="{ list: {{ Js::from($question->options) }}.map((item, index) => ({ ...item, rank: index + 1 })), dragIndex: null }" x-init="() => {
-                                                let sortable = new Sortable($el, {
-                                                    animation: 150,
-                                                    ghostClass: 'bg-gray-300',
-                                                    onEnd: (evt) => {
-                                                        // Update the ranking order based on the new positions after sorting
-                                                        list.forEach((item, index) => {
-                                                            item.rank = index + 1; // Rank should start from 1, not 0
-                                                        });
-                                                    }
-                                                });
-                                            }">
+                                            <div class="px-2"
+                                                x-data="{
+                                                    list: {{ Js::from($question->options) }}.map((item, index) => ({ ...item, rank: index + 1 })),
+                                                    dragIndex: null,
+                                                }"
+                                                x-init="() => {
+                                                    let sortable = new Sortable($el, {
+                                                        animation: 150,
+                                                        sort: true,
+                                                        ghostClass: 'bg-primary',
+                                                        onEnd: (evt) => {
+                                                            let item = list.splice(evt.oldIndex, 1)[0];
+                                                            list.splice(evt.newIndex, 0, item);
+                                                            list.forEach((item, index) => {
+                                                                item.rank = index + 1; // Rank should start from 1, not 0
+                                                                console.log('item', item);
+                                                            });
+                                                            list = [...list];
+                                                            console.log('list', list);
+                                                        }
+                                                    });
+                                                }">
                                                 <template x-for="(item, index) in list" :key="item.id">
                                                     <div class="flex items-center p-3 mb-2 bg-white border border-gray-200 rounded-full shadow cursor-move w-fit"
                                                         x-on:mousedown="dragIndex = index"
                                                         x-on:touchstart="dragIndex = index"
-                                                        x-on:mouseup="dragIndex = null" x-on:touchend="dragIndex = null"
+                                                        x-on:mouseup="dragIndex = null"
+                                                        x-on:touchend="dragIndex = null"
                                                         :class="{ 'bg-primary': dragIndex === index }">
+                                                        <span class="mr-2" x-text="index + 1"></span>
                                                         <span  x-text="item.content"></span>
                                                         <!-- Hidden input to store the ranking order -->
-                                                        <input type="hidden" :name="'questions[' + '{{ $question->id }}' + '][rankings][' + item.id + ']'" x-bind:value="item.rank" class="ranking-input">
+                                                        <input type="hidden" :name="'questions[' + '{{ $question->id }}' + '][rankings][' + item.id + ']'" :value="item.rank" class="ranking-input">
                                                     </div>
                                                 </template>
                                             </div>

@@ -23,9 +23,6 @@ class UserQuizController extends Controller
         return view('user.dashboard', compact('latestQuizzes'));
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): View | JsonResource
     {
         // Logic for listing available quizzes for the user
@@ -81,28 +78,14 @@ class UserQuizController extends Controller
             return view('user.quizzes.show', compact('quiz'));
         }
     }
-    /**
-     * Checks if the user has already submitted responses for the quiz.
-     *
-     * @param mixed $user The user object.
-     * @param mixed $quiz The quiz object.
-     * @return bool Returns true if the user has already submitted responses
-     *              for all the questions in the quiz, false otherwise.
-     */
+
     private function hasAlreadySubmittedResponses($user, $quiz): bool
     {
         return $user->responses()
             ->where('quiz_id', $quiz->id)
             ->count() === $quiz->questions->count();
     }
-    /**
-     * Submits a quiz response for a given user.
-     *
-     * @param Quiz $quiz The quiz to submit the response for.
-     * @param Request $request The request object containing the user's response.
-     * @throws Some_Exception_Class Exception thrown if the user has already submitted all responses for the quiz.
-     * @return RedirectResponse The redirect response to the results page.
-     */
+
     public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
     {
         // dd($request->validated());
@@ -214,8 +197,6 @@ class UserQuizController extends Controller
             ->pluck('quiz')
             ->unique('id')
             ->filter();
-
-
 
         return view('user.quizzes.history', compact('user', 'quizzes'));
     }

@@ -30,39 +30,28 @@ class AdminReportsController extends Controller
     {
 
 
-        $start_date = request()->get('start_date_filter');
-        $end_date = request()->get('end_date_filter');
-        $name = request()->get('title_filter');
+        $start_date_filter = request()->get('start_date_filter');
+        $end_date_filter = request()->get('end_date_filter');
+        $title_filter = request()->get('title_filter');
 
-        // dd($request->all());
+        $request->session()->flashInput($request->all());
 
         $query = Quiz::query();
 
-        if($start_date && !$end_date) {
-            $query->where('start_date', '>=', $start_date);
+        if($start_date_filter ) {
+            $query->where('start_date', '>=', $start_date_filter);
         }
-        if($end_date && !$start_date) {
-            $query->where('end_date', '<=', $end_date);
-        }
-
-        if ($start_date && $end_date) {
-            $query->where('start_date', '>=', $start_date)->where('end_date', '<=', $end_date);
+        if($end_date_filter) {
+            $query->where('end_date', '<=', $end_date_filter);
         }
 
-        if ($name) {
-            $query->where('title', 'LIKE', '%' . $name . '%');
+        if ($title_filter) {
+            $query->where('title', 'LIKE', '%' . $title_filter . '%');
         }
-
         $quizzes = $query->paginate(15);
 
+
         return view('admin.reports.quiz_metrics', compact('quizzes'));
-
-        // $quizzes = Quiz::paginate(15);
-
-        // // $quizzes->laod('options');
-
-        // $quizzes = Quiz::with('options')->get();
-        // return view('admin.reports.quiz_metrics', compact('quizzes'));
     }
 
     public function showParticipationMetrics() : View

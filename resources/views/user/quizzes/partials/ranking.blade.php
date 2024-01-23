@@ -1,4 +1,3 @@
-{{-- resources\views\user\quizzes\partials\ranking.blade.php --}}
 @if ($question->type === 'ranking')
     <div class="mt-4">
         @php

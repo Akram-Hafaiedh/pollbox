@@ -3,6 +3,7 @@
         <x-dashboard-main-content :page-title="__('Quiz Metrics')">
             <div class="min-h-[50vh]">
                 <form method="GET">
+                    @csrf
                     <div class="flex flex-row justify-between mb-3">
                         <div class="w-1/4">
                             <x-input-label for="start_date_filter" :value="__('Filter by Start Date')" />
@@ -26,9 +27,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($quizzes as $quiz)
-                        <div class="flex flex-row">
-                        </div>
+                        @forelse ($quizzes as $quiz)
+                            <div class="flex flex-row">
+                            </div>
                             <tr x-data="{ showQuestions: false }" class="hover:bg-gray-100">
                                 <td class="py-2 border ">
                                     <div @click="showQuestions = !showQuestions" class="px-4 cursor-pointer">
@@ -38,8 +39,10 @@
                                         <ul class="">
                                             @foreach ($quiz->questions as $index => $question)
 
-
-                                            <li class="px-2 py-2 text-white bg-primary">
+                                            @php
+                                            $maxRank = count($question->options);
+                                            @endphp
+                                                <li class="px-2 py-2 text-white bg-primary">
                                                     Q{{ $index + 1 }}: {{ $question->content }}
                                                     @if ($question->type == 'likert_scale')
                                                         <span>({{ __('Échelle de Likert') }})</span>
@@ -92,23 +95,27 @@
                                                                                 <table class="w-full table-fixed">
                                                                                     <thead>
                                                                                         <tr>
-                                                                                            @foreach($question->options as $index => $option)
-                                                                                                <th class="w-1/2 py-2 text-sm text-center border text-nowrap">Rank {{ $index + 1 }}</th>
+                                                                                            @foreach(range(1,$maxRank) as $number)
+                                                                                                <th class="w-1/2 py-2 text-sm text-center border text-nowrap">Rank {{ $number  }}</th>
                                                                                             @endforeach
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>
                                                                                         <tr>
-                                                                                            @forelse($question->responses as $index => $response)
+
+                                                                                            @forelse(range(1,$maxRank) as $rank)
                                                                                                 @php
-                                                                                                  $totalResponses = count($question->responses);
-                                                                                                  $responsesInRank = $response->where('ranking', $index )->count();
-                                                                                                  $percentage = $totalResponses > 0 ? ($responsesInRank / $totalResponses) * 100 : 0;
+                                                                                                $responsesInRank = $question->responses()
+                                                                                                    //->where('ranking', $rank )
+                                                                                                    ->where('option_id', $option->id)
+                                                                                                    ->get();
                                                                                                 @endphp
-                                                                                                <td class="py-2 text-center border ">{{ number_format($percentage, 2) }}%</td>
+                                                                                                {{-- @dump($rank , $responsesInRank) --}}
+                                                                                                <td class="py-2 text-center border">0</td>
                                                                                             @empty
-                                                                                                <td colspan="{{ count($question->options) }}" class="py-4 text-sm text-center text-gray-300">Pas de réponses ...</td>
+                                                                                                <td colspan="{{ $maxRank }}" class="py-4 text-sm text-center text-gray-300">Pas de réponses ...</td>
                                                                                             @endforelse
+                                                                                                @dump($responsesInRank)
                                                                                         </tr>
                                                                                     </tbody>
                                                                                 </table>
@@ -142,7 +149,6 @@
                                                                         @php
                                                                             $totalResponses = count($question->responses);
                                                                             $optionResponses = $question->responses()->where('option_id', $option->id)->count();
-
                                                                             $percentage = $totalResponses > 0 ? $optionResponses / $totalResponses * 100 : 0;
                                                                         @endphp
                                                                         <tr>
@@ -163,7 +169,14 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td class="flex items-center justify-center min-h-[50vh] text-gray-300">
+                                    <i class="mr-4 fas fa-scribd"></i>
+                                    No quizzes found
+                                </td>
+                            </tr>
+                        @endforelse ($quizzes as $quiz)
                     </tbody>
                 </table>
                 <div class="px-2 my-2">

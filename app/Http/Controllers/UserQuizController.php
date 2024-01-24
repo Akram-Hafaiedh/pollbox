@@ -37,7 +37,7 @@ class UserQuizController extends Controller
 
         // dd($publicQuizzes, $receivedQuizzes, $userAdminPrivateQuizzes, $quizzes);
         if ($request->is('api/*')) {
-
+            dd('api');
             return QuizResource::collection($quizzes);
         } else {
 

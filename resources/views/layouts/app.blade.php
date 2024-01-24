@@ -22,10 +22,10 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <div class="flex h-screen ">
+    <div class="flex h-screen pb-10">
         <!--Sidebar -->
 
-        {{-- TODO Couldt make @isAdmin blade --}}
+        {{-- TODO Could v make @isAdmin blade --}}
         @if (Auth::check() && Auth::user()->role === 'admin')
             <div
                 class='fixed top-0 left-0 w-64 h-screen overflow-y-auto text-gray-100 transition-all duration-300 bg-gray-200'>
@@ -74,7 +74,7 @@
         @endif
 
         <!-- Main Content -->
-        <div class="flex-1  {{ Auth::check() && Auth::user()->role == 'admin' ? 'ml-64' : '' }}">
+        <div class="flex-1 {{ Auth::check() && Auth::user()->role == 'admin' ? 'ml-64' : '' }}">
             @unless (Auth::check() && Auth::user()->role === 'admin')
                 @include('layouts.navigation')
             @endunless

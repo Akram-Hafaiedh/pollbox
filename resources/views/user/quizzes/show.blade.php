@@ -174,8 +174,8 @@
                                                         onEnd: (evt) => {
                                                             let item = list.splice(evt.oldIndex, 1)[0];
                                                             list.splice(evt.newIndex, 0, item);
-                                                            list.forEach((item, index) => {
-                                                                item.rank = index + 1; // Rank should start from 1, not 0
+                                                            list.forEach((item, idx) => {
+                                                                item.rank = idx + 1; // Rank should start from 1, not 0
                                                                 console.log('item', item);
                                                             });
                                                             list = [...list];

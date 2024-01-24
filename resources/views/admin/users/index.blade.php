@@ -57,6 +57,7 @@
                         </form>
                     </div>
                     <form action="{{ route('admin.users.index') }}" method="GET" class="flex items-center space-x-4">
+                        @csrf
                         <x-text-input id="search" name="search" type="text"
                             class="text-sm border-gray-300 rounded-md" :value="old('search', $search)" placeholder="Rechercher" />
                         <button type="submit"
@@ -242,8 +243,8 @@
                                     </a>
                                     <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
                                         class="inline-block">
-                                        <div class="sr-only">Delete User</div>
                                         @csrf
+                                        <div class="sr-only">Delete User</div>
                                         @method('DELETE')
                                         <button type="submit"
                                             @click.prevent="isOpenDeleteSingle = true; userToDelete={{ $user->id }}"

@@ -7,6 +7,7 @@
             </h2>
         </div>
     </header>
+    <!-- Content inside the main content -->
     <div class="min-w-full pt-8 mx-auto">
         <div class="bg-white shadow-sm sm:rounded-lg">
             <div class="w-full text-gray-900">

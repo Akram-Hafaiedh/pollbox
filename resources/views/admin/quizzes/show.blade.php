@@ -9,7 +9,36 @@
 
         @auth
             <x-dashboard-main-content :page-title="__('Quiz details')">
-                {{-- <h3 class="mb-4 text-2xl font-semibold">Top 3 Quizzes</h3 --}} <div class="container mx-auto ">
+                {{-- <h3 class="mb-4 text-2xl font-semibold">Top 3 Quizzes</h3 --}}
+                <div class="grid w-full grid-cols-1 gap-4 my-2 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- Number of Questions -->
+                    <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r to-primary from-primary-dark">
+                        <div class="text-sm font-bold uppercase">Number of Questions</div>
+                        <div class="text-3xl font-bold">10</div>
+                    </div>
+                    <!-- Number of Responses -->
+                    <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r via-primary/90 via-80% to-primary-dark/80 to-95% from-primary">
+                        <div class="text-sm font-bold uppercase">Number of Responses</div>
+                        <div class="text-3xl font-bold">20</div>
+                    </div>
+                    <!-- Finished Responses -->
+                    <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r from-primary-dark/80 via-70% via-secondary to-secondary">
+                        <div class="text-sm font-bold uppercase">Finished Responses</div>
+                        <div class="text-3xl font-bold">15</div>
+                    </div>
+                    <!-- Other metrics can be added here -->
+                    <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r to-primary from-primary-dark">
+                        <div class="text-sm font-bold uppercase">Unfinished Responses</div>
+                        <div class="text-3xl font-bold">0</div>
+                    </div>
+                    <!-- Finished Responses -->
+                    <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r via-primary/90 via-80% to-primary-dark/80 to-95% from-primary">
+                        <div class="text-sm font-bold uppercase">Number of participantsg</div>
+                        <div class="text-3xl font-bold">10</div>
+                    </div>
+                </div>
+
+                    <div class="container mx-auto">
                     <!-- Quiz Actions -->
                     <div class="flex items-center mb-4 space-x-2">
                         <a href="{{ route('admin.quizzes.edit', $quiz) }}"
@@ -35,7 +64,7 @@
                                 </p>
 
 
-                                    
+
 
                                 <p class="text-sm text-gray-700">
                                     Période: Entre

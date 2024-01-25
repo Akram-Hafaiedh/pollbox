@@ -126,8 +126,10 @@ class AdminQuizController extends Controller
     public function show(Quiz $quiz): View
     {
 
+        $userIds = $quiz->responses->unique('user_id')->pluck('user_id')->toArray();
+        $users = User::whereIn('id', $userIds)->get();
         $quiz->load('selectedUsers');
-        $users = $quiz->selectedUsers;
+        // $users = $quiz->selectedUsers;
         return view('admin.quizzes.show', compact('quiz', 'users'));
     }
 

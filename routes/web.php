@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminQuizController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AdminReportsController;
+use App\Http\Controllers\IncomeChartController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserQuizController;
@@ -132,8 +133,4 @@ Route::get('/access', [UserQuizController::class, 'access']);
 //     Route::delete('/{survey}/questions/{question}/destroy', [SurveyController::class, 'destroyQuestion'])->name('surveys.destroyQuestion');
 // });
 
-Route::get('/test', function () {
-    $quiz = App\Models\Quiz::find(3);
-    // dd($dir);
-    return view('quizzes.show_quiz', compact('quiz'));
-});
+Route::get('/chart', [IncomeChartController::class, 'index'])->name('chart.index');

@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     {{-- TODO errors  --}}
     <div class="flex flex-col md:flex-row" x-data="quizForm()">
         @auth
@@ -350,7 +350,7 @@
         let quizVisibility = 'public';
         let selectedLanguage = 'French';
     </script>
-</x-app-layout>
+</x-admin-layout>
 <style>
     /* Targeting the color well in webkit browsers */
     input[type="color"]::-webkit-color-swatch-wrapper {

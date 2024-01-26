@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <div class="flex flex-col md:flex-row">
 
         <x-dashboard-main-content :page-title="__('User Participation Metrics')">
@@ -9,4 +9,4 @@
 
         </x-dashboard-main-content>
     </div>
-</x-app-layout>
+</x-admin-layout>

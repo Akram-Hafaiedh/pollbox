@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
 
     <div class="flex flex-col md:flex-row">
 
@@ -71,5 +71,5 @@
         @endauth
 
     </div>
-</x-app-layout>
+</x-admin-layout>
 ''

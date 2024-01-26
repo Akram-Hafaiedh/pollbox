@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('likert_scale')->nullable();
             $table->unsignedTinyInteger('ranking')->nullable();
             $table->text('answer')->nullable();
-
             // $table->boolean('correct')->default(false); // moved to options
             // $table->text('explanation')->nullable(); // moved to options
             $table->timestamps();

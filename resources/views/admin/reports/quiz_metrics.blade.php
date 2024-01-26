@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <div class="flex flex-col md:flex-row">
         <x-dashboard-main-content :page-title="__('Quiz Metrics')">
             <div class="min-h-[50vh]">

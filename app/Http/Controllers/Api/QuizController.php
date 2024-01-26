@@ -16,10 +16,21 @@ class QuizController extends Controller
     {
         $user = $request->user();
 
-                                                    $quizzes = Quiz::with(['questions', 'questions.options'])->orderBy('created_at', 'desc')->get();
+        $quizzes = Quiz::with(['questions', 'questions.options'])->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'quizzes' => $quizzes,
+            'user' => $user,
+        ], JsonResponse::HTTP_OK);
+    }
+
+    public function getQuizById(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+
+        $quiz = Quiz::with(['questions', 'questions.options'])->find($id);
+        return response()->json([
+            'quiz' => $quiz,
             'user' => $user,
         ], JsonResponse::HTTP_OK);
     }

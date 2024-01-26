@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <div class="flex flex-col md:flex-row">
         <x-dashboard-main-content :page-title="__('Reports Dashboard')">
             <ul class="p-4 pl-5 space-y-4 list-disc bg-gray-100">
@@ -12,5 +12,5 @@
             </ul>
         </x-dashboard-main-content>
     </div>
-</x-app-layout>
+</x-admin-layout>
 

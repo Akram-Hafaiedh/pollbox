@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAssessementController;
+use App\Http\Controllers\Admin\AdminExamController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminQuizController;
@@ -49,7 +51,7 @@ Route::middleware('auth')->group(function () {
                 'show' => 'user.quizzes.show',
             ])
             ->only(['index', 'show']);
-        Route::post('quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
+        Route::post('/quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
         Route::get('/quizzes/{quiz}/result', [UserQuizController::class, 'showResults'])->name('user.quizzes.results');
 
         //! ADDED ROUTES FOR QUIZ
@@ -104,7 +106,26 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/reports/user-participation-metrics', [AdminReportsController::class, 'showUserParticipationMetrics'])->name('admin.reports.user_participation_metrics');
     Route::get('/reports/question-participation-metrics', [AdminReportsController::class, 'showQuestionParticipationMetrics'])->name('admin.reports.question_participation_metrics');
 
+    Route::resource('/exams', AdminExamController::class)->names([
+        'index' => 'admin.exams.index',
+        'create' => 'admin.exams.create',
+        'store' => 'admin.exams.store',
+        'show' => 'admin.exams.show',
+        'edit' => 'admin.exams.edit',
+        'update' => 'admin.exams.update',
+        'destroy' => 'admin.exams.destroy',
+    ]);
 
+    Route::resource('/assessments', AdminAssessementController::class)->names([
+        'index' => 'admin.assessments.index',
+        'create' => 'admin.assessments.create',
+        'store' => 'admin.assessments.store',
+        'show' => 'admin.assessments.show',
+        'edit' => 'admin.assessments.edit',
+        'update' => 'admin.assessments.update',
+        'destroy' => 'admin.assessments.destroy',
+
+    ]);
 });
 
 
@@ -133,4 +154,4 @@ Route::get('/access', [UserQuizController::class, 'access']);
 //     Route::delete('/{survey}/questions/{question}/destroy', [SurveyController::class, 'destroyQuestion'])->name('surveys.destroyQuestion');
 // });
 
-Route::get('/chart', [IncomeChartController::class, 'index'])->name('chart.index');
+Route::get('/chart', [ ])->name('chart.index');

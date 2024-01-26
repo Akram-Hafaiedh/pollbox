@@ -2,7 +2,7 @@
     <div x-data="{ isOpenDestroyAll: false, isOpenDeleteSingle: false, quizToDelete: null }">
         <div class="flex flex-col md:flex-row">
             @auth
-            <x-dashboard-main-content :page-title="__('Admin Surveys')">
+            <x-dashboard-main-content :page-title="__('Admin Exams')">
                 @if (session('error'))
                     <div class="relative px-4 py-3 my-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
                         <strong class="font-bold">Error!</strong>
@@ -41,7 +41,7 @@
                         <a href="{{ route('admin.quizzes.create') }}"
                             class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
                             <i class="inline-block w-4 h-4 mr-1 fa-solid fa-plus"></i>
-                            {{ __('Add Quiz') }}
+                            {{ __('Add New') }}
                         </a>
 
                         <form @submit.prevent="isOpenDestroyAll = true" method='POST'
@@ -223,7 +223,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-sm">
-                        @forelse ($quizzes as $quiz)
+                        @forelse ($exams as $exam)
                         <tr class="hover:bg-indigo-100 odd:bg-gray-100 even:bg-white">
                             <td><a href="{{ route('admin.quizzes.show', $quiz) }}">{{ $quiz->id }}</a></td>
                             <td><a href="{{ route('admin.quizzes.show', $quiz) }}">{{ Str::limit($quiz->title, 20) }}</a>
@@ -265,9 +265,9 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="11" class="text-center">
-                                <p class="text-gray-400 min-h-[50vh] flex items-center justify-center space-x-2 ">
-                                    <i class="text-xl fas fa-scribd"></i><span class="text-lg font-semibold"> No Quizzes
+                            <td colspan="11" class="text-center bg-gray-300">
+                                <p class="text-primary min-h-[50vh] flex items-center justify-center space-x-2 ">
+                                    <i class="text-xl fas fa-scribd"></i><span class="text-lg font-semibold"> No Exams
                                         Found
                                     </span>
                                 </p>
@@ -276,7 +276,7 @@
                         @endforelse
                     </tbody>
                 </table>
-                {{ $quizzes->links() }}
+                {{ $exams->links() }}
             </x-dashboard-main-content>
             @endauth
         </div>

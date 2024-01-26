@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::get('/quizzes', [QuizController::class, 'getAllQuizzes']);
+    Route::get('/quizzes/{id}', [QuizController::class, 'getQuizById']);
     // Route::apiResource('/quizzes', QuizController::class);
 });
 Route::post('/login', [AuthController::class, 'login']);

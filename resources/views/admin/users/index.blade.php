@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <div x-data ="{isOpenDestroyAll: false, isOpenDeleteSingle: false, userToDelete: null}"
         class="flex flex-col md:flex-row">
 
@@ -277,4 +277,4 @@
         @endauth
 
     </div>
-</x-app-layout>
+</x-admin-layout>

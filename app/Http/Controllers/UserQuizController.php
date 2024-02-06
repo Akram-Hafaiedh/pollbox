@@ -8,6 +8,7 @@ use App\Http\Resources\QuizResource;
 use App\Models\Option;
 use App\Models\Quiz;
 use App\Models\Response;
+use App\Models\UserQuizState;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -90,6 +91,8 @@ class UserQuizController extends Controller
     {
         // dd($request->validated());
 
+
+
         $user = auth()->user();
         if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
             return redirect()->back()
@@ -97,6 +100,16 @@ class UserQuizController extends Controller
         }
         $questionResponses = $request->validated()['questions'];
 
+        $questionCount = $quiz->questions()->count();
+        $submittedResponseCount = count($questionResponses);
+
+        if ($submittedResponseCount === $questionCount) {
+            // All questions have been answered, update the state of the quiz for the current user
+            $userQuizState = UserQuizState::updateOrCreate(
+                ['user_id' => auth()->user()->id, 'quiz_id' => $quiz->id],
+                ['state' => 'finished']
+            );
+        }
 
         foreach ($questionResponses as $questionId =>$response) {
             if (isset($response['selected_option'])) {

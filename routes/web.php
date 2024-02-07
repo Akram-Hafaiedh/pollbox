@@ -7,7 +7,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminQuizController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AdminReportsController;
+use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\IncomeChartController;
+use App\Http\Controllers\PdfImportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserQuizController;
@@ -76,7 +78,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'destroy' => 'admin.users.destroy',
 
     ]);
-    Route::post('import/users', [AdminUserController::class, 'import'])->name('admin.users.import');
+    Route::post('/import/csv/users', [CsvImportController::class, 'importUsersFromCsv'])->name('admin.users.importCsv');
+    Route::post('/import/pdf/users', [PdfImportController::class, 'importUsersFromPDF'])->name('admin.users.importPdf');
+    Route::get('/export/users-csv-template', [CsvImportController::class, 'exportCsvTemplate'])->name('admin.users.export-template');
 
     // Quiz related routes
     Route::get('/reports', [AdminQuizController::class, 'reports'])->name('admin.reports');
@@ -90,7 +94,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'update' => 'admin.quizzes.update',
         'destroy' => 'admin.quizzes.destroy',
     ]);
-    Route::post('/import/quizzes', [AdminQuizController::class, 'import'])->name('admin.quizzes.import');
+    // Route::post('/import/quizzes', [AdminQuizController::class, 'import'])->name('admin.quizzes.import');
 
 
     Route::get('/admin/surveys', [SurveyController::class, 'index'])->name('admin.surveys.index');

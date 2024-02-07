@@ -3,10 +3,11 @@
 - [x] Fix the search for quizzes and users (Cant add the instant search)
 - [x] Fix the table when no quizzes are showing
 - [x] Fix the table when no users are showing
-- [ ] Fix the admin edit quiz (Cant delete all the questions in a quiz)
+- [x] Fix the admin edit quiz (Cant delete all the questions in a quiz)
 - [ ] Fix the image for users
 - [ ] add avatar image for users ()
-- [ ] Importing Users CSV
+- [x] Importing Users CSV
+- [x] Export the Csv template for users
 - [ ] Importing Users PDF
 - [ ] User Reporting
 - [ ] Quiz Reporting

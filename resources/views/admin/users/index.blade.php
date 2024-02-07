@@ -3,7 +3,7 @@
         class="flex flex-col md:flex-row">
 
         @auth
-            <x-dashboard-main-content :page-title="__('Admin Clients')">
+            <x-dashboard-main-content :page-title="__('Admin Users')">
                 <!-- Buttons -->
                 @if (session('error'))
                     <div class="relative px-4 py-3 my-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
@@ -20,18 +20,44 @@
                 @endif
                 <div class="flex items-center justify-between">
                     <div class="flex space-x-2">
-                        <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
-                            <label for="pdf-file" class="mr-2" @click="pdfFile = true">
-                                <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
-                                <button type="button"
-                                    class="h-10 px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                                    x-on:click="$refs.pdfInput.click()">
-                                    <i class="fa fa-file-pdf"></i>
-                                    Import PDF
-                                </button>
-                            </label>
-                            <form action='{{ route('admin.users.import') }}' method='POST' enctype='multipart/form-data'
+                        <div class="flex space-x-2" x-data="{ pdfFile: false, csvFile: false }">
+                            <form action="{{ route('admin.users.importPdf') }}" method="POST" enctype="multipart/form-data" id="pdf-upload-form">
+                                @csrf
+                                <label for="pdf-file" >
+                                    <input id="pdf-file" name="pdf-file" type="file" accept=".pdf" class="hidden"
+                                        x-ref="pdfInput"
+                                        x-on:change="document.getElementById('pdf-upload-form').submit()"
+                                    >
+                                    <button type="button" class="h-10 px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                                        x-on:click="$refs.pdfInput.click()">
+                                        <i class="fa fa-file-pdf"></i>
+                                        Import PDF
+                                    </button>
+                                </label>
+                            </form>
+                            <a href="{{ route('admin.users.export-template') }}" class="flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
+                                <i class="inline-block w-4 h-4 mr-1 fa-solid fa-file-csv"></i>
+                                Export CSV Template
+                            </a>
+                            <form action="{{ route('admin.users.importCsv') }}" method="POST" enctype="multipart/form-data" id="csv-upload-form">
+                                @csrf
+                                <label for="csv-file">
+                                    <input id="csv-file" type="file" name="csv-file" accept=".csv" class="hidden"
+                                        x-ref="csvInput"
+                                        x-on:change="document.getElementById('csv-upload-form').submit()"
+                                    >
+                                    <button type="button" class="h-10 px-4 py-2 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700"
+                                        x-on:click="$refs.csvInput.click()">
+                                        <i class="inline-block w-4 h-4 fa-solid fa-file-csv"></i>
+                                        Import CSV
+                                    </button>
+                                </label>
+                            </form>
+
+
+                            {{-- <form action='{{ route('admin.users.import') }}' method='POST' enctype='multipart/form-data'enctype="multipart/form-data"
                                 id="csv-upload-form">
+                                @csrf
                                 <label for="csv-file">
                                     <input id="csv-file" type="file" accept=".csv" class="hidden"
                                         @change="document.getElementById('csv-upload-form').submit()" x-ref="csvInput">
@@ -42,7 +68,7 @@
                                         Import CSV
                                     </button>
                                 </label>
-                            </form>
+                            </form> --}}
                         </div>
                         <a href="{{ route('admin.users.create') }}"
                             class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">

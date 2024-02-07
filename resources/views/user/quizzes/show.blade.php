@@ -126,8 +126,8 @@
                                         @if ($question->type === 'multiple_choice')
                                             <div class="my-4">
                                                 <input type="hidden" name="questions[{{ $question->id }}][id]" value="{{ $question->id }}">
-                                            <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
-                                            <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
+                                                <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
+                                                <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
                                             <p class="text-sm text-gray-500">
                                                 {{ $lang === 'ar' ?

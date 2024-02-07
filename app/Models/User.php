@@ -93,13 +93,13 @@ class User extends Authenticatable
         return $this->hasMany(Invitation::class, 'sender_id');
     }
 
-    public function isAdmin():bool
+    public function isAdmin(): bool
     {
         return $this->is_admin;
     }
 
-    public function isRole(String $role)
+    public function userquizstates(): HasMany
     {
-
+        return $this->hasMany(UserQuizState::class, 'user_id');
     }
 }

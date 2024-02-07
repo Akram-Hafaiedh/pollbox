@@ -30,15 +30,19 @@
                                     Import PDF
                                 </button>
                             </label>
-                            <label for="csv-file">
-                                <input id="csv-file" type="file" accept=".csv" class="hidden" x-ref="csvInput">
-                                <button type="button"
-                                    class="h-10 px-4 py-2 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700"
-                                    x-on:click="$refs.csvInput.click()">
-                                    <i class="inline-block w-4 h-4 mr-1 fa-solid fa-file-csv"></i>
-                                    Import CSV
-                                </button>
-                            </label>
+                            <form action='{{ route('admin.users.import') }}' method='POST' enctype='multipart/form-data'
+                                id="csv-upload-form">
+                                <label for="csv-file">
+                                    <input id="csv-file" type="file" accept=".csv" class="hidden"
+                                        @change="document.getElementById('csv-upload-form').submit()" x-ref="csvInput">
+                                    <button type="button"
+                                        class="h-10 px-4 py-2 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700"
+                                        x-on:click="$refs.csvInput.click()">
+                                        <i class="inline-block w-4 h-4 mr-1 fa-solid fa-file-csv"></i>
+                                        Import CSV
+                                    </button>
+                                </label>
+                            </form>
                         </div>
                         <a href="{{ route('admin.users.create') }}"
                             class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">

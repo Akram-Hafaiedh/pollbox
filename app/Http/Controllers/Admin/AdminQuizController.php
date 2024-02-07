@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ImportQuizzes;
 use App\Models\Quiz;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
@@ -21,6 +22,8 @@ use Illuminate\View\View;
 
 class AdminQuizController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
@@ -59,7 +62,7 @@ class AdminQuizController extends Controller
         $validated = $request->validated();
 
 
-        DB::transaction(function ()  use ($validated, $request){
+        DB::transaction(function ()  use ($validated, $request) {
 
             $quiz = Quiz::create([
                 'user_id' => auth()->id(),
@@ -80,7 +83,7 @@ class AdminQuizController extends Controller
                     'type' => $questionData['type'],
                     'required' => $questionData['required'],
                     'video_url' => $questionData['video_url'],
-                    'image_path'=>isset($questionData['image_path']) && $questionData['image_path']->isValid() ? $questionData['image_path']->store('question_images', 'public') : null,
+                    'image_path' => isset($questionData['image_path']) && $questionData['image_path']->isValid() ? $questionData['image_path']->store('question_images', 'public') : null,
                 ]);
                 isset($questionData['options']) ?: $questionData['options'] = [];
                 foreach ($questionData['options'] as $optionData) {
@@ -89,22 +92,21 @@ class AdminQuizController extends Controller
                     ]);
                 }
             }
-            if ($validated['visibility'] === 'restricted') {
-                $selectedUsers  = $request('selected_users',[]);
-                $accessCode = CodeHelper::generateAccessCode();
-                foreach ( $selectedUsers as $userId) {
-                    $quiz->invitation()->create([
-                        'sender_id' => auth()->id(),
-                        'recipient_id' => $userId,
-                        'code' => $accessCode,
-                        'pending' => true,
-                    ]);
-                }
-            }
+            // if ($validated['visibility'] === 'restricted') {
+            //     $selectedUsers  = $request('selected_users', []);
+            //     $accessCode = CodeHelper::generateAccessCode();
+            //     foreach ($selectedUsers as $userId) {
+            //         $quiz->invitation()->create([
+            //             'sender_id' => auth()->id(),
+            //             'recipient_id' => $userId,
+            //             'code' => $accessCode,
+            //             'pending' => true,
+            //         ]);
+            //     }
+            // }
         });
-            return redirect()->route('admin.quizzes.index')
-                ->with('success', __('Quiz Créé avec Succés !'));
-
+        return redirect()->route('admin.quizzes.index')
+            ->with('success', __('Quiz Créé avec Succés !'));
     }
     // public function userQuizzes(User $user)
     // {
@@ -113,6 +115,19 @@ class AdminQuizController extends Controller
 
     //     return view('quizzes.user_quizzes', compact('quizzes', 'user'));
     // }
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt',
+        ]);
+
+        $file = $request->file('csv_file')->store('csv_files', 'public');
+        // $path = $request->file('csv_file')->getRealPath();
+
+        ImportQuizzes::dispatch($file);
+
+        return back()->with('success', 'Imported successfully');
+    }
 
 
     public function access(): View
@@ -226,7 +241,7 @@ class AdminQuizController extends Controller
 
         $quizzes = Quiz::where('user_id', auth()->id())->get();
 
-        if(count($quizzes)>0){
+        if (count($quizzes) > 0) {
 
             foreach ($quizzes as $quiz) {
                 $quiz->delete();
@@ -235,8 +250,7 @@ class AdminQuizController extends Controller
             return redirect()->route('admin.quizzes.index')
                 ->with('success', __('All quizzes deleted successfully'));
         }
+
         return redirect()->route('admin.quizzes.index')->with('error', 'No quiz found');
     }
-
-
 }

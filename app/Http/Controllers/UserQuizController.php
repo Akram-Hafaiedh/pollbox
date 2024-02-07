@@ -111,30 +111,33 @@ class UserQuizController extends Controller
             );
         }
 
-        foreach ($questionResponses as $questionId =>$response) {
+        foreach ($questionResponses as $questionId => $response) {
             if (isset($response['selected_option'])) {
-                    Response::updateOrCreate(                [
+                Response::updateOrCreate(
+                    [
                         'user_id' => $user->id,
                         'question_id' => $questionId,
                         'quiz_id' => $quiz->id,
                     ],
                     [
                         'option_id' => $response['selected_option'],
-                    ]);
+                    ]
+                );
             } elseif (isset($response['rankings'])) {
                 foreach ($response['rankings'] as $optionId => $rank) {
-                    Response::updateOrCreate([
-                        'user_id' => $user->id,
-                        'question_id' => $questionId,
-                        'option_id' => $optionId,
-                        'quiz_id' => $quiz->id,
-                    ],
-                    [
-                        'ranking' => $rank,
-                    ]);
+                    Response::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'question_id' => $questionId,
+                            'option_id' => $optionId,
+                            'quiz_id' => $quiz->id,
+                        ],
+                        [
+                            'ranking' => $rank,
+                        ]
+                    );
                 }
-            }
-            elseif (isset($response['selected_options'])) {
+            } elseif (isset($response['selected_options'])) {
                 foreach ($response['selected_options'] as $optionId) {
                     Response::updateOrCreate(
                         [
@@ -148,7 +151,7 @@ class UserQuizController extends Controller
                         ]
                     );
                 }
-            }elseif(isset($response['answer'])) {
+            } elseif (isset($response['answer'])) {
                 Response::updateOrCreate(
                     [
                         'user_id' => $user->id,
@@ -159,7 +162,7 @@ class UserQuizController extends Controller
                         'answer' => $response['answer'],
                     ]
                 );
-            }elseif(isset($response['scale_value'])) {
+            } elseif (isset($response['scale_value'])) {
                 Response::updateOrCreate(
                     [
                         'user_id' => $user->id,

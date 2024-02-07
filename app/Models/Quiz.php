@@ -69,4 +69,9 @@ class Quiz extends Model
     // {
     //     return $this->hasMany(Invitation::class);
     // }
+
+    public function userquizstates(): HasMany
+    {
+        return $this->hasMany(UserQuizState::class, 'quiz_id');
+    }
 }

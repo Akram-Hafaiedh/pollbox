@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Jobs\ImportUsers;
 use App\Jobs\SendWelcomeEmail;
 use App\Mail\WelcomeMail;
 use App\Models\User;
@@ -126,5 +127,34 @@ class AdminUserController extends Controller
             return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
         }
         return redirect()->route('admin.users.index')->with('error', 'You cant delete admin users');
+    }
+
+    public function destroyAll(): RedirectResponse
+    {
+        $users = User::where('user_id', auth()->id())->get();
+
+        if (count($users) > 0) {
+
+            foreach ($users as $user) {
+                $user->delete();
+            }
+            return redirect()->route('admin.users.index')
+                ->with('success', __('All users deleted successfully'));
+        }
+
+        return redirect()->route('admin.users.index')->with('error', 'No user found');
+    }
+
+    public function import(Request $request): RedirectResponse
+    {
+        dd('import');
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt',
+        ]);
+        $file = $request->file('csv_file')->store('csv_files', 'public');
+        // $path = $request->file('csv_file')->getRealPath();
+        ImportUsers::dispatch($file);
+
+        return back()->with('success', 'User Import Started successfully!');
     }
 }

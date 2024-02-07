@@ -58,7 +58,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/quiz-start/{quiz}', [UserQuizController::class, 'startQuiz'])->name('quiz-start');
         Route::get('/quiz-access/{quiz}', [UserQuizController::class, 'access'])->name('quiz-access');
     });
-
 });
 
 require __DIR__ . '/auth.php';
@@ -77,7 +76,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'destroy' => 'admin.users.destroy',
 
     ]);
-
+    Route::post('import/users', [AdminUserController::class, 'import'])->name('admin.users.import');
 
     // Quiz related routes
     Route::get('/reports', [AdminQuizController::class, 'reports'])->name('admin.reports');
@@ -91,6 +90,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'update' => 'admin.quizzes.update',
         'destroy' => 'admin.quizzes.destroy',
     ]);
+    Route::post('/import/quizzes', [AdminQuizController::class, 'import'])->name('admin.quizzes.import');
+
 
     Route::get('/admin/surveys', [SurveyController::class, 'index'])->name('admin.surveys.index');
 
@@ -124,7 +125,6 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'edit' => 'admin.assessments.edit',
         'update' => 'admin.assessments.update',
         'destroy' => 'admin.assessments.destroy',
-
     ]);
 });
 
@@ -154,4 +154,4 @@ Route::get('/access', [UserQuizController::class, 'access']);
 //     Route::delete('/{survey}/questions/{question}/destroy', [SurveyController::class, 'destroyQuestion'])->name('surveys.destroyQuestion');
 // });
 
-Route::get('/chart', [ ])->name('chart.index');
+Route::get('/chart', [AdminReportsController::class, 'index'])->name('chart.index');

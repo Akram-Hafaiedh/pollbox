@@ -89,7 +89,9 @@ class SubmitQuizRequest extends FormRequest
             'questions.*.selected_options.required' => 'Please select at least one option for question :attribute.',
             'questions.*.answer.required' => 'Please provide an answer for question :attribute.',
             'questions.*.answer.max' => 'Your answer for question :attribute is too long. It must be under 1000 characters.',
-            // ...
+            'questions.*.ranking.required' => 'Please provide a ranking for question :attribute.',
+            'questions.*.ranking.min' => 'The ranking for question :attribute must be at least 1.',
+            
         ];
     }
 }

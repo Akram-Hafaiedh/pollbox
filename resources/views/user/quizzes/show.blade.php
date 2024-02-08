@@ -161,42 +161,14 @@
                                             <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
                                             <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
-                                            <div class="px-2"
-                                                x-data="{
-                                                    list: {{ Js::from($question->options) }}.map((item, index) => ({ ...item, rank: index + 1 })),
-                                                    dragIndex: null,
-                                                }"
-                                                x-init="() => {
-                                                    let sortable = new Sortable($el, {
-                                                        animation: 150,
-                                                        sort: true,
-                                                        ghostClass: 'bg-primary',
-                                                        onEnd: (evt) => {
-                                                            let item = list.splice(evt.oldIndex, 1)[0];
-                                                            list.splice(evt.newIndex, 0, item);
-                                                            list.forEach((item, idx) => {
-                                                                item.rank = idx + 1; // Rank should start from 1, not 0
-                                                                console.log('item', item);
-                                                            });
-                                                            list = [...list];
-                                                            console.log('list', list);
-                                                        }
-                                                    });
-                                                }">
-                                                <template x-for="(item, index) in list" :key="item.id">
-                                                    <div class="flex items-center p-3 mb-2 bg-white border border-gray-200 rounded-full shadow cursor-move w-fit"
-                                                        x-on:mousedown="dragIndex = index"
-                                                        x-on:touchstart="dragIndex = index"
-                                                        x-on:mouseup="dragIndex = null"
-                                                        x-on:touchend="dragIndex = null"
-                                                        :class="{ 'bg-primary': dragIndex === index }">
-                                                        <span class="mr-2" x-text="index + 1"></span>
-                                                        <span  x-text="item.content"></span>
-                                                        <!-- Hidden input to store the ranking order -->
-                                                        <input type="hidden" :name="'questions[' + '{{ $question->id }}' + '][rankings][' + item.id + ']'" :value="item.rank" class="ranking-input">
-                                                    </div>
-                                                </template>
-                                            </div>
+                                            @foreach ($question->options as $option)
+                                                <div class="flex items-center py-2 space-x-4">
+                                                    <input type="number" id="rank_{{ $option->id }}" name="questions[{{ $question->id }}][rankings][{{ $option->id }}][rank]" class="w-20 h-6 p-2 border-gray-300 rounded text-primary focus:outline-none focus:ring focus:border-primary/25">
+                                                    <label for="rank_{{ $option->id }}" class="font-bold text-gray-700">
+                                                        {{ $option->content }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
                                         @endif
 
 

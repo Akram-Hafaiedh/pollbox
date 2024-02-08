@@ -12,6 +12,7 @@ use App\Models\UserQuizState;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class UserQuizController extends Controller
@@ -87,25 +88,25 @@ class UserQuizController extends Controller
             ->count() === $quiz->questions->count();
     }
 
-    public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
-    {
-        // dd($request->validated());
 
+public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
+{
+    $user = auth()->user();
+    if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
+        return redirect()->back()
+            ->with('error', 'You have already submitted all responses for this quiz.');
+    }
 
+    $questionResponses = $request->validated()['questions'];
 
-        $user = auth()->user();
-        if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
-            return redirect()->back()
-                ->with('error', 'You have already submitted all responses for this quiz.');
-        }
-        $questionResponses = $request->validated()['questions'];
+    $questionCount = $quiz->questions()->count();
+    $submittedResponseCount = count($questionResponses);
 
-        $questionCount = $quiz->questions()->count();
-        $submittedResponseCount = count($questionResponses);
+    DB::beginTransaction();
 
+    try {
         if ($submittedResponseCount === $questionCount) {
-            // All questions have been answered, update the state of the quiz for the current user
-            $userQuizState = UserQuizState::updateOrCreate(
+            UserQuizState::updateOrCreate(
                 ['user_id' => auth()->user()->id, 'quiz_id' => $quiz->id],
                 ['state' => 'finished']
             );
@@ -176,10 +177,19 @@ class UserQuizController extends Controller
             }
         }
 
+        DB::commit();
         // Redirect to the results page
         return redirect()->route('user.quizzes.results', $quiz)
             ->with('success', 'Quiz responses submitted successfully!');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        throw $e;
+        // Redirect to the results page
+        return redirect()->route('user.quizzes.results', $quiz)
+            ->with('error', 'An error occurred while saving responses!');
     }
+}
+
     public function showResults(Quiz $quiz): View
     {
 
@@ -187,7 +197,6 @@ class UserQuizController extends Controller
         $quiz->load('questions.options');
         // dd($quiz,$quiz->questions);
         $userResponses = $user->responses()->where('quiz_id', $quiz->id)->get();
-
 
 
         // dd( $userResponses);

@@ -158,4 +158,5 @@ Route::get('/access', [UserQuizController::class, 'access']);
 //     Route::delete('/{survey}/questions/{question}/destroy', [SurveyController::class, 'destroyQuestion'])->name('surveys.destroyQuestion');
 // });
 
-Route::get('/chart', [AdminReportsController::class, 'index'])->name('chart.index');
+Route::get('/chart', [IncomeChartController::class, 'index'])->name('chart.index');
+

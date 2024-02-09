@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('user')->group(function () {
         Route::get('/quizzes/history', [UserQuizController::class, 'history'])->name('user.quizzes.history');
+        Route::post('/quizzes/history/filter', [UserQuizController::class, 'filter'])->name('user.quizzes.history.filter');
+
         Route::resource('quizzes', UserQuizController::class)
             ->names([
                 'index' => 'user.quizzes.index',
@@ -94,11 +96,10 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'update' => 'admin.quizzes.update',
         'destroy' => 'admin.quizzes.destroy',
     ]);
-    // Route::post('/import/quizzes', [AdminQuizController::class, 'import'])->name('admin.quizzes.import');
+    Route::post('/import/quizzes', [CsvImportController::class, 'importQuizzesFromCsv'])->name('admin.quizzes.importQuizzesCsv');
 
 
     Route::get('/admin/surveys', [SurveyController::class, 'index'])->name('admin.surveys.index');
-
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
     Route::get('/more-settings', [SettingsController::class, 'more'])->name('admin.more-settings');
 

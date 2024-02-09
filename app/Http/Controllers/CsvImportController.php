@@ -46,6 +46,11 @@ class CsvImportController extends Controller
 
     }
 
+    public function importQuizzesFromCsv(Request $request) : RedirectResponse
+    {
+        return redirect()->back();
+    }
+
     public function exportCsvTemplate(): StreamedResponse
     {
         $headers = [

@@ -89,106 +89,111 @@ class UserQuizController extends Controller
     }
 
 
-public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
-{
-    $user = auth()->user();
-    if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
-        return redirect()->back()
-            ->with('error', 'You have already submitted all responses for this quiz.');
-    }
-
-    $questionResponses = $request->validated()['questions'];
-
-    $questionCount = $quiz->questions()->count();
-    $submittedResponseCount = count($questionResponses);
-
-    DB::beginTransaction();
-
-    try {
-        if ($submittedResponseCount === $questionCount) {
-            UserQuizState::updateOrCreate(
-                ['user_id' => auth()->user()->id, 'quiz_id' => $quiz->id],
-                ['state' => 'finished']
-            );
+    public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResponse
+    {
+        $user = auth()->user();
+        if ($this->hasAlreadySubmittedResponses($user, $quiz)) {
+            return redirect()->back()
+                ->with('error', 'You have already submitted all responses for this quiz.');
         }
 
-        foreach ($questionResponses as $questionId => $response) {
-            if (isset($response['selected_option'])) {
-                Response::updateOrCreate(
-                    [
-                        'user_id' => $user->id,
-                        'question_id' => $questionId,
-                        'quiz_id' => $quiz->id,
-                    ],
-                    [
-                        'option_id' => $response['selected_option'],
-                    ]
+        $questionResponses = $request->validated()['questions'];
+
+        $questionCount = $quiz->questions()->count();
+        $submittedResponseCount = count($questionResponses);
+
+        DB::beginTransaction();
+
+        try {
+            if ($submittedResponseCount === $questionCount) {
+                UserQuizState::updateOrCreate(
+                    ['user_id' => auth()->user()->id, 'quiz_id' => $quiz->id],
+                    ['state' => 'completed']
                 );
-            } elseif (isset($response['rankings'])) {
-                foreach ($response['rankings'] as $optionId => $rank) {
-                    Response::updateOrCreate(
-                        [
-                            'user_id' => $user->id,
-                            'question_id' => $questionId,
-                            'option_id' => $optionId,
-                            'quiz_id' => $quiz->id,
-                        ],
-                        [
-                            'ranking' => $rank,
-                        ]
-                    );
-                }
-            } elseif (isset($response['selected_options'])) {
-                foreach ($response['selected_options'] as $optionId) {
-                    Response::updateOrCreate(
-                        [
-                            'user_id' => $user->id,
-                            'question_id' => $questionId,
-                            'option_id' => $optionId,
-                            'quiz_id' => $quiz->id,
-                        ],
-                        [
-                            'selected' => true,
-                        ]
-                    );
-                }
-            } elseif (isset($response['answer'])) {
-                Response::updateOrCreate(
-                    [
-                        'user_id' => $user->id,
-                        'question_id' => $questionId,
-                        'quiz_id' => $quiz->id,
-                    ],
-                    [
-                        'answer' => $response['answer'],
-                    ]
-                );
-            } elseif (isset($response['scale_value'])) {
-                Response::updateOrCreate(
-                    [
-                        'user_id' => $user->id,
-                        'question_id' => $questionId,
-                        'quiz_id' => $quiz->id,
-                    ],
-                    [
-                        'likert_scale' => $response['scale_value'],
-                    ]
+            } else {
+                UserQuizState::updateOrCreate(
+                    ['user_id' => auth()->user()->id, 'quiz_id' => $quiz->id],
+                    ['state' => 'in_progress']
                 );
             }
-        }
 
-        DB::commit();
-        // Redirect to the results page
-        return redirect()->route('user.quizzes.results', $quiz)
-            ->with('success', 'Quiz responses submitted successfully!');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        throw $e;
-        // Redirect to the results page
-        return redirect()->route('user.quizzes.results', $quiz)
-            ->with('error', 'An error occurred while saving responses!');
+            foreach ($questionResponses as $questionId => $response) {
+                if (isset($response['selected_option'])) {
+                    Response::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'question_id' => $questionId,
+                            'quiz_id' => $quiz->id,
+                        ],
+                        [
+                            'option_id' => $response['selected_option'],
+                        ]
+                    );
+                } elseif (isset($response['rankings'])) {
+                    foreach ($response['rankings'] as $optionId => $rank) {
+                        Response::updateOrCreate(
+                            [
+                                'user_id' => $user->id,
+                                'question_id' => $questionId,
+                                'option_id' => $optionId,
+                                'quiz_id' => $quiz->id,
+                            ],
+                            [
+                                'ranking' => $rank,
+                            ]
+                        );
+                    }
+                } elseif (isset($response['selected_options'])) {
+                    foreach ($response['selected_options'] as $optionId) {
+                        Response::updateOrCreate(
+                            [
+                                'user_id' => $user->id,
+                                'question_id' => $questionId,
+                                'option_id' => $optionId,
+                                'quiz_id' => $quiz->id,
+                            ],
+                            [
+                                'selected' => true,
+                            ]
+                        );
+                    }
+                } elseif (isset($response['answer'])) {
+                    Response::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'question_id' => $questionId,
+                            'quiz_id' => $quiz->id,
+                        ],
+                        [
+                            'answer' => $response['answer'],
+                        ]
+                    );
+                } elseif (isset($response['scale_value'])) {
+                    Response::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'question_id' => $questionId,
+                            'quiz_id' => $quiz->id,
+                        ],
+                        [
+                            'likert_scale' => $response['scale_value'],
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+            // Redirect to the results page
+            return redirect()->route('user.quizzes.results', $quiz)
+                ->with('success', 'Quiz responses submitted successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+            // Redirect to the results page
+            return redirect()->route('user.quizzes.results', $quiz)
+                ->with('error', 'An error occurred while saving responses!');
+        }
     }
-}
 
     public function showResults(Quiz $quiz): View
     {
@@ -208,14 +213,11 @@ public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResp
         return view('user.quizzes.summary', compact('quiz', 'userResponses'));
     }
 
-    public function history(): View
+    public function history(Request $request): View
     {
+        $state = $request->input('state');
         // dd('history');
         $user = auth()->user();
-
-        // $quizzes = $user->responses->map(function ($response) {
-        //     return $response->quiz;
-        // })->unique();
         $quizzes = $user->responses()
             ->with('quiz')
             ->get()
@@ -223,6 +225,22 @@ public function submitQuiz(Quiz $quiz, SubmitQuizRequest $request): RedirectResp
             ->unique('id')
             ->filter();
 
-        return view('user.quizzes.history', compact('user', 'quizzes'));
+        return view('user.quizzes.history', compact('user', 'quizzes','state'));
+    }
+    public function filter(Request $request)
+    {
+        $state = $request->input('quiz-state');
+        if ($state === "all") {
+            return redirect()->route('user.quizzes.history');
+        }
+        $user = auth()->user();
+
+        $quizzes = $user->userquizstates()
+            ->where('state', $state)
+            ->get()
+            ->pluck('quiz')
+            ->unique('id');
+
+        return view('user.quizzes.history', compact('user', 'quizzes','state'));
     }
 }

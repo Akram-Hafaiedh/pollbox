@@ -161,14 +161,17 @@
                                             <input type="hidden" name="questions[{{ $question->id }}][type]" value="{{ $question->type }}">
                                             <input type="hidden" name="questions[{{ $question->id }}][required]" value="{{ $question->required }}">
 
+                                            <div class="flex flex-col">
                                             @foreach ($question->options as $option)
-                                                <div class="flex items-center py-2 space-x-4">
-                                                    <input type="number" id="rank_{{ $option->id }}" name="questions[{{ $question->id }}][rankings][{{ $option->id }}][rank]" class="w-20 h-6 p-2 border-gray-300 rounded text-primary focus:outline-none focus:ring focus:border-primary/25">
+                                                <div class="flex items-start py-2 space-x-4">
+                                                    <input type="number" id="rank_{{ $option->id }}" name="questions[{{ $question->id }}][rankings][{{ $option->id }}]" class="w-20 h-6 p-2 border-gray-300 rounded text-primary focus:outline-none focus:ring focus:border-primary/25">
                                                     <label for="rank_{{ $option->id }}" class="font-bold text-gray-700">
                                                         {{ $option->content }}
                                                     </label>
                                                 </div>
-                                            @endforeach
+
+                                                @endforeach
+                                            </div>
                                         @endif
 
 

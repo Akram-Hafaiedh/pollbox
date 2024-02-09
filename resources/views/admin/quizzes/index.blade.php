@@ -29,7 +29,7 @@
                                         Import PDF
                                     </button>
                                 </label>
-                                <form action='{{ route('admin.quizzes.import') }}' method='POST'
+                                <form action='{{ route('admin.quizzes.importQuizzesCsv') }}' method='POST'
                                     enctype='multipart/form-data'>
                                     @csrf
                                     <label for="csv-file" class="mr-2" @click="csvFile = true">

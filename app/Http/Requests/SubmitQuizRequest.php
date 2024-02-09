@@ -91,7 +91,7 @@ class SubmitQuizRequest extends FormRequest
             'questions.*.answer.max' => 'Your answer for question :attribute is too long. It must be under 1000 characters.',
             'questions.*.ranking.required' => 'Please provide a ranking for question :attribute.',
             'questions.*.ranking.min' => 'The ranking for question :attribute must be at least 1.',
-            
+
         ];
     }
 }

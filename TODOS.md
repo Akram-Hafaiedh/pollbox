@@ -8,11 +8,12 @@
 - [ ] add avatar image for users ()
 - [x] Importing Users CSV
 - [x] Export the Csv template for users
-- [ ] Importing Users PDF
+- [ ] Importing Users PDF (Removed maybe)
 - [ ] User Reporting
 - [ ] Quiz Reporting
 - [x] Liste des quiz
 - [x] Liste des question
+- [ ] Add graphs for the results
     % des réponses
 - [ ] Reponse Reporting
 - [ ] Question Reporting

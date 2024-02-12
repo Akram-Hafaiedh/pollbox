@@ -96,6 +96,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'update' => 'admin.quizzes.update',
         'destroy' => 'admin.quizzes.destroy',
     ]);
+    
     Route::post('/import/quizzes', [CsvImportController::class, 'importQuizzesFromCsv'])->name('admin.quizzes.importQuizzesCsv');
 
 
@@ -104,6 +105,15 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/more-settings', [SettingsController::class, 'more'])->name('admin.more-settings');
 
     Route::get('/reports', [AdminReportsController::class, 'reports'])->name('admin.reports.dashboard');
+    Route::get('/reports/quizzes', [AdminReportsController::class, 'display'])->name('admin.reports.quizzes');
+    Route::get('/quizzes/{quiz}/report', [AdminReportsController::class, 'show'])->name('admin.reports.quiz');
+    Route::get('/users/{user}/quizzes', [AdminReportsController::class, 'showUserQuizzes'])->name('admin.reports.user_quizzes');
+    Route::get('/users/{user}/quizzes/{quiz}/report', [AdminReportsController::class, 'showUserQuiz'])->name('admin.reports.user_quiz');
+    // Route::get('/users/{user}/report', [AdminReportsController::class, 'showUser'])->name('admin.reports.user');
+
+
+
+
     Route::get('/reports/quiz-metrics', [AdminReportsController::class, 'showQuizMetrics'])->name('admin.reports.quiz_metrics');
     Route::get('/reports/user-metrics', [AdminReportsController::class, 'showUserMetrics'])->name('admin.reports.user_metrics');
     Route::get('/reports/question-metrics', [AdminReportsController::class, 'showQuestionMetrics'])->name('admin.reports.question_metrics');
@@ -160,4 +170,3 @@ Route::get('/access', [UserQuizController::class, 'access']);
 // });
 
 Route::get('/chart', [IncomeChartController::class, 'index'])->name('chart.index');
-

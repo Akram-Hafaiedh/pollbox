@@ -96,7 +96,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         'update' => 'admin.quizzes.update',
         'destroy' => 'admin.quizzes.destroy',
     ]);
-    
+
     Route::post('/import/quizzes', [CsvImportController::class, 'importQuizzesFromCsv'])->name('admin.quizzes.importQuizzesCsv');
 
 
@@ -115,6 +115,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 
     Route::get('/reports/quiz-metrics', [AdminReportsController::class, 'showQuizMetrics'])->name('admin.reports.quiz_metrics');
+
     Route::get('/reports/user-metrics', [AdminReportsController::class, 'showUserMetrics'])->name('admin.reports.user_metrics');
     Route::get('/reports/question-metrics', [AdminReportsController::class, 'showQuestionMetrics'])->name('admin.reports.question_metrics');
     Route::get('/reports/participation-metrics', [AdminReportsController::class, 'showParticipationMetrics'])->name('admin.reports.participation_metrics');

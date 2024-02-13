@@ -133,11 +133,34 @@ class AdminReportsController extends Controller
             $options = [];
             $questionResponseCounts = [];
             $responses = Response::where('question_id', $question->id)->get();
-            foreach ($question->options as $option) {
-                $optionResponseCount = $responses->where('option_id', $option->id)->count();
-                $options[] = $option->content;
-                $questionResponseCounts[] = $optionResponseCount;
+            // feedback doesnt have options
+            if ($question->type === 'feedback') {
+                continue;
             }
+            elseif ($question->type === 'ranking')
+            {
+                foreach ($question->options as $index => $rank) {
+                    $options[] = 'Rank ' . ($index + 1);
+                    $questionResponseCounts[] = $responses->where('ranking', $index + 1)->count();
+                }
+            }
+            elseif($question->type === 'likert_scale')
+            {
+                foreach ($question->options as $index => $scale) {
+                    $options = range(1, count($question->options));
+                    $questionResponseCounts[] = $responses->where('likert_scale', $index + 1)->count();
+                }
+            }
+            else
+            {
+                foreach ($question->options as $option) {
+                    $optionResponseCount = $responses->where('option_id', $option->id)->count();
+                    $options[] = $option->content;
+                    $questionResponseCounts[] = $optionResponseCount;
+                }
+            }
+
+
 
             $chartData = [
                 'labels' => $options, // Assuming fixed options for all questions

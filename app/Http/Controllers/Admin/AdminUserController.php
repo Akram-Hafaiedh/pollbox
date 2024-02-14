@@ -9,6 +9,7 @@ use App\Jobs\ImportUsers;
 use App\Jobs\SendWelcomeEmail;
 use App\Mail\WelcomeMail;
 use App\Models\User;
+use App\Models\UserQuizState;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -81,14 +82,22 @@ class AdminUserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(User $user): View
     {
         // dd($user);
-        return view('admin.users.show', compact('user'));
+        $quizzesPassedCount = UserQuizState::where('user_id', $user->id)->where('state', 'completed')->count();
+        $quizzesPassed = UserQuizState::where('user_id', $user->id)->latest()->get()->map(function ($userQuizState) {
+            return [
+                'quiz' => $userQuizState->quiz,
+                'userQuizState' => $userQuizState
+            ];
+        });
+
+        if ($user->quizzesPassedCount === 0) {
+            session()->flash('warning', 'You have not passed any quiz yet!');
+        }
+
+        return view('admin.users.show', compact('user', 'quizzesPassedCount', 'quizzesPassed'));
     }
 
     /**

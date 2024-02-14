@@ -104,7 +104,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
     Route::get('/more-settings', [SettingsController::class, 'more'])->name('admin.more-settings');
 
-    Route::get('/reports', [AdminReportsController::class, 'reports'])->name('admin.reports.dashboard');
+    // Route::get('/reports', [AdminReportsController::class, 'reports'])->name('admin.reports.quiz');
     Route::get('/reports/quizzes', [AdminReportsController::class, 'display'])->name('admin.reports.quizzes');
     Route::get('/quizzes/{quiz}/report', [AdminReportsController::class, 'show'])->name('admin.reports.quiz');
     Route::get('/users/{user}/quizzes', [AdminReportsController::class, 'showUserQuizzes'])->name('admin.reports.user_quizzes');
@@ -114,14 +114,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 
 
-    Route::get('/reports/quiz-metrics', [AdminReportsController::class, 'showQuizMetrics'])->name('admin.reports.quiz_metrics');
-
-    Route::get('/reports/user-metrics', [AdminReportsController::class, 'showUserMetrics'])->name('admin.reports.user_metrics');
-    Route::get('/reports/question-metrics', [AdminReportsController::class, 'showQuestionMetrics'])->name('admin.reports.question_metrics');
-    Route::get('/reports/participation-metrics', [AdminReportsController::class, 'showParticipationMetrics'])->name('admin.reports.participation_metrics');
-    Route::get('/reports/quiz-participation-metrics', [AdminReportsController::class, 'showQuizParticipationMetrics'])->name('admin.reports.quiz_participation_metrics');
-    Route::get('/reports/user-participation-metrics', [AdminReportsController::class, 'showUserParticipationMetrics'])->name('admin.reports.user_participation_metrics');
-    Route::get('/reports/question-participation-metrics', [AdminReportsController::class, 'showQuestionParticipationMetrics'])->name('admin.reports.question_participation_metrics');
+    // Route::get('/reports/quiz-metrics', [AdminReportsController::class, 'showQuizMetrics'])->name('admin.reports.quiz_metrics');
+    // Route::get('/reports/user-metrics', [AdminReportsController::class, 'showUserMetrics'])->name('admin.reports.user_metrics');
+    // Route::get('/reports/question-metrics', [AdminReportsController::class, 'showQuestionMetrics'])->name('admin.reports.question_metrics');
+    // Route::get('/reports/participation-metrics', [AdminReportsController::class, 'showParticipationMetrics'])->name('admin.reports.participation_metrics');
+    // Route::get('/reports/quiz-participation-metrics', [AdminReportsController::class, 'showQuizParticipationMetrics'])->name('admin.reports.quiz_participation_metrics');
+    // Route::get('/reports/user-participation-metrics', [AdminReportsController::class, 'showUserParticipationMetrics'])->name('admin.reports.user_participation_metrics');
+    // Route::get('/reports/question-participation-metrics', [AdminReportsController::class, 'showQuestionParticipationMetrics'])->name('admin.reports.question_participation_metrics');
 
     Route::resource('/exams', AdminExamController::class)->names([
         'index' => 'admin.exams.index',

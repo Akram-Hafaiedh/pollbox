@@ -54,7 +54,7 @@
                                 </label> --}}
                             </div>
                             <a href="{{ route('admin.quizzes.create') }}"
-                                class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-green-700">
+                                class="inline-flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-indigo-500 rounded justiy-center hover:bg-indigo-700">
                                 <i class="inline-block w-4 h-4 mr-1 fa-solid fa-plus"></i>
                                 {{ __('Add Quiz') }}
                             </a>
@@ -64,7 +64,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" x-on:click="isOpenDestroyAll = true"
-                                    class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm tracking-widest text-white transition duration-150 ease-in-out bg-yellow-500 border border-transparent rounded-md hover:bg-yellow-700 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
+                                    class="inline-flex items-center w-32 h-10 px-4 py-2 text-sm font-bold tracking-widest text-white transition duration-150 ease-in-out bg-yellow-600 border border-transparent rounded-md hover:bg-yellow-800 focus:bg-yellow-500 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:ring-offset-2">
                                     <i class="inline-block w-4 h-4 mr-1 fa-solid fa-trash-can-arrow-up"></i>
                                     {{ __('Delete all') }}
                                 </button>

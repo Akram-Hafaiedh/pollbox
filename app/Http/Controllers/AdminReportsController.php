@@ -120,7 +120,26 @@ class AdminReportsController extends Controller
     public function display(): View
     {
         // dd('test');
-        $quizzes = Quiz::paginate(15);
+        $start_date_filter = request()->get('start_date_filter');
+        $end_date_filter = request()->get('end_date_filter');
+        $title_filter = request()->get('title_filter');
+
+        $query = Quiz::query();
+
+        if ($start_date_filter) {
+            $query->where('start_date', '>=', $start_date_filter);
+        }
+        if ($end_date_filter) {
+            $query->where('end_date', '<=', $end_date_filter);
+        }
+
+        if ($title_filter) {
+            $query->where('title', 'LIKE', '%' . $title_filter . '%');
+        }
+        // $quizzes = Quiz::paginate(15);
+        $quizzes = $query->paginate(15);
+
+
         return view('admin.reports.display', compact('quizzes'));
     }
 

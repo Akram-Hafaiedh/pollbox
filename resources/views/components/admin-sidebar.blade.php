@@ -36,7 +36,7 @@
                 </div>
                 {{-- <x-side-link route="admin.quizzes.index" icon="fa fa-question-circle">Quizzes</x-side-link> --}}
 
-                <x-side-link route="admin.reports.dashboard" icon="fa fa-bar-chart">Reports</x-side-link>
+                <x-side-link route="admin.reports.quizzes" icon="fa fa-bar-chart">Reports</x-side-link>
                 {{-- <x-side-link route="admin.settings.index" icon="fa fa-cogs">Settings</x-side-link> --}}
                 {{-- <x-side-link route="admin.more-settings" icon="fa fa-cog">More Settings</x-side-link> --}}
                 <!-- User Information and Logout Link -->

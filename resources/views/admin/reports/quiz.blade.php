@@ -7,7 +7,7 @@
             <p class="mb-2 text-base font-semibold text-green-500">Total Responses: {{ $statistics['total_responses'] }}</p>
             <p class="mb-2 text-base font-semibold text-green-500">Total Completion Rate: {{ (int) $statistics['total_completion_rate'] }}%</p>
 
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="min-w-full divide-y divide-gray-200 border border-1 border-gray-400">
                 <thead class="bg-gray-50">
                     <tr>
 
@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach ($statistics['participants'] as $participant)
+                    @forelse ($statistics['participants'] as $participant)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -32,7 +32,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                                                        <div class="flex items-center">
+                            <div class="flex items-center">
                                 <div class="flex-shrink-0 w-10 h-10">
                                     <div class="text-sm font-medium text-gray-900">
                                         {{ substr($participant['user']->name, 0, 2) }}
@@ -62,12 +62,13 @@
                             </span>
                         </td>
                     </tr>
-                    @endforeach
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-gray-400 text-sm">No data to be displayed yet</td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
-
-
-
             @php
                 $chartCounter = 0;
             @endphp
@@ -92,11 +93,15 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($responses as $response)
+                            @forelse ($responses as $response)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $response }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td class="text-center py-4 text-gray-500">No answers to be displayed yet</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 @endif

@@ -9,7 +9,9 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AdminReportsController;
 use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\IncomeChartController;
+use App\Http\Controllers\OptionController;
 use App\Http\Controllers\PdfImportController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserQuizController;
@@ -99,6 +101,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/import/quizzes', [CsvImportController::class, 'importQuizzesFromCsv'])->name('admin.quizzes.importQuizzesCsv');
 
+    Route::delete('questions/{question}/destroy', [QuestionController::class, 'destroy'])->name('admin.questions.destroy');
+    Route::delete('options/{option}/destroy', [OptionController::class, 'destroy'])->name('admin.options.destroy');
 
     Route::get('/admin/surveys', [SurveyController::class, 'index'])->name('admin.surveys.index');
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
@@ -106,7 +110,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // Route::get('/reports', [AdminReportsController::class, 'reports'])->name('admin.reports.quiz');
     Route::get('/reports/quizzes', [AdminReportsController::class, 'display'])->name('admin.reports.quizzes');
+
     Route::get('/quizzes/{quiz}/report', [AdminReportsController::class, 'show'])->name('admin.reports.quiz');
+    Route::get('/quizzes/{quiz}/generate-pdf', [AdminReportsController::class, 'generatePdf'])->name('admin.reports quiz.pdf');
     Route::get('/users/{user}/quizzes', [AdminReportsController::class, 'showUserQuizzes'])->name('admin.reports.user_quizzes');
     Route::get('/users/{user}/quizzes/{quiz}/report', [AdminReportsController::class, 'showUserQuiz'])->name('admin.reports.user_quiz');
     // Route::get('/users/{user}/report', [AdminReportsController::class, 'showUser'])->name('admin.reports.user');

@@ -165,8 +165,12 @@
 
                         <!-- Questions section -->
 
-                        <template x-for="(question, questionIndex) in questions" :key="questionIndex">
+                        <template x-for="(question, questionIndex) in questions" :key="question.id">
+
                             <div class="p-2 mt-4 border border-black border-dashed">
+
+                                <input type="hidden" :name="'questions[' + questionIndex + '][id]'" x-model="question.id">
+
                                 <!-- Question content -->
                                 <label x-bind:for="'questions[' + questionIndex + '][content]'"
                                     class="block text-sm font-medium text-gray-700">Question <span
@@ -189,8 +193,7 @@
                                     </button>
 
                                 </div>
-                                <div
-                                    class="flex flex-col items-center w-full my-4 space-y-3 lg:flex-row lg:space-y-0 lg:space-x-3">
+                                <div class="flex flex-col items-center w-full my-4 space-y-3 lg:flex-row lg:space-y-0 lg:space-x-3">
                                     <!-- Image upload for question -->
                                     <div class="w-full lg:w-1/2">
                                         <label :for="'image_path_' + questionIndex"
@@ -260,8 +263,10 @@
                                 <!-- Options for the current question -->
                                 <!-- <template x-if="question.type !== 'feedback' && question.type !== 'likert_scale'"> -->
                                 <template x-if="question.type !== 'feedback'">
-                                    <template x-for="(option, optionIndex) in question.options" :key="optionIndex">
+                                    <template x-for="(option, optionIndex) in question.options" :key="option.id">
                                         <div>
+                                            <!-- Hidden input for option id -->
+                                            <input type="hidden" :name="'questions[' + questionIndex + '][options][' + optionIndex + '][id]'" x-model="option.id">
                                             <!-- Label for option-->
                                             <div class="flex flex-row items-center justify-between mt-2 text-xs">
                                                 <label :for="'option_' + questionIndex + '_' + optionIndex"
@@ -351,7 +356,28 @@
                     });
                 },
                 removeQuestion(questionIndex) {
-                    this.questions.splice(questionIndex, 1);
+                    const questionId = this.questions[questionIndex].id;
+                    console.log(questionId);
+                    fetch('{{ route('admin.questions.destroy', ':id') }}'.replace(':id', questionId),
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content'),
+                        },
+                        body:JSON.stringify({questionId})
+                    }).then((response) => {
+                        console.log('Response: ', response);
+                        if (response.ok) {
+                            this.questions.splice(questionIndex, 1);
+                        }else{
+                            console.log('Failed to delete question on the backend');
+                        }
+                    }).catch((error) => {
+                        console.log('Catch error: ', error);
+                    })
+                    // this.questions.splice(questionIndex, 1);
                 },
                 addOption(questionIndex, optionIndex) {
                     let newOption = {
@@ -360,7 +386,27 @@
                     this.questions[questionIndex].options.splice(optionIndex + 1, 0, newOption);
                 },
                 removeOption(questionIndex, optionIndex) {
-                    this.questions[questionIndex].options.splice(optionIndex, 1);
+                    const optionId = this.questions[questionIndex].options[optionIndex].id;
+                    console.log(optionId);
+
+                    fetch('{{ route('admin.options.destroy', ':id') }}'.replace(':id', optionId),
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        },
+                        body: JSON.stringify({optionId})
+                    }).then((response) => {
+                        console.log('Response: ', response);
+                        if (response.ok) {
+                            this.questions[questionIndex].options.splice(optionIndex, 1);
+                        } else {
+                            console.log('Failed to delete option on the backend');
+                        }
+                    }).catch((error) => {
+                        console.log('Catch error: ', error);
+                    });
                 }
             };
         }

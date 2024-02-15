@@ -156,6 +156,7 @@ class AdminQuizController extends Controller
         $users = User::where('admin_id', auth()->id())->get();
         $quiz->load('questions', 'questions.options');
 
+
         return view('admin.quizzes.edit', compact('quiz', 'users'));
     }
 
@@ -165,7 +166,6 @@ class AdminQuizController extends Controller
     public function update(UpdateQuizRequest $request, Quiz $quiz): RedirectResponse
     {
         $validated = $request->validated();
-
 
         DB::transaction(function () use ($validated, $request, $quiz) {
             // Update the quiz details
@@ -182,22 +182,30 @@ class AdminQuizController extends Controller
 
             // Update the questions and options
             // This assumes you want to replace all existing questions and options with new ones
-            $quiz->questions()->delete(); // Delete existing questions (and related options through cascading, if set up)
-            foreach ($validated['questions'] as $questionData) {
-                $question = $quiz->questions()->create([
-                    'content' => $questionData['content'],
-                    'type' => $questionData['type'],
-                    'required' => $questionData['required'],
-                    'video_url' => $questionData['video_url'],
-                    'image_path' => isset($questionData['image_path']) && $questionData['image_path']->isValid() ? $questionData['image_path']->store('question_images', 'public') : null,
-                ]);
-                isset($questionData['options']) ?: $questionData['options'] = [];
-                foreach ($questionData['options'] as $optionData) {
-                    $question->options()->create([
-                        'content' => $optionData['content'],
-                    ]);
+            // $quiz->questions()->delete(); // Delete existing questions (and related options through cascading, if set up)
+
+            if(isset($validated['questions'])) {
+                // dd($validated['questions']);
+                foreach ($validated['questions'] as $questionData) {
+                    $question = $quiz->questions()->updateOrCreate(
+                        ['id' => $questionData['id']],
+                        [
+                            'content' => $questionData['content'],
+                            'type' => $questionData['type'],
+                            'required' => $questionData['required'],
+                            'video_url' => $questionData['video_url'],
+                            'image_path' => isset($questionData['image_path']) && $questionData['image_path']->isValid() ? $questionData['image_path']->store('question_images', 'public') : null,
+                        ]
+                    );
+                    foreach ($questionData['options'] ?? [] as $optionData) {
+                        $option = $question->options()->updateOrCreate(
+                            ['id' => $optionData['id']],
+                            $optionData
+                        );
+                    }
                 }
             }
+
 
             // Update the invitations if the quiz is restricted
             if ($validated['visibility'] === 'restricted') {

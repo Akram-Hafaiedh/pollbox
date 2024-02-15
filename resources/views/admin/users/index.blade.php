@@ -21,7 +21,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex space-x-2">
                         <div class="flex space-x-2" x-data="{ pdfFile: false, csvFile: false }">
-                            <form action="{{ route('admin.users.importPdf') }}" method="POST" enctype="multipart/form-data" id="pdf-upload-form">
+                            {{-- <form action="{{ route('admin.users.importPdf') }}" method="POST" enctype="multipart/form-data" id="pdf-upload-form">
                                 @csrf
                                 <label for="pdf-file" >
                                     <input id="pdf-file" name="pdf-file" type="file" accept=".pdf" class="hidden"
@@ -34,7 +34,7 @@
                                         Import PDF
                                     </button>
                                 </label>
-                            </form>
+                            </form> --}}
                             <a href="{{ route('admin.users.export-template') }}" class="flex items-center h-10 px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
                                 <i class="inline-block w-4 h-4 mr-1 fa-solid fa-file-csv"></i>
                                 Export CSV Template

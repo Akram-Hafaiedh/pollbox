@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Question;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
@@ -59,8 +61,11 @@ class QuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Question $question)
+    public function destroy(Request $request)
     {
-        //
+
+        $questionId = $request->input('questionId');
+        Question::destroy($questionId);
+        return response()->json(['message' => 'Question deleted successfully'], JsonResponse::HTTP_OK);
     }
 }

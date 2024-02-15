@@ -11,7 +11,8 @@
             <div class='flex flex-col mt-10'>
                 <x-side-link route="admin.dashboard" icon="fa fa-home">Dashboard</x-side-link>
                 <x-side-link route="admin.users.index" icon="fa fa-user">Users</x-side-link>
-                <div class="">
+                <x-side-link route="admin.quizzes.index" icon="fa fa-user">Quizzes</x-side-link>
+                {{-- <div class="">
                     <button @click="openQuiz = !openQuiz" type="button"
                         class="flex items-center justify-between w-full px-2 py-2 text-sm font-semibold text-left bg-gray-200 text-primary hover:bg-secondary hover:text-white focus:outline-none focus:bg-secondary">
                         <span>
@@ -33,7 +34,7 @@
                         <a href="{{ route('admin.assessments.index') }}"
                             class="block px-4 py-2 text-sm text-primary hover:bg-secondary hover:text-white">Assessements</a>
                     </div>
-                </div>
+                </div> --}}
                 {{-- <x-side-link route="admin.quizzes.index" icon="fa fa-question-circle">Quizzes</x-side-link> --}}
 
                 <x-side-link route="admin.reports.quizzes" icon="fa fa-bar-chart">Reports</x-side-link>

@@ -8,6 +8,7 @@ use App\Models\Quiz;
 use App\Models\Response;
 use App\Models\User;
 use App\Models\UserQuizState;
+use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,24 @@ class AdminReportsController extends Controller
     {
         $this->middleware('admin');
     }
+
+    public function generatePdf(Quiz $quiz)
+    {
+        // dd('test');
+
+
+        $data = [
+            'customer_name' => 'John Doe',
+            'invoice_number' => 12345,
+            // ...other invoice details
+        ];
+
+        // Load the PDF view with the data
+        $pdf = PDF::loadView('admin.reports.pdf', $data);
+
+        return $pdf->stream('invoice.pdf');
+    }
+
     public function reports()
     {
         return view('admin.reports.dashboard');
@@ -178,8 +197,6 @@ class AdminReportsController extends Controller
                     $questionResponseCounts[] = $optionResponseCount;
                 }
             }
-
-
 
             $chartData = [
                 'labels' => $options, // Assuming fixed options for all questions

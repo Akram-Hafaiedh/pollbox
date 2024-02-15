@@ -35,6 +35,7 @@ class UpdateQuizRequest extends FormRequest
             'selected_users' => 'nullable|array',
             'selected_users.*' => 'exists:users,id',
             'questions.*' => 'required|array|min:1',
+            'questions.*.id' => 'nullable|exists:questions,id',
             'questions.*.content' => 'required|string',
             'questions.*.image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'questions.*.video_url' => 'nullable|url',
@@ -42,6 +43,7 @@ class UpdateQuizRequest extends FormRequest
             'questions.*.order' => 'nullable|integer',
             'questions.*.required' => 'required|boolean',
             'questions.*.options' => 'sometimes|array|min:2',
+            'questions.*.options.*.id' => 'nullable|exists:options,id',
             'questions.*.options.*.content' => 'required|string|max:255',
             'questions.*.options.*.is_correct' => 'sometimes|boolean', //TODO: maybe gonna be removed later
         ];

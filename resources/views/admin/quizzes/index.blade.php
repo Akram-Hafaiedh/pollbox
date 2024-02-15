@@ -20,7 +20,7 @@
                     <div class="flex items-center justify-between ">
                         <div class="flex space-x-2">
                             <div class="flex" x-data="{ pdfFile: false, csvFile: false }">
-                                <label for="pdf-file" class="mr-2" @click="pdfFile = true">
+                                {{-- <label for="pdf-file" class="mr-2" @click="pdfFile = true">
                                     <input id="pdf-file" type="file" accept=".pdf" class="hidden" x-ref="pdfInput">
                                     <button type="button" disabled
                                         class="h-10 px-4 py-2 text-sm font-bold text-white rounded bg-primary hover:bg-blue-700 disabled:bg-primary/50"
@@ -42,7 +42,7 @@
                                             Import CSV
                                         </button>
                                     </label>
-                                </form>
+                                </form> --}}
                                 <label for="csv-file">
                                     {{-- <input id="csv-file" type="file" accept=".csv" class="hidden" x-ref="csvInput">
                                     <button type="button" disabled

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Option;
 use App\Http\Requests\StoreOptionRequest;
 use App\Http\Requests\UpdateOptionRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class OptionController extends Controller
 {
@@ -59,8 +61,10 @@ class OptionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Option $option)
+    public function destroy(Request $request)
     {
-        //
+        $OptionId = $request->input('optionId');
+        Option::destroy($OptionId);
+        return response()->json(['message' => 'Option deleted successfully.'], JsonResponse::HTTP_OK);
     }
 }

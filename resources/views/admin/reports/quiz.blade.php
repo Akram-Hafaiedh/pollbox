@@ -3,14 +3,32 @@
         <x-dashboard-main-content :page-title="__('Quiz Report Detail')">
             {{-- <h1 class="text-3xl font-bold text-center">Survey Report</h1> --}}
 
-            <p class="mb-2 text-base font-semibold text-green-500">Total Questions: {{ $statistics['total_questions'] }}</p>
-            <p class="mb-2 text-base font-semibold text-green-500">Total Responses: {{ $statistics['total_responses'] }}</p>
-            <p class="mb-2 text-base font-semibold text-green-500">Total Completion Rate: {{ (int) $statistics['total_completion_rate'] }}%</p>
+            <div class="flex justify-between mb-4">
+                    {{-- <h1 class="mb-2 text-3xl font-bold text-center">Survey Report</h1> --}}
+                    <div class="mb-4">
+                        <h2 class="text-2xl font-semibold text-gray-800">Quiz Name : {{ $quiz->title }}</h2>
+                        <p class="max-w-4xl mt-2 text-lg text-gray-600">Quiz Description: {{ $quiz->description }}</p>
+                    </div>
 
-            <table class="min-w-full divide-y divide-gray-200 border border-1 border-gray-400">
+                        <a href="{{ route('admin.reports.export.pdf', $quiz) }}"
+                            class="h-10 px-4 py-2 text-sm font-bold text-white rounded bg-primary hover:bg-blue-700">
+                            <i class="inline-block w-4 h-4 mr-1 fa-regular fa-file-pdf"></i>
+                            Export PDF
+                        </a>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {{-- <p class="mb-2 text-base font-semibold text-green-500">Total Participants: {{ $statistics['total_participants'] }}</p> --}}
+                    <p class="mb-2 text-base font-semibold text-green-500">Total Questions: {{ $statistics['total_questions'] }}</p>
+                    <p class="mb-2 text-base font-semibold text-green-500">Total Responses: {{ $statistics['total_responses'] }}</p>
+                    <p class="mb-2 text-base font-semibold text-green-500">Total Completion Rate: {{ (int) $statistics['total_completion_rate'] }}%</p>
+                </div>
+            <table class="min-w-full border border-gray-400 divide-y divide-gray-200 border-1">
                 <thead class="bg-gray-50">
                     <tr>
-
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-gray-500 uppercase text-start">
+                            User Logo
+                        </th>
                         <th class="px-6 py-3 text-xs font-medium tracking-wider text-gray-500 uppercaset text-start">
                             Name
                         </th>
@@ -23,22 +41,13 @@
                     @forelse ($statistics['participants'] as $participant)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 w-10 h-10">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        {{ substr($participant['user']->name, 0, 2) }}
-                                    </div>
-                                </div>
+                            <div class="flex items-center justify-center w-10 h-10 bg-gray-400 rounded-full">
+                                <span class="text-sm font-medium text-gray-900">
+                                    {{ collect(explode(' ', $participant['user']->name))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->join('') }}
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 w-10 h-10">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        {{ substr($participant['user']->name, 0, 2) }}
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="text-sm text-gray-900">{{ $participant['user']->name }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -64,7 +73,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="text-center py-4 text-gray-400 text-sm">No data to be displayed yet</td>
+                        <td colspan="3" class="py-4 text-sm text-center text-gray-400">No data to be displayed yet</td>
                     </tr>
                 @endforelse
                 </tbody>
@@ -99,7 +108,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td class="text-center py-4 text-gray-500">No answers to be displayed yet</td>
+                                    <td class="py-4 text-center text-gray-500">No answers to be displayed yet</td>
                                 </tr>
                             @endforelse
                         </tbody>

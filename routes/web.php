@@ -55,8 +55,7 @@ Route::middleware('auth')->group(function () {
             ->names([
                 'index' => 'user.quizzes.index',
                 'show' => 'user.quizzes.show',
-            ])
-            ->only(['index', 'show']);
+            ])->only(['index', 'show']);
         Route::post('/quizzes/{quiz}/submit', [UserQuizController::class, 'submitQuiz'])->name('user.quizzes.submit');
         Route::get('/quizzes/{quiz}/result', [UserQuizController::class, 'showResults'])->name('user.quizzes.results');
 

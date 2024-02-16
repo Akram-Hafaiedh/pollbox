@@ -8,7 +8,7 @@ use App\Models\Quiz;
 use App\Models\Response;
 use App\Models\User;
 use App\Models\UserQuizState;
-use Barryvdh\DomPDF\PDF;
+use PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,8 +25,6 @@ class AdminReportsController extends Controller
 
     public function generatePdf(Quiz $quiz)
     {
-        // dd('test');
-
 
         $data = [
             'customer_name' => 'John Doe',
@@ -34,12 +32,12 @@ class AdminReportsController extends Controller
             // ...other invoice details
         ];
 
-        // Load the PDF view with the data
+        
+
         $pdf = PDF::loadView('admin.reports.pdf', $data);
 
-        return $pdf->stream('invoice.pdf');
+        return $pdf->download($quiz->title . '.pdf');
     }
-
     public function reports()
     {
         return view('admin.reports.dashboard');

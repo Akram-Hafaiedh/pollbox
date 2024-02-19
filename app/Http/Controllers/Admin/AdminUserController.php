@@ -23,20 +23,19 @@ class AdminUserController extends Controller
      */
     public function index(Request $request): View
     {
-
-
         $search = $request->get('search');
-
         $currentAdmin = Auth::user();
-
         $users = User::query()
+            ->whereHas('admin', function ($query) use ($currentAdmin) {
+                $query->where('id', $currentAdmin->id);
+            })
             ->with(['responses' => function ($query) {
                 $query->latest('created_at');
             }])
-            ->where('admin_id', $currentAdmin->id)
-            // TODO: Add search on the client side
-            ->where('name', 'LIKE', "%{$search}%")
-            ->orWhere('email', 'LIKE', "%{$search}%")
+            ->where(function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
@@ -140,7 +139,7 @@ class AdminUserController extends Controller
 
     public function destroyAll(): RedirectResponse
     {
-        $users = User::where('user_id', auth()->id())->get();
+        $users = User::where('admin_id', auth()->id())->get();
 
         if (count($users) > 0) {
 

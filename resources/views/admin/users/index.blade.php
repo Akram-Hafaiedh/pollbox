@@ -143,7 +143,7 @@
                                     </div>
                                 </div>
                                 <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <form method="POST" action="{{ route('admin.quizzes.destroyAll') }}">
+                                    <form method="POST" action="{{ route('admin.users.destroyAll') }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -243,7 +243,7 @@
                             <th class="py-2 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="text-sm">
+                    <tbody class="text-sm min-h-[40vh]">
                         @forelse ($users as $user)
                             <tr class=" hover:bg-gray-300 odd:bg-gray-100 even:bg-white">
                                 <td>{{ $user->id }}</td>

@@ -111,7 +111,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/reports/quizzes', [AdminReportsController::class, 'display'])->name('admin.reports.quizzes');
 
     Route::get('/quizzes/{quiz}/report', [AdminReportsController::class, 'show'])->name('admin.reports.quiz');
-    Route::get('/quizzes/{quiz}/generate-pdf', [AdminReportsController::class, 'generatePdf'])->name('admin.reports quiz.pdf');
+    Route::get('/quizzes/{quiz}/generate-pdf', [AdminReportsController::class, 'generatePdf'])->name('admin.reports.quiz.pdf');
     Route::get('/users/{user}/quizzes', [AdminReportsController::class, 'showUserQuizzes'])->name('admin.reports.user_quizzes');
     Route::get('/users/{user}/quizzes/{quiz}/report', [AdminReportsController::class, 'showUserQuiz'])->name('admin.reports.user_quiz');
     // Route::get('/users/{user}/report', [AdminReportsController::class, 'showUser'])->name('admin.reports.user');

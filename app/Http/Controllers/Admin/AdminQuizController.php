@@ -16,6 +16,7 @@ use App\Helpers\CodeHelper;
 use App\Models\Category;
 use App\Models\Option;
 use App\Models\Question;
+use App\Models\UserQuizState;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -140,12 +141,14 @@ class AdminQuizController extends Controller
      */
     public function show(Quiz $quiz): View
     {
-
+        $allResponses = UserQuizState::where('quiz_id', $quiz->id)->get();
+        $responsesCount = count($allResponses);
+        $completedCount = UserQuizState::where('quiz_id', $quiz->id)->where('state', 'completed')->count();
+        $incompletedCount = UserQuizState::where('quiz_id', $quiz->id)->whereNot('state', 'completed')->count();
         $userIds = $quiz->responses->unique('user_id')->pluck('user_id')->toArray();
         $users = User::whereIn('id', $userIds)->get();
         $quiz->load('selectedUsers');
-        // $users = $quiz->selectedUsers;
-        return view('admin.quizzes.show', compact('quiz', 'users'));
+        return view('admin.quizzes.show', compact('quiz', 'users','completedCount','incompletedCount','responsesCount'));
     }
 
     /**

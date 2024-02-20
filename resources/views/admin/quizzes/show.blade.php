@@ -12,29 +12,28 @@
                         <div class="text-sm font-bold uppercase">Number of Questions</div>
                         <div class="text-3xl font-bold">{{ count($quiz->questions) }}</div>
                     </div>
-                    <!-- Number of Responses -->
                     <div
                         class="p-5 text-white rounded-lg shadow bg-gradient-to-r via-primary/90 via-80% to-primary-dark/80 to-95% from-primary">
                         <div class="text-sm font-bold uppercase">Number of Responses</div>
-                        <div class="text-3xl font-bold">20</div>
+                        <div class="text-3xl font-bold">{{ $responsesCount }}</div>
                     </div>
-                    <!-- Finished Responses -->
                     <div
                         class="p-5 text-white rounded-lg shadow bg-gradient-to-r from-primary-dark/80 via-70% via-secondary to-secondary">
                         <div class="text-sm font-bold uppercase">Finished Responses</div>
-                        <div class="text-3xl font-bold">15</div>
+                        <div class="text-3xl font-bold">{{ $completedCount }}</div>
                     </div>
-                    <!-- Other metrics can be added here -->
                     <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r to-primary from-primary-dark">
                         <div class="text-sm font-bold uppercase">Unfinished Responses</div>
-                        <div class="text-3xl font-bold">0</div>
+                        <div class="text-3xl font-bold">{{ $incompletedCount }}</div>
                     </div>
-                    <!-- Finished Responses -->
-                    <div
-                        class="p-5 text-white rounded-lg shadow bg-gradient-to-r via-primary/90 via-80% to-primary-dark/80 to-95% from-primary">
-                        <div class="text-sm font-bold uppercase">Number of participants</div>
-                        <div class="text-3xl font-bold">10</div>
-                    </div>
+                    @if($quiz->visibility === 'restricted')
+                        <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r to-primary from-primary-dark">
+                            <div class="text-sm font-bold uppercase">Number of participants</div>
+                            <div class="text-3xl font-bold">{{ count($users) }}</div>
+                        </div>
+                    @endif
+
+
                 </div>
 
                 <div class="mx-auto my-8">

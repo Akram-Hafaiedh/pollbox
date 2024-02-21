@@ -200,14 +200,14 @@
                                     <div class="w-full lg:w-1/2">
                                         <label :for="'type_' + questionIndex"
                                             class="block text-sm font-medium text-gray-600 ">
-                                            {{ __('Type De Réponse') }}
+                                            {{ __('Type de réponse(s)') }}
                                         </label>
                                         <select x-model="question.type" :name="'questions[' + questionIndex + '][type]'"
                                             :id="'type_' + questionIndex"
                                             class="flex w-full mt-1 space-y-2 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                             <option value="single_choice">Choix unique</option>
                                             <option value="multiple_choice">Choix multiple</option>
-                                            <option value="likert_scale">Choix Likert</option>
+                                            <option value="likert_scale">Echelle de notation</option>
                                             <option value="ranking">Classement</option>
                                             <option value="feedback">Commentaire</option>
                                             <!-- Add other options as needed -->
@@ -282,6 +282,42 @@
                                         </div>
                                     </template>
                                 </template>
+                                <template x-if="question.type === 'likert_scale'">
+                                    <!-- Render Likert scale options here -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-600">Likert Options:</label>
+                                        <div class="flex flex-col space-y-2">
+                                            <template x-for="(likertOption, index) in likertOptions" :key="index">
+                                                <div class="flex items-center space-x-2">
+                                                    <input type="text" x-model="likertOptions[index].content" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                                    <!-- Remove Option Button -->
+                                                    {{-- <div class="flex items-center space-x-2">
+                                                        <button type="button" @click="addLikertOption(index)" class="px-3 py-2 text-sm font-medium text-white transition-colors duration-150 ease-in-out rounded bg-primary hover:bg-primary/75">
+                                           <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M12 4v16m8-8H4" />
+                                                        </svg>
+                                                        </button>
+                                                        <button type="button"
+                                                            @click="removeLikertOption(index)"
+                                                            class="flex items-center px-3 py-2 text-sm font-medium text-white transition-colors duration-150 ease-in-out bg-red-600 rounded hover:bg-red-700">
+
+                                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                        </button>
+                                                    </div> --}}
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <!-- Add Option Button -->
+
+                                    </div>
+                                </template>
+
 
                             </div>
                         </template>
@@ -308,6 +344,7 @@
         @endauth
     </div>
     <script type="text/javascript">
+        // let likertOptions = [{{ Js::from($likertOptions) }}];
         function quizForm() {
             return {
                 questions: {{ Js::from(
@@ -344,9 +381,16 @@
                 },
                 removeOption(questionIndex, optionIndex) {
                     this.questions[questionIndex].options.splice(optionIndex, 1);
+                },
+                addLikertOption() {
+                    this.likertOptions.push('');
+                },
+                removeLikertOption(index) {
+                    this.likertOptions.splice(index, 1);
                 }
             };
         }
+        let likertOptions = {!! json_encode($likertOptions) !!};
         let quizVisibility = 'public';
         let selectedLanguage = 'French';
     </script>

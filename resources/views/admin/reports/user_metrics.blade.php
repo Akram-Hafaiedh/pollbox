@@ -12,7 +12,7 @@
                     <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r via-primary/90 via-80% to-primary-dark/80 to-95% from-primary">
                         <div class="text-sm font-bold uppercase">Active Users</div>
                         <div class="text-3xl font-bold">{{ $userMetrics['activeUsers'] }}</div>
-                    </div>
+                    </div
                 </div>
                 <div class="w-full px-2 mb-4 sm:w-1/2 lg:w-1/3">
                     <div class="p-5 text-white rounded-lg shadow bg-gradient-to-r from-primary-dark/80 via-70% via-secondary to-secondary">

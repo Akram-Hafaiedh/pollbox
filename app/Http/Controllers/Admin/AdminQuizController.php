@@ -52,7 +52,16 @@ class AdminQuizController extends Controller
         $users = User::where('admin_id', auth()->id())->get();
 
         $categories = Category::all();
-        return view('admin.quizzes.create', compact('users', 'categories'));
+
+        $likertOptions = [
+            ['id' => 1, 'content' => 'Strongly Disagree'],
+            ['id' => 2, 'content' => 'Disagree'],
+            ['id' => 3, 'content' => 'Neutral'],
+            ['id' => 4, 'content' => 'Agree'],
+            ['id' => 5, 'content' => 'Strongly Agree'],
+        ];
+
+        return view('admin.quizzes.create', compact('users', 'categories','likertOptions'));
     }
 
     /**

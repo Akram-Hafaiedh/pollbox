@@ -11,7 +11,7 @@
                     </div>
 
                         <a href="{{ route('admin.reports.quiz.pdf', $quiz) }}"
-                            class="h-10 px-4 py-2 text-sm font-bold text-white rounded bg-primary hover:bg-blue-700">
+                            class="flex items-center h-10 px-4 py-2 text-sm font-bold text-white rounded bg-primary hover:bg-blue-700">
                             <i class="inline-block w-4 h-4 mr-1 fa-regular fa-file-pdf"></i>
                             Export PDF
                         </a>
